@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3" xmlns:sel="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3" xmlns:sg="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5">
+  
+  <xs:import namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5" schemaLocation="StruttureGenerali_v1_5.xsd"/>
+  
+  <xs:element name="COD_POD" type="sel:CodicePODType"/>
+  <xs:element name="DATA_RICHIESTA" type="sg:GGMMAAAAType"/>
+  <xs:element name="DATA_CONTRATTO" type="sg:GGMMAAAAType"/>
+  <xs:element name="DATA_DECORRENZA" type="sg:GGMMAAAAType"/>
+  <xs:element name="COD_CONTR_DISP" type="sel:CodContrattoDispacciamentoType"/>
+  <xs:element name="COD_CONTR_DISP_ENTRANTE" type="sel:CodContrattoDispacciamentoType"/>
+  <xs:element name="COD_CONTR_DISP_USCENTE" type="sel:CodContrattoDispacciamentoType"/>
+  <xs:element name="PIVA_UTENTE" type="sg:PartitaIVAUEType"/>
+  <xs:element name="PIVA_UTENTE_ENTRANTE" type="sg:PartitaIVAUEType"/>
+  <xs:element name="PIVA_UTENTE_USCENTE" type="sg:PartitaIVAUEType"/>
+  <xs:element name="PIVA_CONTROPARTE_COMMERCIALE" type="sg:PartitaIVAUEType"/>
+  <xs:element name="REVOCA_TIMOE" type="sg:EsitoBoolType"/>
+  <xs:element name="ACQUISTO_CREDITO" type="sg:EsitoBoolType"/>
+  <xs:element name="SOSP_MOR" type="sg:EsitoBoolType"/>          
+  <xs:element name="PRESENZA_CMOR" type="sg:EsitoBoolType"/>
+  <xs:element name="DATE_SOSP" type="sg:DateGGMMAAAAType"/>
+  <xs:element name="DATE_SWITCH" type="sg:DateGGMMAAAAType"/>
+  <xs:element name="DATA_SALVAGUARDIA" type="sg:GGMMAAAAType"/>          
+  <xs:element name="DATA_ULTIMA_RICH_SOSP" type="sg:GGMMAAAAType"/>
+  <xs:element name="DATA_ULTIMA_SOSP" type="sg:GGMMAAAAType"/>
+  <xs:element name="TIPOLOGIA_RISOLUZIONE" type="sg:TipologiaRisoluzioneType"/>
+  
+  <xs:simpleType name="CodicePODType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\S.{13}.?"/>  
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="DatiTecniciBaseType">
+    <xs:sequence>
+      <xs:element ref="sel:COD_POD"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiTecniciDistributoreType">
+    <xs:complexContent>
+      <xs:extension base="sel:DatiTecniciBaseType">
+        <xs:sequence>
+          <xs:element ref="sg:PIVA_DISTRIBUTORE"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiTecniciUbicazioneBaseType">
+    <xs:complexContent>
+      <xs:extension base="sel:DatiTecniciBaseType">
+        <xs:sequence>
+          <xs:element minOccurs="0" ref="sg:ISTAT"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:element name="TIPOLOGIA_VOLTURA" type="sel:TipologiaVolturaType"/>
+  <xs:simpleType name="TipologiaVolturaType">
+    <xs:restriction base="xs:string">
+      <xs:length value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="TIPO_CONTRATTO" type="sel:TipoContrattoType"/>
+  <xs:simpleType name="TipoContrattoType">
+    <xs:restriction base="xs:string">
+      <xs:length value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="CATEGORIA_CLIENTE" type="sel:CategoriaClienteType"/>
+  <xs:simpleType name="CategoriaClienteType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\S.{0,2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:element name="SETT_MERCEOLOGICO" type="sel:SettMerceolType"/>
+  <xs:simpleType name="SettMerceolType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\S.{0,7}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="CodContrattoDispacciamentoType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\S.{0,5}"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:complexType name="VolturaDatiAttivazioneBaseType">
+    <xs:sequence>
+      <xs:element ref="sel:TIPOLOGIA_VOLTURA"/>
+      <xs:element ref="sel:TIPO_CONTRATTO"/>
+      <xs:element minOccurs="0" ref="sel:CATEGORIA_CLIENTE"/>
+      <xs:element minOccurs="0" ref="sel:SETT_MERCEOLOGICO"/>
+    </xs:sequence>        
+  </xs:complexType>
+  
+  <xs:complexType name="VolturaAccettazioneDatiAttivazioneType">
+    <xs:sequence>
+      <xs:element ref="sel:COD_CONTR_DISP"/>
+      <xs:element ref="sel:PIVA_UTENTE"/>
+    </xs:sequence>        
+  </xs:complexType>
+  
+  <xs:complexType name="VolturaDatiAttivazioneNotificaType">
+    <xs:complexContent>
+      <xs:extension base="sel:VolturaDatiAttivazioneBaseType">
+        <xs:sequence>          
+          <xs:element ref="sel:DATA_DECORRENZA"/>          
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+   
+  <xs:complexType name="VolturaDatiAttivazioneRichiestaType">
+    <xs:complexContent>
+      <xs:extension base="sel:VolturaDatiAttivazioneBaseType">
+        <xs:sequence>
+          <xs:element ref="sel:DATA_RICHIESTA"/>
+          <xs:element ref="sel:DATA_DECORRENZA"/>
+          <xs:element ref="sel:COD_CONTR_DISP"/>
+          <xs:element minOccurs="0" ref="sel:PIVA_CONTROPARTE_COMMERCIALE"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="VolturaDatiAttivazioneComunicazioneType">
+    <xs:complexContent>
+      <xs:extension base="sel:VolturaDatiAttivazioneBaseType">
+        <xs:sequence>
+          <xs:element ref="sel:COD_CONTR_DISP_ENTRANTE"/>
+          <xs:element ref="sel:PIVA_UTENTE_ENTRANTE"/>
+          <xs:element ref="sel:COD_CONTR_DISP_USCENTE"/>
+          <xs:element ref="sel:PIVA_UTENTE_USCENTE"/>
+          <xs:element ref="sel:DATA_DECORRENZA"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="VolturaDatiAttivazioneEsitoType">
+    <xs:sequence>
+      <xs:element ref="sel:COD_CONTR_DISP"/>
+      <xs:element ref="sel:DATA_DECORRENZA"/>          
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiSwitchingBaseType">
+    <xs:sequence>
+      <xs:element ref="sel:DATA_DECORRENZA"/>          
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiSwitchingRichType">
+    <xs:sequence>
+      <xs:element ref="sel:DATA_CONTRATTO"/>          
+      <xs:element ref="sel:DATA_DECORRENZA"/>          
+      <xs:element minOccurs="0" ref="sel:REVOCA_TIMOE"/>
+      <xs:element minOccurs="0" ref="sel:ACQUISTO_CREDITO"/>
+      <xs:element ref="sel:COD_CONTR_DISP"/>
+      <xs:element ref="sel:PIVA_CONTROPARTE_COMMERCIALE"/>
+    </xs:sequence>
+  </xs:complexType>  
+    
+  <xs:complexType name="DatiSwitchingInoltroBaseType">
+    <xs:sequence>
+      <xs:element ref="sel:DATA_DECORRENZA"/>          
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiSwitchingInoltroType">
+    <xs:complexContent>
+      <xs:extension base="sel:DatiSwitchingInoltroBaseType">
+        <xs:sequence>
+          <xs:element minOccurs="0" ref="sel:REVOCA_TIMOE"/>
+          <xs:element ref="sel:COD_CONTR_DISP"/>
+          <xs:element ref="sel:PIVA_UTENTE"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiTimoe6-4Type">
+    <xs:sequence>
+      <xs:element ref="sel:SOSP_MOR"/>          
+      <xs:element ref="sel:PRESENZA_CMOR"/>
+      <xs:element ref="sg:MERCATO_PROVENIENZA"/>
+      <xs:element minOccurs="0" ref="sel:DATE_SOSP"/>
+      <xs:element minOccurs="0" ref="sel:DATE_SWITCH"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiTimoe6-4BaseType">
+    <xs:sequence>
+      <xs:element ref="sel:SOSP_MOR"/>          
+      <xs:element ref="sel:PRESENZA_CMOR"/>
+      <xs:element minOccurs="0" ref="sel:DATE_SOSP"/>
+      <xs:element minOccurs="0" ref="sel:DATE_SWITCH"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiTimoe14-1Type">
+    <xs:sequence>
+      <xs:element ref="sel:DATA_SALVAGUARDIA"/>          
+      <xs:element minOccurs="0" ref="sel:DATA_ULTIMA_RICH_SOSP"/>
+      <xs:element minOccurs="0" ref="sel:DATA_ULTIMA_SOSP"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="DatiRisoluzioneContrattualeType">
+    <xs:sequence>
+      <xs:element ref="sel:PIVA_UTENTE"/>
+      <xs:element ref="sel:COD_CONTR_DISP"/>
+      <xs:element ref="sel:DATA_DECORRENZA"/>
+    </xs:sequence>        
+  </xs:complexType>
+  
+  <xs:complexType name="DatiEstesiRisoluzioneContrattualeType">
+    <xs:sequence>
+      <xs:element ref="sel:PIVA_UTENTE"/>
+      <xs:element ref="sel:COD_CONTR_DISP"/>
+      <xs:element ref="sel:TIPOLOGIA_RISOLUZIONE"/>
+      <xs:element ref="sel:DATA_DECORRENZA"/>
+    </xs:sequence>        
+  </xs:complexType>
+
+</xs:schema>

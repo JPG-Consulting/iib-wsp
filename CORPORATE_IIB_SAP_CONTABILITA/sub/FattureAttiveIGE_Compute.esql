@@ -1,0 +1,243 @@
+BROKER SCHEMA sub
+
+
+CREATE COMPUTE MODULE FattureAttiveIGE_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Adapter.MethodName = 'executeSapZfidccp02N';
+		SET OutputLocalEnvironment.Variables.ns:lancio = InputRoot.XMLNSC.ns:lancio;
+		
+		DECLARE testata REFERENCE TO InputRoot.XMLNSC.ns:lancio.ns:testata[1];
+		DECLARE dbOrigine CHARACTER;
+		DECLARE numCoge INTEGER;
+		DECLARE numIva INTEGER;
+		DECLARE codiciIvaDupl CHARACTER;
+		DECLARE contoivaelim1 CHARACTER;
+		DECLARE contoivaelim2 CHARACTER;
+		DECLARE separatore CHARACTER '-';
+		DECLARE padding CHARACTER '000000000000000';
+		
+		SET contoivaelim1 = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CONTOIVAELIMINARE1');
+		SET contoivaelim2 = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CONTOIVAELIMINARE2');							
+		SET dbOrigine = COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.sistema, InputLocalEnvironment.HTTP.Input.QueryString.societa);
+		SET OutputLocalEnvironment.Variables.dbOrigine = dbOrigine;
+		CREATE FIELD OutputRoot.DataObject.ns12:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns12:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns12:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		DECLARE outputTestata REFERENCE TO OutputRoot.DataObject.ns12:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007[1];
+		
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZFIDCCP02_N';
+		SET outputCR.MESTYP = 'ZFIDCC2_N';
+		SET outputCR.MESCOD = 'CNR';
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.ARCKEY = dbOrigine||separatore||InputRoot.XMLNSC.ns:lancio.soc_sap||separatore||testata.tipo_flusso||separatore||SUBSTRING(padding FROM 1 FOR LENGTH(padding)-LENGTH(CAST(testata.id_lancio AS CHARACTER))) ||CAST(testata.id_lancio AS CHARACTER);
+		
+		
+		--------------------CICLO PER OGNI TESTATA---------------------------------------
+		WHILE LASTMOVE(testata) = TRUE DO
+			
+			
+			---------------INIZIALIZZO------------------------------
+			SET Environment.result = NULL;
+			SET codiciIvaDupl = '';
+			SET numCoge = 2;
+			SET numIva = 1;
+			--------------------------------------------------------
+			--------------PUNTATORI A RIGHE COGE E IVA---------------
+			DECLARE riga_coge REFERENCE TO testata.ns:rigaCoge[1];
+			DECLARE riga_iva REFERENCE TO testata.ns:rigaIva[numIva];
+			--------------------------------------------------------
+			
+			----------------------------------MAP TESTATA------------------------------------------
+			SET outputTestata.BUKRS = InputRoot.XMLNSC.ns:lancio.soc_sap;
+			SET outputTestata.GJAHR = testata.anno;
+			SET outputTestata.BLART = testata.tipo_doc;
+			IF testata.data_emiss IS NOT NULL THEN
+				SET outputTestata.BLDAT = CAST(testata.data_emiss AS CHARACTER FORMAT 'yyyyMMdd');	
+			ELSE
+				SET outputTestata.BLDAT = '';
+			END IF;
+			IF testata.data_reg IS NOT NULL THEN
+				SET outputTestata.BUDAT = CAST(testata.data_reg AS CHARACTER FORMAT 'yyyyMMdd');
+			ELSE
+				SET outputTestata.BUDAT = '';
+			END IF;
+			SET outputTestata.XBLNR = testata.num_doc;
+			SET outputTestata.BKTXT = dbOrigine||separatore||InputRoot.XMLNSC.ns:lancio.soc_sap||separatore||testata.tipo_flusso||separatore||SUBSTRING(padding FROM 1 FOR LENGTH(padding)-LENGTH(CAST(testata.id_lancio AS CHARACTER))) ||CAST(testata.id_lancio AS CHARACTER);
+			SET outputTestata.WAERS = 'EUR';
+			
+			SET outputTestata.XREF1_HD = testata.num_doc;
+			SET outputTestata.XREF2_HD = SUBSTRING(testata.descr_testata FROM 1 FOR 20);
+			SET outputTestata.XBLNR_LONG = dbOrigine||separatore||InputRoot.XMLNSC.ns:lancio.soc_sap||separatore||testata.tipo_flusso||separatore||SUBSTRING(padding FROM 1 FOR LENGTH(padding)-LENGTH(CAST(testata.id_lancio AS CHARACTER))) ||CAST(testata.id_lancio AS CHARACTER);
+			SET outputTestata.LDGRP = '0L';
+			
+			------------------------MAP FORNITORE------------------------------------------------------
+			IF STARTSWITH(CAST(testata.tot_fattura AS CHARACTER), '-') THEN
+				SET outputTestata.SapZfidccp02NE2fiseg006[1].BSCHL = '11';
+			ELSE
+				SET outputTestata.SapZfidccp02NE2fiseg006[1].BSCHL = '01';
+			END IF;
+			IF STARTSWITH(CAST(testata.tot_fattura AS CHARACTER), '-') THEN
+				SET outputTestata.SapZfidccp02NE2fiseg006[1].WRBTR = SUBSTRING(testata.tot_fattura AFTER '-');
+			ELSE
+				SET outputTestata.SapZfidccp02NE2fiseg006[1].WRBTR = testata.tot_fattura;
+			END IF;
+			SET outputTestata.SapZfidccp02NE2fiseg006[1].ZUONR = '';
+			SET outputTestata.SapZfidccp02NE2fiseg006[1].SGTXT = SUBSTRING(TRIM(testata.descr_testata) FROM 1 FOR 50);
+			SET outputTestata.SapZfidccp02NE2fiseg006[1].VBUND = '';
+			SET outputTestata.SapZfidccp02NE2fiseg006[1].PRCTR = '';
+			SET outputTestata.SapZfidccp02NE2fiseg006[1].SapZfidccp02NE2finbu007.KUNNR = testata.cod_cliente;
+			SET outputTestata.SapZfidccp02NE2fiseg006[1].SapZfidccp02NE2finbu007.ZFBDT = CAST(testata.data_scad AS CHARACTER FORMAT 'yyyyMMdd');
+			SET outputTestata.SapZfidccp02NE2fiseg006[1].SapZfidccp02NE2finbu007.ZTERM = testata.tipo_pag;
+			--------------------FINE MAP FORNITORE------------------------------------------------------
+			
+			----------------CICLO SULLE RIGHE COGE--------------------------------------
+			WHILE LASTMOVE(riga_coge) = TRUE DO
+				IF riga_coge.conto_coge <> contoivaelim1 AND riga_coge.conto_coge <> contoivaelim2 THEN
+					--------------------MAP ECONOMICO-----------------------------------------------------------
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].BSCHL = riga_coge.chiave_cont;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].GSBER = '';
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].MWSKZ = riga_coge.codice_iva;
+					IF STARTSWITH(CAST(riga_coge.importo AS CHARACTER), '-') THEN
+						SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].WRBTR = SUBSTRING(CAST(riga_coge.importo AS CHARACTER) AFTER '-');
+					ELSE
+						SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].WRBTR = riga_coge.importo;
+					END IF;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].VALUT = CAST(riga_coge.data_valuta AS CHARACTER FORMAT 'yyyyMMdd');
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].ZUONR = riga_coge.attribuzione;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].SGTXT = SUBSTRING(TRIM(testata.descr_testata) FROM 1 FOR 50);
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].VBUND = '';
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].KOSTL = COALESCE(riga_coge.centro_costo, '');
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].AUFNR = riga_coge.ordine_interno;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].BZDAT = COALESCE(CAST(riga_coge.data_scad AS CHARACTER FORMAT 'yyyyMMdd'), '');
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].HKONT = riga_coge.conto_coge;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].PRCTR = riga_coge.profit_center;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].FKBER = '';
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].RESERVE = COALESCE(riga_coge.wbs, '');
+				
+					--------------------FINE MAP ECONOMICO------------------------------------------------------
+				END IF;
+				
+				MOVE riga_coge NEXTSIBLING REPEAT TYPE NAME;
+				SET numCoge = numCoge + 1;
+			END WHILE;
+			----------------FINE CICLO RIGHE COGE---------------------------------------------
+			
+			----------------CICLO SULLE RIGHE IVA--------------------------------------
+			SET codiciIvaDupl = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CODICIIVADUPL');
+									
+			WHILE LASTMOVE(riga_iva) = TRUE DO
+				DECLARE CHIAVE_CONT CHARACTER;
+				DECLARE KSCL CHARACTER;
+				SET CHIAVE_CONT = riga_iva.chiave_cont;
+				
+				IF CONTAINS(codiciIvaDupl, riga_iva.codice_iva) THEN					
+					SET KSCL = 'MWAI';
+				END IF;
+				
+				SET outputTestata.SapZfidccp02NE2fiset003[numIva].MWSKZ = riga_iva.codice_iva;
+				IF TRIM(CHIAVE_CONT) = '40' THEN
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].SHKZG = 'S';
+				ELSE 
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].SHKZG = 'H';
+				END IF;
+				
+				IF STARTSWITH(CAST(riga_iva.imponibile AS CHARACTER), '-') THEN
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWBAS = SUBSTRING (CAST(riga_iva.imponibile AS CHARACTER) AFTER '-');
+				ELSE 
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWBAS = riga_iva.imponibile;
+				END IF;
+				
+				IF STARTSWITH(CAST(riga_iva.imposta AS CHARACTER), '-') THEN
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWSTE = SUBSTRING (CAST(riga_iva.imposta AS CHARACTER) AFTER '-');
+				ELSE
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWSTE = riga_iva.imposta;
+				END IF;
+				
+				SET outputTestata.SapZfidccp02NE2fiset003[numIva].KSCHL = KSCL;
+				
+				IF CONTAINS(codiciIvaDupl, riga_iva.codice_iva) THEN				
+					SET numIva = numIva + 1;
+					IF riga_iva.chiave_cont = '40' THEN
+						SET CHIAVE_CONT = '50';
+					ELSE
+						SET CHIAVE_CONT = '40';
+					END IF;
+					SET KSCL = 'ZSPP';
+					
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].MWSKZ = riga_iva.codice_iva;
+					IF TRIM(CHIAVE_CONT) = '40' THEN
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].SHKZG = 'S';
+					ELSE 
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].SHKZG = 'H';
+					END IF;
+				
+					IF STARTSWITH(CAST(riga_iva.imponibile AS CHARACTER), '-') THEN
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWBAS = SUBSTRING (CAST(riga_iva.imponibile AS CHARACTER) AFTER '-');
+					ELSE 
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWBAS = riga_iva.imponibile;
+					END IF;
+				
+					IF STARTSWITH(CAST(riga_iva.imposta AS CHARACTER), '-') THEN
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWSTE = SUBSTRING (CAST(riga_iva.imposta AS CHARACTER) AFTER '-');
+					ELSE
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWSTE = riga_iva.imposta;
+					END IF;
+				
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].KSCHL = KSCL;
+					
+				END IF;
+				MOVE riga_iva NEXTSIBLING REPEAT TYPE NAME;
+				SET numIva = numIva + 1;
+			END WHILE;
+			---------------------------FINE CICLO RIGHE IVA--------------------
+			
+			------------------------MAP RA------------------------------------------------------
+			SET outputTestata.SapZfidccp02NE2fixwt001[1].WITHT = testata.ra_tipo;
+			SET outputTestata.SapZfidccp02NE2fixwt001[1].WT_WITHCD = testata.ra_codice;
+			SET outputTestata.SapZfidccp02NE2fixwt001[1].WT_QSSHB = testata.ra_imponibile;
+			SET outputTestata.SapZfidccp02NE2fixwt001[1].WT_WWRBTR = testata.ra_importo;
+			IF testata.ra_imponibile <> '0' THEN
+				SET outputTestata.SapZfidccp02NE2fixwt001[1].WT_BASMAN = 'X';
+			END IF;
+			IF testata.ra_importo <> '0' THEN
+				SET outputTestata.SapZfidccp02NE2fixwt001[1].WT_AMNMAN = 'X';
+			END IF;
+			
+			-----------------------FINE MAP RA---------------------------------------------------
+			
+			MOVE testata NEXTSIBLING REPEAT TYPE NAME;
+			CREATE NEXTSIBLING OF outputTestata AS outputTestata REPEAT;
+		END WHILE;
+		-----------------------FINE CICLO TESTATE---------------------------------------------
+		
+		DELETE FIELD outputTestata;
+			
+		RETURN TRUE;
+	END;
+
+END MODULE;

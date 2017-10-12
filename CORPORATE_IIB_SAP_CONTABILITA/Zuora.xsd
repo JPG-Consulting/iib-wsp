@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/schemas/zuora" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:ns0="http://www.gruppoiren.it/schemas/zuora">
+    <xsd:element name="Zuora" type="ns0:ZuoraType"/>
+  
+  <xsd:complexType name="ZuoraType">
+      <xsd:sequence>
+        <xsd:element name="testata" type="ns0:Testata" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Testata">
+      <xsd:sequence>
+        <xsd:element name="sistemaEsterno" type="xsd:string"/>
+        <xsd:element name="societa" type="xsd:string"/>
+        <xsd:element name="esercizio" type="xsd:string"/>
+        <xsd:element name="idFlusso" type="xsd:string"/>
+        <xsd:element name="tipoDocumento" type="xsd:string"/>
+        <xsd:element name="numDocEsterno" type="xsd:string"/>
+        <xsd:element name="filler" type="xsd:string"/>
+        <xsd:element name="tipoRecord" type="xsd:string"/>
+        <xsd:element name="tipoConto" type="xsd:string"/>
+        <xsd:element name="tipoRegistrazione" type="xsd:string"/>
+        <xsd:element name="dataRegistrazione" type="xsd:string"/>
+        <xsd:element name="dataDocumento" type="xsd:string"/>
+        <xsd:element name="numDocumento" type="xsd:string"/>
+        <xsd:element name="cambio" type="xsd:string"/>
+        <xsd:element name="codiceValuta" type="xsd:string"/>
+        <xsd:element name="dataConversione" type="xsd:string"/>
+        <xsd:element name="nRiferimento" type="xsd:string"/>
+        <xsd:element name="testoTestata" type="xsd:string"/>
+        <xsd:element name="dummy" type="xsd:string"/>
+        <xsd:element name="righeCoge" type="ns0:RigaCoge" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="RigaCoge">
+    <xsd:sequence>
+        <xsd:element name="sistemaEsterno" type="xsd:string"/>
+        <xsd:element name="societa" type="xsd:string"/>
+        <xsd:element name="esercizio" type="xsd:string"/>
+        <xsd:element name="idFlusso" type="xsd:string"/>
+        <xsd:element name="tipoDocumento" type="xsd:string"/>
+        <xsd:element name="numDocEsterno" type="xsd:string"/>
+        <xsd:element name="filler" type="xsd:string"/>
+        <xsd:element name="tipoRecord" type="xsd:string"/>
+        <xsd:element name="tipoConto" type="xsd:string"/>
+        <xsd:element name="tipoRegistrazione" type="xsd:string"/>
+        <xsd:element name="contoCoge" type="xsd:string"/>
+        <xsd:element name="importoFattura" type="xsd:string"/>
+        <xsd:element name="decimaliImportoFattura" type="xsd:string"/>
+        <xsd:element name="chiaveContabile" type="xsd:string"/>
+        <xsd:element name="importoIVA" type="xsd:string"/>
+        <xsd:element name="decimaliImportoIVA" type="xsd:string"/>
+        <xsd:element name="codiceIVA" type="xsd:string"/>
+        <xsd:element name="centroDiCosto" type="xsd:string"/>
+        <xsd:element name="settoreContabile" type="xsd:string"/>
+        <xsd:element name="qtaIntSistemiInt" type="xsd:string"/>
+        <xsd:element name="qtaDecSistemiEst" type="xsd:string"/>
+        <xsd:element name="unitaMisSistemiEst" type="xsd:string"/>
+        <xsd:element name="commessa" type="xsd:string"/>
+        <xsd:element name="tipoMovimentoConsolidamento" type="xsd:string"/>
+        <xsd:element name="codMateriale" type="xsd:string"/>
+        <xsd:element name="tipoMovimentoCespiti" type="xsd:string"/>
+        <xsd:element name="profitCenter" type="xsd:string"/>
+        <xsd:element name="numSocPartner" type="xsd:string"/>
+        <xsd:element name="codMagazzino" type="xsd:string"/>
+        <xsd:element name="riordino" type="xsd:string"/>
+        <xsd:element name="testoPosizione" type="xsd:string"/>
+        <xsd:element name="dataValuta" type="xsd:string"/>
+        <xsd:element name="importoDivisaInt" type="xsd:string"/>
+        <xsd:element name="decimaliImportoDivisaInt" type="xsd:string"/>
+        <xsd:element name="elementoWBS" type="xsd:string"/>
+        <xsd:element name="chiaveRif" type="xsd:string"/>
+        <xsd:element name="precodiceIVA" type="xsd:string"/>
+        <xsd:element name="dummy" type="xsd:string"/>
+      </xsd:sequence>
+      </xsd:complexType>
+      
+      <xsd:complexType name="ZuoraMessageType">
+		<xsd:sequence>
+			<xsd:element name="messageType" type="xsd:string"></xsd:element>
+			<xsd:element name="fileName" type="xsd:string"></xsd:element>
+			<xsd:element name="localPath" type="xsd:string"></xsd:element>
+			<xsd:element ref="ns0:Zuora"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="ZuoraMessage" type="ns0:ZuoraMessageType"></xsd:element>
+
+
+</xsd:schema>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+    <xsd:element name="dataInizioValidita" type="xsd:string"/>  
+    <xsd:element name="societa" type="xsd:string"/>  
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var1"/>
+    <input path="/AnagraficheCO_InlineSchema.xsd" var="var2"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var3"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var4"/>
+    <output path="/SapBapiProjectdefGetlist.xsd" var="var5"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+        <namespace kind="supplement" prefix="out3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiprojectdefgetlist"/>
+        <namespace kind="supplement" prefix="out2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapprojectdefinitionrange1963108760"/>
+        <namespace kind="supplement" prefix="out4" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapprojectdefinitionlist1536803914"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapdescriptionrange1370101148"/>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="WBS_reqToGetList">
+        <input path="$var1/mb:env(Environment)" var="Environment">
+            <cast castType="userDefined" path="$Environment/Variables/any" qualifier="societa" ref="var" var="any"/>
+            <cast castType="userDefined" path="$Environment/Variables/any" qualifier="dataInizioValidita" ref="var" var="any1"/>
+        </input>
+        <input namespace="http://www.gruppoiren.it/AnagraficheCO/" path="$var2/mb:msg(Input,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Input"/>
+        <output path="$var4/mb:env(Environment)" var="Environment1">
+            <cast castType="userDefined" path="$Environment1/Variables/any" qualifier="societa" ref="var" var="any2"/>
+            <cast castType="userDefined" path="$Environment1/Variables/any" qualifier="dataInizioValidita" ref="var" var="any3"/>
+        </output>
+        <output namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiprojectdefgetlist" path="$var5/mb:msg(SapBapiProjectdefGetlist,assembly,DataObject,Properties)" var="ComIbmMessageAssembly_SapBapiProjectdefGetlist"/>
+        <passthrough>
+            <input path="$Environment/."/>
+            <output path="$Environment1/."/>
+            <updates>
+                <move>
+                    <input path="$ComIbmMessageAssembly_Input/Input/dataInizioValidita"/>
+                    <output path="$Environment1/Variables/dataInizioValidita"/>
+                </move>
+                <move>
+                    <input path="$ComIbmMessageAssembly_Input/Input/societa"/>
+                    <output path="$Environment1/Variables/societa"/>
+                </move>
+            </updates>
+        </passthrough>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Properties"/>
+            <output path="$ComIbmMessageAssembly_SapBapiProjectdefGetlist/Properties"/>
+        </move>
+        <assign value="I">
+            <output path="$ComIbmMessageAssembly_SapBapiProjectdefGetlist/SapBapiProjectdefGetlist/SapProjectDefinitionRange/SIGN"/>
+        </assign>
+        <assign value="CP">
+            <output path="$ComIbmMessageAssembly_SapBapiProjectdefGetlist/SapBapiProjectdefGetlist/SapProjectDefinitionRange/OPTION"/>
+        </assign>
+        <function ref="fn:concat">
+            <input path="$ComIbmMessageAssembly_Input/Input/societa" var="societa"/>
+            <output path="$ComIbmMessageAssembly_SapBapiProjectdefGetlist/SapBapiProjectdefGetlist/SapProjectDefinitionRange/LOW"/>
+            <param name="string1" value="'C'"/>
+            <param name="string2" value="fn:substring($societa, 1, 2)"/>
+            <param name="string3" value="'*'"/>
+        </function>
+        <assign>
+            <output path="$ComIbmMessageAssembly_SapBapiProjectdefGetlist/SapBapiProjectdefGetlist/SapProjectDefinitionRange/HIGH"/>
+        </assign>
+    </mappingDeclaration>
+</mappingRoot>

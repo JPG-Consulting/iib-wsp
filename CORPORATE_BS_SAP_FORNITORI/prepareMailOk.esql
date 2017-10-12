@@ -1,0 +1,22 @@
+
+
+CREATE COMPUTE MODULE prepareMailOk
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.ns8:Params;
+		DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns8:Params;
+		DECLARE forn CHARACTER;
+		DECLARE nomeForn CHARACTER;
+		DECLARE msgnum CHARACTER;
+		DECLARE msgid CHARACTER;
+
+			
+		SET param.body1 = CAST(Environment.Variables.Estratti AS CHARACTER); 
+		SET param.body2 = CAST(Environment.Variables.DaElaborare AS CHARACTER);
+		SET param.body3 = CAST(Environment.Variables.Elaborati AS CHARACTER);
+		SET param.flusso = 'FORNITORI_BRAVOSOLUTION_SENDMAIL';
+		
+		RETURN TRUE;	
+	END;
+
+END MODULE;

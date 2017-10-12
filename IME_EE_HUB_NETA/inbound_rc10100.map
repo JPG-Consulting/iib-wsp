@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd" var="var1"/>
+    <input path="mbsharedlib://InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd" var="var"/>
+    <output path="mbsharedlib://SIILib/RC1_flusso.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://HUB_CRM_EE/crm_dati"/>
+        <namespace kind="supplement" prefix="in" uri="http://WS_HUB_CRM_Inbound"/>
+        <namespace kind="supplement" prefix="out3" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3"/>
+        <namespace kind="supplement" prefix="out2" uri="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_RC1/v1"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="inbound_rc10100">
+        <input path="$var1/mb:msg(SOAP_Domain_Msg,assembly,SOAP,Properties)">
+            <cast path="SOAP_Domain_Msg/Body/any" qualifier="{http://WS_HUB_CRM_Inbound}WSHubCrmInbound" ref="var"/>
+        </input>
+        <output path="mb:msg(FlussoRC1.0100Type,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_FlussoRC10100Type"/>
+        <assign value="0100">
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/@COD_FLUSSO"/>
+        </assign>
+        <assign value="01178580997">
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/IdentificativiRichiesta/PIVA_UTENTE"/>
+        </assign>
+        <assign value="05877611003">
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/IdentificativiRichiesta/PIVA_GESTORE"/>
+        </assign>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/tracking/servizio"/>
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/@COD_SERVIZIO"/>
+        </move>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/tracking/codicePratica"/>
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/IdentificativiRichiesta/CP_GESTORE"/>
+        </move>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/pod"/>
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/DatiTecnici/COD_POD"/>
+        </move>
+        <convert defaultValue="0">
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/ammissibilita/esito"/>
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/Ammissibilita/VERIFICA_AMM"/>
+        </convert>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/ammissibilita/causale"/>
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/Ammissibilita/COD_CAUSALE"/>
+        </move>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/ammissibilita/motivazione"/>
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/Ammissibilita/MOTIVAZIONE"/>
+        </move>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/tracking/codicePraticaOrigine"/>
+            <output path="$ComIbmMessageAssembly_FlussoRC10100Type/FlussoRC1.0100Type/IdentificativiRichiesta/CP_UTENTE"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

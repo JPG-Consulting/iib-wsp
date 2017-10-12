@@ -1,0 +1,28 @@
+
+
+CREATE COMPUTE MODULE Gestione_Errore
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+--		 CALL CopyMessageHeaders();
+--		 CALL CopyEntireMessage();
+	
+--		SET OutputRoot."   = 'Errore nela lettura del file';    -- messaggio di errore in lettura file		DUBBIO : come settarla per passarla al nodo successivo? Out
+		
+				
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

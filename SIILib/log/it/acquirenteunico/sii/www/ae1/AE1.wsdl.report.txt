@@ -1,0 +1,30 @@
+
+
+Importing file: P:\Users\e-decaro\Documents\WSDL SII\RCUOnCondition\wsdl\AE1.wsdl
+
+The WSDL import will proceed with bindings AE1Binding.
+Creating wsdl schema document for file:///P:/Users/e-decaro/Documents/WSDL SII/RCUOnCondition/wsdl/AE1.wsdl.
+Parsing wsdl binding {http://www.sii.acquirenteunico.it/AE1}AE1Binding.
+Parsing wsdl binding input AE1.0050.
+Parsing wsdl binding output AE1.0050.
+Parsing wsdl binding input AE1.0150.
+Parsing wsdl binding output AE1.0150.
+Processing rpc style for operation AE1.0050.
+Processing rpc style for operation AE1.0150.
+Populating WSDL schema AE1.xsd.
+Creating file AE1.xsd in the workspace.
+Creating file /SIILib/AE1_msgSII.xsd in the workspace.
+Creating file /SIILib/SII_PdC-MessaggioSII.xsd in the workspace.
+Creating file /SIILib/SchemaEsterno-SwaRef.xsd in the workspace.
+Creating file /SIILib/AE1.xsd in the workspace.
+Creating file /SIILib/StruttureGenerali_v1_6.xsd in the workspace.
+Creating file /SIILib/StruttureEl_v1_4.xsd in the workspace.
+Copying source WSDL AE1.wsdl to AE1.wsdl.
+
+Elapsed time processing this message definition file: 1.36 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

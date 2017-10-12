@@ -1,0 +1,10 @@
+
+
+CREATE COMPUTE MODULE getSequenceMT
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+    	set Environment.Variables.sequence = PASSTHRU('SELECT TO_CHAR(INT_ENGINE.IIB_SEQ.NEXTVAL) value FROM DUAL');
+    	set Environment.Variables.sistema  ='CNRG MT';
+		RETURN TRUE;
+	END;
+END MODULE;

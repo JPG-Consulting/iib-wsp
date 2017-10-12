@@ -1,0 +1,16 @@
+
+
+CREATE COMPUTE MODULE HTTP_StarterProcess_SetDestination
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		IF InputLocalEnvironment.HTTP.Input.RequestLine.RequestURI = '/corporate/contabilita/start' THEN
+			SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = InputLocalEnvironment.HTTP.Input.RequestLine.RequestURI ||'/'|| InputLocalEnvironment.HTTP.Input.QueryString.societa;
+		ELSE
+			SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = InputLocalEnvironment.HTTP.Input.RequestLine.RequestURI;
+		END IF;
+		
+		RETURN TRUE;
+	END;
+END MODULE;

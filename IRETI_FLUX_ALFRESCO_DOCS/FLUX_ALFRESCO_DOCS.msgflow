@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmFileRead.msgnode="ComIbmFileRead.msgnode" xmlns:ComIbmMQInput.msgnode="ComIbmMQInput.msgnode" xmlns:ComIbmSOAPRequest.msgnode="ComIbmSOAPRequest.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility"
+    nsURI="FLUX_ALFRESCO_DOCS.msgflow" nsPrefix="FLUX_ALFRESCO_DOCS.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="FLUX_ALFRESCO_DOCS" bundleName="FLUX_ALFRESCO_DOCS" pluginId="IRETI_FLUX_ALFRESCO_DOCS"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IRETI_FLUX_ALFRESCO_DOCS/icons/full/obj16/FLUX_ALFRESCO_DOCS.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IRETI_FLUX_ALFRESCO_DOCS/icons/full/obj30/FLUX_ALFRESCO_DOCS.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="502,64" wsdlFileName="RemoteFiles/documentale.wsdl" selectedPortType="CORPORATE_DOCUMENTALE" selectedBinding="CORPORATE_DOCUMENTALEHttpBinding" selectedOperation="Create" selectedPort="CORPORATE_DOCUMENTALEHttpPort" targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" useHTTPTransport="true" webServiceURL="http://localhost:7800" requestTimeout="600" sslProtocol="TLS" allowMTOM="yes" parserXmlnscBuildTreeUsingXMLSchema="false"
+          validateMaster="none">
+        <translation xmi:type="utility:ConstantString" string="InsertFile"/>
+        <nsMappingTable nsPrefix="ns" namespace="http://prodoc.iren.it/protocollo"/>
+        <nsMappingTable nsPrefix="Q1" namespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="InsertFile.terminal.failure" eventIdentity="Fallimento Upload File su ALFRESCO">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/Variabili/XMLNSC/ns:documenti/ns:documento/ns:numero_protocollo" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Fallimento Upload File su ALFRESCO"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Fault terminal" eventSourceName="InsertFile.terminal.fault" eventIdentity="Fallimento Upload File su ALFRESCO">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/Variabili/XMLNSC/ns:documenti/ns:documento/ns:numero_protocollo" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Fallimento Upload File su ALFRESCO"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Out terminal" eventSourceName="InsertFile.terminal.out" eventIdentity="Fallimento servizio di upload" eventFilter="$Root/SOAP/Body/Q1:CreateResponse/status/status = 'KO'">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/Variabili/XMLNSC/ns:documenti/ns:documento/ns:numero_protocollo" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Fallimento servizio di upload"/>
+            <eventFilter dataLocation="$Root/SOAP/Body/Q1:CreateResponse/status/status = 'KO'" isXPath="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="158,116" wsdlFileName="RemoteFiles/documentale.wsdl" selectedPortType="CORPORATE_DOCUMENTALE" selectedBinding="CORPORATE_DOCUMENTALEHttpBinding" selectedOperation="Retrieve" selectedPort="CORPORATE_DOCUMENTALEHttpPort" targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" useHTTPTransport="true" webServiceURL="http://ibmtstib01:7800/corporate/SOAP/documentale" sslProtocol="TLS">
+        <translation xmi:type="utility:ConstantString" string="RetrieveFolder"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="631,69" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_LogError.Main">
+        <translation xmi:type="utility:ConstantString" string="LogError"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="545,117" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_StatisticheElab.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="StatisticheElab"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="239,115" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_SwitchDelete.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="SwitchDelete"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="635,16" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_LogFailure.Main">
+        <translation xmi:type="utility:ConstantString" string="LogFailure"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="733,42" destination="none">
+        <translation xmi:type="utility:ConstantString" string="Trace"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="279,57" wsdlFileName="RemoteFiles/documentale.wsdl" selectedPortType="CORPORATE_DOCUMENTALE" selectedBinding="CORPORATE_DOCUMENTALEHttpBinding" selectedOperation="Delete" selectedPort="CORPORATE_DOCUMENTALEHttpPort" targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" useHTTPTransport="true" webServiceURL="http://localhost:7800" sslProtocol="TLS">
+        <translation xmi:type="utility:ConstantString" string="DeleteFolder"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_13" location="84,115" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_BuildRetrieve.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BuildRetrieve"/>
+        <nsMappingTable nsPrefix="ns" namespace="http://prodoc.iren.it/protocollo"/>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Out terminal" eventSourceName="BuildRetrieve.terminal.out" eventIdentity="Ricevuto protocollo da FLUX">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/Variabili/XMLNSC/ns:documenti/ns:documento/ns:numero_protocollo" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Ricevuto protocollo da FLUX"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_14" location="433,66" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_BlobToSoap.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BlobToSoap"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_16" location="322,116" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_BuildInsert.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BuildInsert"/>
+      </nodes>
+      <nodes xmi:type="ComIbmFileRead.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_17" location="374,68" inputDirectory="/ibmdata/tmp/alfresco/flux" fileDispositionAction="delete" fileFtp="true" fileFtpServer="localhost:21" fileFtpUser="ftp_bis">
+        <translation xmi:type="utility:ConstantString" string="File Read"/>
+      </nodes>
+      <nodes xmi:type="ComIbmMQInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_18" location="30,117" queueName="QDOCS" messageDomainProperty="XMLNSC">
+        <translation xmi:type="utility:ConstantString" string="QDOCS"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_19" location="119,222" destination="none">
+        <translation xmi:type="utility:ConstantString" string="Catch"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_20" location="397,223" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_Exception.Main">
+        <translation xmi:type="utility:ConstantString" string="Exception"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_21" location="449,155" computeExpression="esql://routine/#FLUX_ALFRESCO_FileNotFound.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="FileNotFound"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_16" sourceNode="FCMComposite_1_12" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.fault" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_17" sourceNode="FCMComposite_1_16" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_13" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_16" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_16" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_14" sourceNode="FCMComposite_1_17" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_14" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_21" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_22" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_18" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_23" targetNode="FCMComposite_1_20" sourceNode="FCMComposite_1_19" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_24" targetNode="FCMComposite_1_19" sourceNode="FCMComposite_1_18" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_25" targetNode="FCMComposite_1_21" sourceNode="FCMComposite_1_17" sourceTerminalName="OutTerminal.noMatch" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_26" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_21" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

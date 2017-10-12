@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiprojectdefgetlist" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata" xmlns:sapbapiprojectdefgetlist="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiprojectdefgetlist" xmlns:sapdescriptionrange1370101148="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapdescriptionrange1370101148" xmlns:sapprojectdefinitionlist1536803914="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapprojectdefinitionlist1536803914" xmlns:sapprojectdefinitionrange1963108760="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapprojectdefinitionrange1963108760">
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapdescriptionrange1370101148" schemaLocation="SapDescriptionRange1370101148.xsd"/>
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapprojectdefinitionlist1536803914" schemaLocation="SapProjectDefinitionList1536803914.xsd"/>
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapprojectdefinitionrange1963108760" schemaLocation="SapProjectDefinitionRange1963108760.xsd"/>
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata"/>
+
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability">
+<info:resourceAdapter xmlns:info="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability" version="7.5.0.5_IF02"/>
+</xsd:appinfo>
+</xsd:annotation>
+
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="commonj.connector.asi">
+<asi:annotationSet xmlns:asi="commonj.connector.asi" asiNSURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType name="SapBapiProjectdefGetlist">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIBusinessObjectTypeMetadata>
+<sapasi:Type>BAPI</sapasi:Type>
+<sapasi:Operation>
+<sapasi:MethodName>BAPI_PROJECTDEF_GETLIST</sapasi:MethodName>
+<sapasi:Name>Execute</sapasi:Name>
+</sapasi:Operation>
+</sapasi:sapBAPIBusinessObjectTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence maxOccurs="1" minOccurs="1">
+<xsd:element maxOccurs="1" minOccurs="0" name="MAX_ROWS" nillable="true" type="xsd:int">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIPropertyTypeMetadata>
+<sapasi:FieldName>MAX_ROWS</sapasi:FieldName>
+<sapasi:FieldType>INT</sapasi:FieldType>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:Description>Maximum number of rows to select</sapasi:Description>
+<sapasi:ParameterType>IN</sapasi:ParameterType>
+</sapasi:sapBAPIPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="SapDescriptionRange" nillable="true" type="sapdescriptionrange1370101148:SapDescriptionRange">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIPropertyTypeMetadata>
+<sapasi:FieldName>DESCRIPTION_RANGE</sapasi:FieldName>
+<sapasi:FieldType>BAPI_2002_DESCR_RANGE</sapasi:FieldType>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:ParameterType>INOUT</sapasi:ParameterType>
+</sapasi:sapBAPIPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="unbounded" minOccurs="1" name="SapProjectDefinitionList" nillable="true" type="sapprojectdefinitionlist1536803914:SapProjectDefinitionList">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIPropertyTypeMetadata>
+<sapasi:FieldName>PROJECT_DEFINITION_LIST</sapasi:FieldName>
+<sapasi:FieldType>BAPIPREXP</sapasi:FieldType>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:Description>Export of project definitions</sapasi:Description>
+<sapasi:ParameterType>INOUT</sapasi:ParameterType>
+</sapasi:sapBAPIPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="SapProjectDefinitionRange" nillable="true" type="sapprojectdefinitionrange1963108760:SapProjectDefinitionRange">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIPropertyTypeMetadata>
+<sapasi:FieldName>PROJECT_DEFINITION_RANGE</sapasi:FieldName>
+<sapasi:FieldType>BAPI_2002_PD_RANGE</sapasi:FieldType>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:ParameterType>INOUT</sapasi:ParameterType>
+</sapasi:sapBAPIPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+    <xsd:element ibmSchExtn:docRoot="true" name="SapBapiProjectdefGetlist" type="sapbapiprojectdefgetlist:SapBapiProjectdefGetlist"/>
+</xsd:schema>

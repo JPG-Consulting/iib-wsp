@@ -1,0 +1,12 @@
+
+
+Importing file: P:\Users\e-odasso\AppData\Local\IBM\IIBT10-config\10.0.0.3\configuration\org.eclipse.osgi\bundles\377\1\.cp\ibm\broker\nodes\event\WMBEvent.xsd
+
+
+Elapsed time processing this message definition file: 0.09 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

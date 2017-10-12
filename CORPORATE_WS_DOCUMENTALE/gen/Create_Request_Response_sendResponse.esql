@@ -1,0 +1,13 @@
+BROKER SCHEMA gen
+
+
+CREATE COMPUTE MODULE Create_Request_Response_sendResponse
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.ns:CreateResponse.status.status = 'OK';
+		SET OutputRoot.XMLNSC.ns:CreateResponse.status.URL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'DOCUMENTALE' AND T.VARIABILE = 'ENDPOINT_ALFRESCO') || InputRoot.JSON.Data.downloadUrl;
+		SET OutputRoot.XMLNSC.ns:CreateResponse.status.ID = InputRoot.JSON.Data.noderef;
+		RETURN TRUE;
+	END;
+
+END MODULE;

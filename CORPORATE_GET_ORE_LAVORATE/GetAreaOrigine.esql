@@ -1,0 +1,31 @@
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiptimeoverviewget';
+DECLARE ns1 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiptimeoverviewgetwrapper';
+
+CREATE COMPUTE MODULE GET_ORE_LAVORATE_AreaOrigine
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		DECLARE inp REFERENCE TO InputRoot.DataObject.*.SapBapiPtimeoverviewGet;
+		SET Environment.Data[] = SELECT T.AREA_ORIGINE, T.CID_SAP_ENIA, T.CID_BYTE_GENOVA, T.SOCIETA_BYTE_GENOVA, T.CODICE_FISCALE, T.CID_BYTE_AMIAT, T.SOCIETA_BYTE_AMIAT, T.CID_SAP_PAGHE  
+									FROM Database.Z_DEC_CID_INTERFACCE AS T
+									WHERE T.CID_SAP_PAGHE = CAST(inp.SapEmployees.EMPLOYEENUMBER AS INTEGER)
+									AND T.ATTIVA_CID ='X';
+		SET OutputLocalEnvironment.TransactionID = InputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SAPTransactionID;
+		CASE Environment.Data[1].AREA_ORIGINE
+		WHEN 'GENOVA' THEN
+			PROPAGATE TO TERMINAL 'out1';
+			RETURN FALSE;
+		WHEN 'AMIAT' THEN
+			PROPAGATE TO TERMINAL 'out2';
+			RETURN FALSE;
+		WHEN 'ENIA' THEN
+			PROPAGATE TO TERMINAL 'out3';
+			RETURN FALSE;
+		ELSE
+			RETURN TRUE;
+		END CASE;
+			
+	END;
+
+END MODULE;

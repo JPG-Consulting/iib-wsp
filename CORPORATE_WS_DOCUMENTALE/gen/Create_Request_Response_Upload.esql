@@ -1,0 +1,61 @@
+BROKER SCHEMA gen
+DECLARE ns NAMESPACE 'http://www.gruppoiren.it/CORPORATE_DOCUMENTALE';
+
+
+CREATE COMPUTE MODULE Create_Request_Response_buildRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CALL CopyMessageHeaders();
+		DECLARE inCCSID INT InputProperties.CodedCharSetId;                     
+		DECLARE inEncoding INT InputProperties.Encoding;    
+		DECLARE auth CHARACTER;                    
+		DECLARE path CHARACTER InputRoot.XMLNSC.ns:Create.metadata.path;
+		IF STARTSWITH(path, '/') THEN
+			SET path = SUBSTRING(InputRoot.XMLNSC.ns:Create.metadata.path AFTER '/');
+		END IF;
+		
+		SET OutputLocalEnvironment.Destination.HTTP.RequestURL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'DOCUMENTALE_CREATE' AND T.VARIABILE = 'ENDPOINT_ALFRESCO');
+		SET OutputRoot.HTTPRequestHeader.Authorization = 'Basic '||BASE64ENCODE(InputRoot.XMLNSC.ns:Create.ns:Authorization.username||':'||InputRoot.XMLNSC.ns:Create.ns:Authorization.password);
+		SET OutputRoot.HTTPRequestHeader."Content-Type"= 'application/json';
+		--in caso di proprietà di tipo testo, se NULL vengono interpretate come Object vuoto, devono invece essere passate come stringa vuota
+		IF LENGTH(InputRoot.XMLNSC.ns:Create.metadata.proprieta) > 0 THEN
+			CREATE LASTCHILD OF Environment.Variables DOMAIN('JSON')                            
+       		PARSE(InputRoot.XMLNSC.ns:Create.metadata.proprieta, inEncoding, inCCSID);
+		END IF;
+       	SET OutputRoot.JSON.Data.site = CoalesceString(SUBSTRING(path BEFORE '/'), path);
+		SET OutputRoot.JSON.Data.path = CoalesceString(COALESCE(SUBSTRING(path AFTER '/'), ''),'');
+       	SET OutputRoot.JSON.Data.filename = CoalesceString(COALESCE(InputRoot.XMLNSC.ns:Create.metadata.nomeFile, ''),'');
+       	SET OutputRoot.JSON.Data.stream = COALESCE(InputRoot.XMLNSC.ns:Create.payload.content, '');
+       	SET OutputRoot.JSON.Data.type = COALESCE(InputRoot.XMLNSC.ns:Create.metadata.tipoDocumento, '');
+       	SET OutputRoot.JSON.Data.properties = Environment.Variables.JSON.Data.properties;
+       	SET OutputRoot.JSON.Data.associations = Environment.Variables.JSON.Data.associations;
+       	SET OutputRoot.JSON.Data.permissions = Environment.Variables.JSON.Data.permissions;
+       	SET OutputRoot.JSON.Data.categories = Environment.Variables.JSON.Data.categories;
+
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+	
+	CREATE PROCEDURE CoalesceString (IN arg1 CHARACTER, IN arg2 CHARACTER) RETURNS CHARACTER
+	BEGIN
+		IF LENGTH(arg1)>0 THEN
+			RETURN arg1;
+		ELSE
+			IF LENGTH(arg2)>0 THEN
+				RETURN arg2;
+			ELSE
+				RETURN '';
+			END IF;
+		END IF;
+	END;
+
+END MODULE;

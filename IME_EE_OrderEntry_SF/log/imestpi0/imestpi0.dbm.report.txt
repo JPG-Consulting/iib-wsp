@@ -1,0 +1,17 @@
+
+
+Importing file: C:\Users\danie\IBM\IIBT10\workspace\DB\imestpi0.dbm
+
+
+Processing schema HUB_EAI.
+Creating complex type for table V_EE_DATI_PRESTAZIONI_2.
+Creating global element for table V_EE_DATI_PRESTAZIONI_2.
+Creating file \OE_SF\imestpi0\hubeai\imestpi0.xsd in the workspace.
+
+Elapsed time processing this message definition file: 4.076 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

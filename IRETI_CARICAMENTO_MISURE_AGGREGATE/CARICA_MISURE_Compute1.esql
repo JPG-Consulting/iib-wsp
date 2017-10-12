@@ -1,0 +1,20 @@
+
+
+CREATE COMPUTE MODULE CARICA_MISURE_call_procedure
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		SET Environment.Variables.chiamante = NodeLabel;  -- recupera il nodme del nodo attuale CARICA_MISURE_Compute1'; 
+		
+		-- chiamta procedura oracle I PARAMETRI DEVONO ESSERE ANCORA DEFINITI.
+		CALL lp_parse(InputRoot.XMLNSC.File.id_caricamento, InputRoot.XMLNSC.File.Name, 1); 
+		UPDATE Database.LP410_00_AGGR_ORARIO_XML  AS SP
+		 SET LP410_COD_STATO_CARICAMENTO  = 'OK'  , LP410_COD_ERRORS =  ''                  
+		 WHERE SP.LP410_ID_CARICAMENTO= InputRoot.XMLNSC.File.id_caricamento;
+		RETURN TRUE;
+	END;
+   
+    create procedure lp_parse (in p_id_caricamento integer , in nome_file character, in p_flag_execute integer ) language DATABASE EXTERNAL NAME "LOAD_PROFILING.LP_PARSE_INPUT.LP_PARSE_LP410";
+		
+
+END MODULE;

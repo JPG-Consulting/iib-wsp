@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapibus2054getstatus" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata" xmlns:sapbapibus2054getstatus="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapibus2054getstatus" xmlns:saperesult1139610383="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/saperesult1139610383" xmlns:sapesystemstatus1869395203="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapesystemstatus1869395203" xmlns:sapeuserstatus339791925="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapeuserstatus339791925" xmlns:sapiwbselements1487552552="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapiwbselements1487552552">
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/saperesult1139610383" schemaLocation="SapEResult1139610383.xsd"/>
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapesystemstatus1869395203" schemaLocation="SapESystemStatus1869395203.xsd"/>
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapeuserstatus339791925" schemaLocation="SapEUserStatus339791925.xsd"/>
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapiwbselements1487552552" schemaLocation="SapIWbsElements1487552552.xsd"/>
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata"/>
+
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability">
+<info:resourceAdapter xmlns:info="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability" version="7.5.0.5_IF02"/>
+</xsd:appinfo>
+</xsd:annotation>
+
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="commonj.connector.asi">
+<asi:annotationSet xmlns:asi="commonj.connector.asi" asiNSURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType name="SapBapiBus2054GetStatus">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIBusinessObjectTypeMetadata>
+<sapasi:Type>BAPI</sapasi:Type>
+<sapasi:Operation>
+<sapasi:MethodName>BAPI_BUS2054_GET_STATUS</sapasi:MethodName>
+<sapasi:Name>Execute</sapasi:Name>
+</sapasi:Operation>
+</sapasi:sapBAPIBusinessObjectTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence maxOccurs="1" minOccurs="1">
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="SapEResult" nillable="true" type="saperesult1139610383:SapEResult">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIPropertyTypeMetadata>
+<sapasi:FieldName>E_RESULT</sapasi:FieldName>
+<sapasi:FieldType>BAPI_STATUS_RESULT</sapasi:FieldType>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:Description>Error Messages for Setting/Resetting Status</sapasi:Description>
+<sapasi:ParameterType>INOUT</sapasi:ParameterType>
+</sapasi:sapBAPIPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="SapESystemStatus" nillable="true" type="sapesystemstatus1869395203:SapESystemStatus">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIPropertyTypeMetadata>
+<sapasi:FieldName>E_SYSTEM_STATUS</sapasi:FieldName>
+<sapasi:FieldType>BAPI_WBS_SYSTEM_STATUS</sapasi:FieldType>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:Description>Return Structure for WBS Element System Status</sapasi:Description>
+<sapasi:ParameterType>INOUT</sapasi:ParameterType>
+</sapasi:sapBAPIPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="unbounded" minOccurs="0" name="SapEUserStatus" nillable="true" type="sapeuserstatus339791925:SapEUserStatus">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIPropertyTypeMetadata>
+<sapasi:FieldName>E_USER_STATUS</sapasi:FieldName>
+<sapasi:FieldType>BAPI_WBS_USER_STATUS</sapasi:FieldType>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:Description>Return Structure of WBS Element User Status</sapasi:Description>
+<sapasi:ParameterType>INOUT</sapasi:ParameterType>
+</sapasi:sapBAPIPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+<xsd:element maxOccurs="unbounded" minOccurs="1" name="SapIWbsElements" nillable="true" type="sapiwbselements1487552552:SapIWbsElements">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapBAPIPropertyTypeMetadata>
+<sapasi:FieldName>I_WBS_ELEMENTS</sapasi:FieldName>
+<sapasi:FieldType>BAPI_WBS_ELEMENTS</sapasi:FieldType>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:Description>List: WBS elements</sapasi:Description>
+<sapasi:ParameterType>INOUT</sapasi:ParameterType>
+</sapasi:sapBAPIPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+    <xsd:element ibmSchExtn:docRoot="true" name="SapBapiBus2054GetStatus" type="sapbapibus2054getstatus:SapBapiBus2054GetStatus"/>
+</xsd:schema>

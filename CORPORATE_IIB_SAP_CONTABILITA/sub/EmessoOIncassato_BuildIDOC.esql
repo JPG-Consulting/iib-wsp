@@ -1,0 +1,508 @@
+BROKER SCHEMA sub
+
+DECLARE ns1 NAMESPACE 'www.gruppoiren.it/schemas';
+DECLARE ns NAMESPACE 'http://www.gruppoiren.it/schemas';
+DECLARE ns12 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfidccp02n';
+
+
+CREATE COMPUTE MODULE EmessoOIncassato_BuildIDOC
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		SET OutputLocalEnvironment.Adapter.MethodName = 'executeSapZfidccp02N';
+		SET OutputLocalEnvironment.Variables.ns:lancio = InputRoot.XMLNSC.ns:lancio;
+		
+		DECLARE testata REFERENCE TO InputRoot.XMLNSC.ns:lancio.ns:testata[1];
+		DECLARE socPartner CHARACTER;
+		DECLARE pcPartner CHARACTER;
+		DECLARE dbOrigine CHARACTER;
+		DECLARE contoCoge CHARACTER;
+		DECLARE tipoFlusso CHARACTER;
+		DECLARE numCoge INTEGER;
+		DECLARE numIva INTEGER;
+		DECLARE tipoDoc CHARACTER;
+		DECLARE codiciIvaDupl CHARACTER;
+		DECLARE contoivaelim1 CHARACTER;
+		DECLARE contoivaelim2 CHARACTER;
+		DECLARE codiceIvaElim CHARACTER;
+		DECLARE separatore CHARACTER '-';
+		DECLARE padding CHARACTER '000000000000000';
+		
+		SET contoivaelim1 = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CONTOIVAELIMINARE1');
+		SET contoivaelim2 = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CONTOIVAELIMINARE2');
+		SET codiceIvaElim = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CODICIIVAELIM');
+
+		SET dbOrigine = COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.societa, InputLocalEnvironment.HTTP.Input.QueryString.sistema);
+		SET OutputLocalEnvironment.Variables.dbOrigine = dbOrigine;
+		CREATE FIELD OutputRoot.DataObject.ns12:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns12:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns12:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		DECLARE outputTestata REFERENCE TO OutputRoot.DataObject.ns12:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007[1];
+
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZFIDCCP02_N';
+		SET outputCR.MESTYP = 'ZFIDCC2_N';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+		IF dbOrigine IN ('C1','C2','C3') THEN
+			SET outputCR.MESCOD = 'CNR';
+		ELSE IF dbOrigine IN ('N1','N2','N3') THEN
+				SET outputCR.MESCOD = 'NET';
+			ELSE SET outputCR.MESCOD = '';
+			END IF;
+		END IF;
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		SET outputCR.ARCKEY = dbOrigine||separatore||InputRoot.XMLNSC.ns:lancio.soc_sap||separatore||testata.tipo_flusso||separatore||SUBSTRING(padding FROM 1 FOR LENGTH(padding)-LENGTH(CAST(testata.id_lancio AS CHARACTER))) ||CAST(testata.id_lancio AS CHARACTER);
+		
+		
+		--------------------CICLO PER OGNI TESTATA---------------------------------------
+		WHILE LASTMOVE(testata) = TRUE DO
+			
+			
+			---------------INIZIALIZZO------------------------------
+			SET Environment.result = NULL;
+			SET socPartner = '';
+			SET pcPartner = '';
+			SET contoCoge = '';
+			SET tipoFlusso = testata.tipo_flusso;
+			SET numCoge = 1;
+			SET numIva = 1;
+			SET tipoDoc = NULL;
+			SET codiciIvaDupl = '';
+			--------------------------------------------------------
+			--------------PUNTATORI A RIGHE COGE E IVA---------------
+			DECLARE riga_coge REFERENCE TO testata.ns:rigaCoge[numCoge];
+			DECLARE riga_iva REFERENCE TO testata.ns:rigaIva[numIva];
+			--------------------------------------------------------
+			
+			IF testata.intercompany IS NOT NULL AND LENGTH(TRIM(testata.intercompany))>0 THEN
+				DECLARE res BOOLEAN;
+				CALL GetSocietaPartner(InputRoot.XMLNSC.ns:lancio.soc_sap, testata.intercompany, dbOrigine, socPartner, pcPartner) INTO res;
+				IF (res = FALSE) THEN
+					CALL InvioMail('CONTABILE_SOCIETA', dbOrigine, CAST(InputRoot.XMLNSC.ns:lancio.id_lancio AS CHARACTER), InputRoot.XMLNSC.ns:lancio.tipo_flusso, InputRoot.XMLNSC.ns:lancio.soc_sap, testata.intercompany);
+					THROW USER EXCEPTION MESSAGE 2951 VALUES('GetSocietaPartner', 'Intercompany '||testata.intercompany);
+					RETURN FALSE;
+				END IF;
+			---------------------------------------------------------------------------
+			END IF;
+			---------------------------SE INCASSATO DECODIFICO CANALE PER TIPO DOC-----------------------------------	
+			IF tipoFlusso = 'I' THEN
+				DECLARE res BOOLEAN;
+				DECLARE tmp CHARACTER;
+				CALL DecodificaCanale(dbOrigine, InputRoot.XMLNSC.ns:lancio.soc_sap, riga_coge.attribuzione, tipoDoc, tmp) INTO res;
+				IF res = FALSE THEN
+					CALL InvioMail('CONTABILE_CANALE', dbOrigine, CAST(InputRoot.XMLNSC.ns:lancio.id_lancio AS CHARACTER), InputRoot.XMLNSC.ns:lancio.tipo_flusso, InputRoot.XMLNSC.ns:lancio.soc_sap, SUBSTRING(riga_coge.attribuzione AFTER '-'));
+					THROW USER EXCEPTION MESSAGE 2951 VALUES('DecodificaCanale', 'Attribuzione '||riga_coge.attribuzione);
+					RETURN FALSE;
+				END IF;
+			END IF;
+				
+			-----------------------------------FINE DECODIFICA CANALE----------------------------
+			
+			----------------------------------MAP TESTATA------------------------------------------
+			SET outputTestata.BUKRS = InputRoot.XMLNSC.ns:lancio.soc_sap;
+			SET outputTestata.GJAHR = testata.anno;
+			SET outputTestata.LDGRP = '0L';
+			IF tipoFlusso = 'E' THEN
+				IF dbOrigine IN ('C1','C2','C3','N1','N2','N3') THEN
+					SET outputTestata.BLART = testata.tipo_doc;
+				END IF;
+			ELSE
+				IF tipoFlusso = 'I' THEN
+					IF dbOrigine IN ('N1','N2','N3') THEN
+						SET outputTestata.BLART = tipoDoc;
+					ELSE
+						SET outputTestata.BLART = testata.tipo_doc;
+					END IF;
+				END IF;
+			END IF;
+			IF dbOrigine = 'N3' AND tipoFlusso = 'I' AND tipoDoc = 'PI' THEN
+				IF testata.data_scad IS NOT NULL THEN
+					SET outputTestata.BLDAT = CAST(testata.data_scad AS CHARACTER FORMAT 'yyyyMMdd');
+					SET outputTestata.BUDAT = CAST(testata.data_scad AS CHARACTER FORMAT 'yyyyMMdd');
+				END IF;
+			ELSE
+				IF testata.data_emiss IS NOT NULL THEN
+					SET outputTestata.BLDAT = CAST(testata.data_emiss AS CHARACTER FORMAT 'yyyyMMdd');
+					SET outputTestata.BUDAT = CAST(testata.data_emiss AS CHARACTER FORMAT 'yyyyMMdd');
+				END IF;
+			END IF;
+			SET outputTestata.XBLNR = testata.progr;
+			SET outputTestata.BKTXT = dbOrigine||separatore||InputRoot.XMLNSC.ns:lancio.soc_sap||separatore||testata.tipo_flusso||separatore||SUBSTRING(padding FROM 1 FOR LENGTH(padding)-LENGTH(CAST(testata.id_lancio AS CHARACTER))) ||CAST(testata.id_lancio AS CHARACTER);
+			SET outputTestata.WAERS = 'EUR';
+			IF dbOrigine IN ('C1','C2','C3') THEN
+				SET outputTestata.XREF1_HD = testata.provenienza;
+				SET outputTestata.XREF2_HD = SUBSTRING(testata.descr_testata FROM 0 FOR 20);
+			END IF;
+			SET outputTestata.XBLNR_LONG = dbOrigine||separatore||InputRoot.XMLNSC.ns:lancio.soc_sap||separatore||testata.tipo_flusso||separatore||SUBSTRING(padding FROM 1 FOR LENGTH(padding)-LENGTH(CAST(testata.id_lancio AS CHARACTER))) ||CAST(testata.id_lancio AS CHARACTER);
+			
+			----------------CICLO SULLE RIGHE COGE--------------------------------------
+			WHILE LASTMOVE(riga_coge) = TRUE DO
+				DECLARE socPartnerCoge CHARACTER '';
+				DECLARE pcPartnerCoge CHARACTER '';
+				DECLARE attribuzione CHARACTER '';
+				IF riga_coge.intercompany IS NOT NULL AND LENGTH(TRIM(riga_coge.intercompany ))> 0 THEN ------L'INTERCOMPANY DELLA RIGA COGE E' VALORIZZATA
+					--------------------GET SOCIETA CON INTERCOMPANY DELLA RIGA COGE----------
+					DECLARE res BOOLEAN;
+					CALL GetSocietaPartner(InputRoot.XMLNSC.ns:lancio.soc_sap, riga_coge.intercompany, dbOrigine, socPartnerCoge, pcPartnerCoge) INTO res;
+					IF (res = FALSE) THEN
+						CALL InvioMail('CONTABILE_SOCIETA', dbOrigine, CAST(InputRoot.XMLNSC.ns:lancio.id_lancio AS CHARACTER), InputRoot.XMLNSC.ns:lancio.tipo_flusso, InputRoot.XMLNSC.ns:lancio.soc_sap, riga_coge.intercompany);
+						THROW USER EXCEPTION MESSAGE 2951 VALUES('GetSocietaPartner', 'Intercompany '||riga_coge.intercompany);
+						RETURN FALSE;
+					END IF;
+				END IF;
+				
+				-----------------------------GET CONTO COGE-----------------------------------
+				IF ((testata.intercompany IS NOT NULL AND LENGTH(TRIM(testata.intercompany ))> 0) OR (riga_coge.intercompany IS NOT NULL AND LENGTH(TRIM(riga_coge.intercompany ))> 0)) THEN
+					IF riga_coge.intercompany IS NOT NULL AND LENGTH(TRIM(riga_coge.intercompany ))> 0 THEN
+						CALL DecodificaContoCoge(dbOrigine, InputRoot.XMLNSC.ns:lancio.soc_sap, riga_coge.intercompany, riga_coge.conto_coge) INTO contoCoge;
+					ELSE
+						CALL DecodificaContoCoge(dbOrigine, InputRoot.XMLNSC.ns:lancio.soc_sap, testata.intercompany, riga_coge.conto_coge) INTO contoCoge;
+					END IF;
+				END IF;
+				
+				------------------------DECODIFICA ATTRIBUZIONE SOLO PER INCASSATO----------------------
+				IF tipoFlusso = 'I' THEN
+					DECLARE res BOOLEAN;
+					CALL DecodificaCanale(dbOrigine, InputRoot.XMLNSC.ns:lancio.soc_sap, riga_coge.attribuzione, tipoDoc, attribuzione) INTO res;
+					IF res = FALSE THEN
+						CALL InvioMail('CONTABILE_CANALE', dbOrigine, CAST(InputRoot.XMLNSC.ns:lancio.id_lancio AS CHARACTER), InputRoot.XMLNSC.ns:lancio.tipo_flusso, InputRoot.XMLNSC.ns:lancio.soc_sap, SUBSTRING(riga_coge.attribuzione AFTER '-'));
+						THROW USER EXCEPTION MESSAGE 2951 VALUES('DecodificaCanale', 'Attribuzione '||riga_coge.attribuzione);
+						RETURN FALSE;
+					END IF;
+				ELSE 
+					SET attribuzione = '';
+				END IF;
+				----------------------------------------------------------------------------------------
+
+				---------------------------------MAP ECONOMICO------------------------------------------
+				IF (dbOrigine IN ('C1', 'C2', 'C3') OR riga_coge.conto_coge NOT IN (contoivaelim1, contoivaelim2)) THEN
+						
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].BSCHL = riga_coge.chiave_cont;
+					IF LENGTH(TRIM(socPartner))>0 OR LENGTH(TRIM(socPartnerCoge))>0 THEN
+						IF contoCoge IS NULL OR LENGTH(TRIM(contoCoge)) = 0 THEN
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].HKONT = riga_coge.conto_coge;
+						ELSE 
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].HKONT = contoCoge;
+						END IF;
+					ELSE 
+						SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].HKONT = riga_coge.conto_coge;
+					END IF;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].MATNR = riga_coge.cod_materiale;
+					IF STARTSWITH(CAST(riga_coge.importo AS CHARACTER), '-') THEN
+						SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].WRBTR = SUBSTRING(CAST(riga_coge.importo AS CHARACTER) AFTER '-');
+					ELSE 
+						SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].WRBTR = riga_coge.importo;
+					END IF;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].GSBER = riga_coge.settore_cont;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].PRCTR = riga_coge.profit_center;
+					IF riga_coge.intercompany IS NOT NULL OR testata.intercompany IS NOT NULL THEN
+						IF LENGTH(TRIM(socPartnerCoge))>0 THEN
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].VBUND = socPartnerCoge;
+						ELSE
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].VBUND = socPartner;
+						END IF;
+					END IF;
+					IF LENGTH(TRIM(riga_coge.centro_costo))>1 THEN
+						SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].KOSTL = riga_coge.centro_costo;
+					END IF;
+					IF dbOrigine = 'N1' THEN
+						IF LENGTH(TRIM(riga_coge.wbs))>1 THEN
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].RESERVE = riga_coge.wbs;
+						END IF;
+					ELSE 
+						IF LENGTH(TRIM(riga_coge.centro_costo))>1 THEN
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].RESERVE = riga_coge.wbs;
+						END IF;
+					END IF;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].MWSKZ = riga_coge.codice_iva;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].SGTXT = LEFT(testata.descr_testata, 50);
+					IF tipoFlusso = 'I' AND dbOrigine IN ('N1', 'N2', 'N3') THEN --NETA
+						CASE dbOrigine 
+						WHEN 'N1' THEN
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].ZUONR = SUBSTRING(SUBSTRING(riga_coge.attribuzione BEFORE '-') FROM 7 FOR 2) || SUBSTRING(SUBSTRING(riga_coge.attribuzione BEFORE '-') FROM 4 FOR 2) || SUBSTRING(SUBSTRING(riga_coge.attribuzione BEFORE '-') FROM 1 FOR 2) || attribuzione;
+						WHEN 'N2' THEN
+							IF InputRoot.XMLNSC.ns:lancio.soc_sap = '7200' THEN
+								SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].ZUONR = '20'|| SUBSTRING(SUBSTRING(riga_coge.attribuzione BEFORE '-') FROM 7 FOR 2) || SUBSTRING(substring(riga_coge.attribuzione BEFORE '-') FROM 4 FOR 2) || substring(substring(riga_coge.attribuzione BEFORE '-') FROM 1 FOR 2);
+							ELSE
+								SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].ZUONR = SUBSTRING(SUBSTRING(riga_coge.attribuzione BEFORE '-') FROM 7 FOR 2) || SUBSTRING(substring(riga_coge.attribuzione BEFORE '-') FROM 4 FOR 2) || substring(substring(riga_coge.attribuzione BEFORE '-') FROM 1 FOR 2)||attribuzione;
+							END IF;
+						WHEN 'N3' THEN
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].ZUONR = SUBSTRING(SUBSTRING(riga_coge.attribuzione BEFORE '-') FROM 7 FOR 2) || SUBSTRING(substring(riga_coge.attribuzione BEFORE '-') FROM 4 FOR 2) || substring(substring(riga_coge.attribuzione BEFORE '-') FROM 1 FOR 2)||attribuzione;
+						ELSE 
+							SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].ZUONR = '';						
+						END CASE;
+					ELSE --------------CNRG
+						IF tipoFlusso = 'I' THEN
+							IF testata.tipo_pag = 'RID' THEN
+								SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].ZUONR = TRIM(SUBSTRING(riga_coge.attribuzione FROM 1 FOR 6) || SUBSTRING(riga_coge.attribuzione FROM 8 FOR 5));
+							ELSE 
+								SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].ZUONR = SUBSTRING(CAST(EXTRACT(YEAR FROM riga_coge.data_valuta) AS CHARACTER) FROM 3 FOR 2)||CAST(riga_coge.data_valuta AS CHARACTER FORMAT 'MMdd')||attribuzione;
+							END IF;
+						END IF;
+					END IF;
+					IF tipoFlusso = 'I' THEN
+						SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].VALUT =  CAST(riga_coge.data_valuta AS CHARACTER FORMAT 'yyyyMMdd');
+						SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].BZDAT =  CAST(riga_coge.data_scad AS CHARACTER FORMAT 'yyyyMMdd');
+					END IF;
+					SET outputTestata.SapZfidccp02NE2fiseg006[numCoge].MATNR = COALESCE(riga_coge.cod_materiale, '');
+	
+					-----------------------------FINE MAP ECONOMICO-----------------------------------------
+					SET numCoge = numCoge + 1;
+				END IF;
+				MOVE riga_coge NEXTSIBLING REPEAT TYPE NAME;
+				
+			END WHILE;			
+			----------------FINE CICLO RIGHE COGE---------------------------------------------
+			
+			----------------CICLO SULLE RIGHE IVA--------------------------------------
+			SET codiciIvaDupl = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CODICIIVADUPL');
+									
+			WHILE LASTMOVE(riga_iva) = TRUE DO
+				IF riga_iva.codice_iva <> codiceIvaElim THEN
+					DECLARE CHIAVE_CONT CHARACTER;
+					DECLARE KSCL CHARACTER;
+					SET CHIAVE_CONT = riga_iva.chiave_cont;
+					
+					IF CONTAINS(codiciIvaDupl, riga_iva.codice_iva) THEN					
+						SET KSCL = 'MWAI';
+					END IF;
+					
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].MWSKZ = riga_iva.codice_iva;
+					IF TRIM(CHIAVE_CONT) = '40' THEN
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].SHKZG = 'S';
+					ELSE 
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].SHKZG = 'H';
+					END IF;
+					
+					IF STARTSWITH(CAST(riga_iva.imponibile AS CHARACTER), '-') THEN
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWBAS = SUBSTRING (CAST(riga_iva.imponibile AS CHARACTER) AFTER '-');
+					ELSE 
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWBAS = riga_iva.imponibile;
+					END IF;
+					
+					IF STARTSWITH(CAST(riga_iva.imposta AS CHARACTER), '-') THEN
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWSTE = SUBSTRING (CAST(riga_iva.imposta AS CHARACTER) AFTER '-');
+					ELSE
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWSTE = riga_iva.imposta;
+					END IF;
+					
+					SET outputTestata.SapZfidccp02NE2fiset003[numIva].KSCHL = KSCL;
+					
+					IF CONTAINS(codiciIvaDupl, riga_iva.codice_iva) THEN				
+						SET numIva = numIva + 1;
+						IF riga_iva.chiave_cont = '40' THEN
+							SET CHIAVE_CONT = '50';
+						ELSE
+							SET CHIAVE_CONT = '40';
+						END IF;
+						SET KSCL = 'ZSPP';
+						
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].MWSKZ = riga_iva.codice_iva;
+						IF TRIM(CHIAVE_CONT) = '40' THEN
+							SET outputTestata.SapZfidccp02NE2fiset003[numIva].SHKZG = 'S';
+						ELSE 
+							SET outputTestata.SapZfidccp02NE2fiset003[numIva].SHKZG = 'H';
+						END IF;
+					
+						IF STARTSWITH(CAST(riga_iva.imponibile AS CHARACTER), '-') THEN
+							SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWBAS = SUBSTRING (CAST(riga_iva.imponibile AS CHARACTER) AFTER '-');
+						ELSE 
+							SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWBAS = riga_iva.imponibile;
+						END IF;
+					
+						IF STARTSWITH(CAST(riga_iva.imposta AS CHARACTER), '-') THEN
+							SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWSTE = SUBSTRING (CAST(riga_iva.imposta AS CHARACTER) AFTER '-');
+						ELSE
+							SET outputTestata.SapZfidccp02NE2fiset003[numIva].FWSTE = riga_iva.imposta;
+						END IF;
+					
+						SET outputTestata.SapZfidccp02NE2fiset003[numIva].KSCHL = KSCL;
+						
+					END IF;
+					SET numIva = numIva + 1;
+				
+				END IF;
+				MOVE riga_iva NEXTSIBLING REPEAT TYPE NAME;
+				
+			END WHILE;
+			---------------------------FINE CICLO RIGHE IVA--------------------
+			
+				
+
+			MOVE testata NEXTSIBLING REPEAT TYPE NAME;
+			CREATE NEXTSIBLING OF outputTestata AS outputTestata REPEAT;
+		END WHILE;
+		-----------------------FINE CICLO TESTATE---------------------------------------------
+		
+		DELETE FIELD outputTestata;
+ 
+		RETURN TRUE;
+	END;
+			
+	
+	
+	
+	
+	
+	CREATE FUNCTION GetSocietaPartner(IN societa CHARACTER, IN intercompany CHARACTER, IN dbOrigine CHARACTER, OUT socPartner CHARACTER, OUT pcPartner CHARACTER) RETURNS BOOLEAN
+	BEGIN
+		DECLARE query ROW;
+		IF dbOrigine IN ('C1','C2','C3') THEN
+			SET query.resultSet[] = SELECT T.SOC_PARTNER_SAP, T.PC_PARTNER_SAP, T.SOC_SAP 
+									   FROM Database.S1_DEC_SOCIETA_INTERCOMPANY AS T
+									   WHERE T.SOC_SAP = societa
+									   AND T.COD_INTERCOMPANY_CNRG = intercompany;
+		ELSE IF dbOrigine IN ('N1','N2','N3') THEN	
+			SET query.resultSet[] = SELECT T.SOC_PARTNER_SAP, T.PC_PARTNER_SAP, T.SOC_SAP 
+									   FROM Database.S1_DEC_SOCIETA_INTERCOMPANY AS T
+									   WHERE T.SOC_SAP = societa
+									   AND T.COD_INTERCOMPANY_NETA = intercompany;
+			END IF;
+		END IF;
+		
+		SET socPartner = query.resultSet[1].SOC_PARTNER_SAP;
+		SET pcPartner = query.resultSet[1].PC_PARTNER_SAP;
+		IF query.resultSet[1].SOC_SAP IS NULL THEN
+			RETURN FALSE;
+		ELSE
+			RETURN TRUE;
+		END IF;
+		
+		
+	END;
+	
+	CREATE FUNCTION InvioMail(IN flusso CHARACTER, IN dbOrigine CHARACTER, IN id_lancio CHARACTER, IN tipo_flusso CHARACTER, IN societa CHARACTER, IN param CHARACTER)
+	BEGIN
+		DECLARE sistema CHARACTER;
+		CASE dbOrigine
+		WHEN 'C1' THEN
+			SET sistema = 'CNRG IME MAGGIORE TUTELA';
+		WHEN 'C2' THEN
+			SET sistema = 'CNRG IME LIBERO';
+		WHEN 'C3' THEN
+			SET sistema = 'CNRG AEMD';
+		WHEN 'N1' THEN
+			SET sistema = 'NETA GRGDIS';
+		WHEN 'N2' THEN
+			SET sistema = 'NETA IDRICO';
+		WHEN 'N3' THEN
+			SET sistema = 'NETA LIBERO';
+		ELSE
+			SET sistema = '';
+		END CASE;
+			
+			
+		SET OutputRoot.XMLNSC.ns1:Params.flusso = flusso;
+		SET OutputRoot.XMLNSC.ns1:Params.obj1 =  THE(SELECT ITEM T.VALORE
+													 FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+													 WHERE T.FLUSSO = 'CONTABILE' AND
+													 		T.VARIABILE = 'ENV');
+		SET OutputRoot.XMLNSC.ns1:Params.obj2 = id_lancio;
+		SET OutputRoot.XMLNSC.ns1:Params.body1 = id_lancio;
+		SET OutputRoot.XMLNSC.ns1:Params.body2 = sistema;
+		SET OutputRoot.XMLNSC.ns1:Params.body3 = societa;
+		SET OutputRoot.XMLNSC.ns1:Params.body4 = tipo_flusso;
+		SET OutputRoot.XMLNSC.ns1:Params.body5 = param;
+		PROPAGATE TO TERMINAL 'out1';
+		
+	END;
+	
+	
+	CREATE FUNCTION DecodificaCanale(IN dbOrigine CHARACTER, IN societa CHARACTER, IN attribuzione CHARACTER, OUT tipoDoc CHARACTER, OUT codAttribuzione CHARACTER) RETURNS BOOLEAN
+	BEGIN
+		DECLARE query ROW;
+		DECLARE canale_cnrg CHARACTER attribuzione;
+		DECLARE canale_neta CHARACTER SUBSTRING (attribuzione AFTER '-');
+		
+		IF dbOrigine IN ('C1','C2','C3') THEN
+			DECLARE cod_abi_cnrg CHARACTER SUBSTRING (canale_cnrg AFTER '-');
+			DECLARE tipo_pag_cnrg CHARACTER SUBSTRING (canale_cnrg BEFORE '-');
+			SET query.resultSet[] = SELECT T.COD_ATTRIBUZIONE_SAP
+							FROM Database.S1_DEC_CANALI_CNRG AS T
+							WHERE T.COD_SOCIETA_SAP = societa
+					   		AND T.COD_ABI_CNRG = cod_abi_cnrg
+					   		AND T.TIPO_PAGAMENTO_CNRG = tipo_pag_cnrg;
+			IF query.resultSet[1].COD_ATTRIBUZIONE_SAP IS NULL THEN
+				SET query.resultSet[] = SELECT T.COD_ATTRIBUZIONE_SAP
+							   		FROM Database.S1_DEC_CANALI_CNRG AS T
+							   		WHERE T.COD_SOCIETA_SAP = societa
+							   		AND T.COD_ABI_CNRG = '****'
+							   		AND T.TIPO_PAGAMENTO_CNRG = tipo_pag_cnrg;
+							   		
+				SET codAttribuzione = COALESCE(query.resultSet[1].COD_ATTRIBUZIONE_SAP, canale_cnrg);
+			ELSE  
+				SET codAttribuzione = query.resultSet[1].COD_ATTRIBUZIONE_SAP;
+			END IF;
+					   		
+		ELSE IF dbOrigine IN ('N1','N2','N3') THEN
+				DECLARE count INTEGER;
+				SET count = SELECT COUNT(*)
+							FROM Database.S1_DEC_CANALI AS T
+				   			WHERE T.COD_SOCIETA_SAP = societa
+				   			AND T.COD_CANALE_NETA = canale_neta;
+				IF count = 0 AND (dbOrigine IN ('N1','N2','N3')) THEN
+					RETURN FALSE;
+				ELSE   			
+					SET query.resultSet[] = SELECT T.COD_TIPO_DOC_SAP, T.COD_ATTRIBUZIONE_SAP 
+						   			FROM Database.S1_DEC_CANALI AS T
+						   			WHERE T.COD_SOCIETA_SAP = societa
+						   			AND T.COD_CANALE_NETA = canale_neta;
+					SET tipoDoc = query.resultSet[1].COD_TIPO_DOC_SAP;
+					SET codAttribuzione = COALESCE(query.resultSet[1].COD_ATTRIBUZIONE_SAP, '');
+				END IF;
+			END IF;
+		END IF;
+		
+		RETURN TRUE;
+		
+	END;
+	
+	
+	CREATE FUNCTION DecodificaContoCoge(IN dbOrigine CHARACTER, IN societa CHARACTER, IN intercompany CHARACTER, IN contoCoge CHARACTER) RETURNS CHARACTER
+	BEGIN
+		DECLARE query ROW;
+		IF dbOrigine IN ('C1','C2','C3') THEN
+			SET query.resultSet[] = SELECT T.COD_CONTO_COGE_SAP
+								   FROM Database.S1_DEC_CONTI_COGE_INTERCOMPANY AS T
+								   WHERE T.SOC_SAP = societa
+								   AND T.COD_INTERCOMPANY_CNRG = intercompany
+								   AND T.COD_CONTO_COGE_IC_CNRG = contoCoge;
+		ELSE IF dbOrigine IN ('N1','N2','N3') THEN	
+				SET query.resultSet[] = SELECT T.COD_CONTO_COGE_SAP 
+								   FROM Database.S1_DEC_CONTI_COGE_INTERCOMPANY AS T
+								   WHERE T.SOC_SAP = societa
+								   AND T.COD_INTERCOMPANY_NETA = intercompany
+								   AND T.COD_CONTO_COGE_IC_NETA = contoCoge;
+			END IF;
+		END IF;
+		RETURN COALESCE(query.resultSet[1].COD_CONTO_COGE_SAP, '');
+	END;
+	
+	 		
+
+END MODULE;

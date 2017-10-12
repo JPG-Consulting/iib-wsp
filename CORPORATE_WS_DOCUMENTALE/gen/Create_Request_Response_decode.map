@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="gen" version="8.0.5.0" xmlns:map="gen">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:Q1="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE">
+    <xsd:import namespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" schemaLocation="/Metadata.xsd"/>
+    <xsd:element name="metadata" type="Q1:MetadataType"/>
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var1"/>
+    <input path="/CORPORATE_DOCUMENTALE.xsd" var="var2"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var3"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var4"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var6"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="io" uri="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/iib/msl/json"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="Create_Request_Response_decode">
+        <input path="$var1/mb:env(Environment)" var="Environment">
+            <cast castType="userDefined" path="$Environment/Variables/any" qualifier="metadata" ref="var" var="any"/>
+        </input>
+        <input namespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" path="$var2/mb:msg(Create,assembly,XMLNSC,LocalEnvironment,Properties)" var="ComIbmMessageAssembly_Create"/>
+        <output path="$var4/mb:env(Environment)" var="Environment1">
+            <cast castType="userDefined" path="$Environment1/Variables/any" qualifier="metadata" ref="var" var="any1"/>
+        </output>
+        <output namespace="http://www.ibm.com/iib/msl/json" path="$var6/mb:msg(JSON,assembly,JSON,Properties)" var="MessageAssembly1">
+            <cast castType="userDefined" path="$MessageAssembly1/JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}JSONObject" ref="var6" var="anyType"/>
+            <cast path="$MessageAssembly1/JSON/spath('Data',2)/any" qualifier="{http://www.gruppoiren.it/CORPORATE_DOCUMENTALE}Update" ref="var2" var="any2"/>
+        </output>
+        <passthrough>
+            <input path="$Environment/."/>
+            <output path="$Environment1/."/>
+            <updates>
+                <move>
+                    <input path="$ComIbmMessageAssembly_Create/Create/metadata"/>
+                    <output path="$Environment1/Variables/metadata"/>
+                </move>
+            </updates>
+        </passthrough>
+    </mappingDeclaration>
+</mappingRoot>

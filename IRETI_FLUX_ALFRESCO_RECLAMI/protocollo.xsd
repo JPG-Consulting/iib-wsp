@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://prodoc.iren.it/protocollo" xmlns:tns="http://prodoc.iren.it/protocollo">
+    <xsd:element name="documenti">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:documento"/>
+            </xsd:sequence>
+            <xsd:attribute name="operazione" type="xsd:string" use="optional"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="documento">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:riservato"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:tipo_provenienza"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:tipo_protocollo"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:mezzo_trasmissione"/>
+                <xsd:element ref="tns:numero_protocollo"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:data_protocollo"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:data_documento"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:data_spedizione"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:oggetto"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:mittenti"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:destinatari"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:societa"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:struttura_protocollante"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:business"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:area_territoriale"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:cod_tipo_documento"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:tipo_documento"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:riferimento_IREN"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:data_riferimento_IREN"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:riferimenti_IREN"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:riferimento_ESTERNO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:data_riferimento_ESTERNO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:note"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:registro"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:stato_documento"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:path_di_collocazione"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:attributi"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:voci_titolario"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:allegati"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:allegati-da-cancellare"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:acls"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="riservato" type="xsd:string"/>
+    <xsd:element name="tipo_provenienza" type="xsd:string"/>
+    <xsd:element name="tipo_protocollo" type="xsd:string"/>
+    <xsd:element name="mezzo_trasmissione" type="xsd:string"/>
+    <xsd:element name="numero_protocollo" type="xsd:string"/>
+    <xsd:element name="data_protocollo" type="xsd:string"/>
+    <xsd:element name="data_documento" type="xsd:string"/>
+    <xsd:element name="data_spedizione" type="xsd:string"/>
+    <xsd:element name="oggetto" type="xsd:string"/>
+    <xsd:element name="mittenti">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="tns:mittente-esterno"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="tns:mittente-interno"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="mittente-esterno">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:denominazione"/>
+                <xsd:element ref="tns:tipo_soggetto"/>
+                <xsd:element ref="tns:indirizzo"/>
+                <xsd:element ref="tns:citta"/>
+                <xsd:element ref="tns:provincia"/>
+                <xsd:element ref="tns:cap"/>
+                <xsd:element ref="tns:intermedio"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="denominazione" type="xsd:string"/>
+    <xsd:element name="tipo_soggetto" type="xsd:string"/>
+    <xsd:element name="indirizzo" type="xsd:string"/>
+    <xsd:element name="citta" type="xsd:string"/>
+    <xsd:element name="provincia" type="xsd:string"/>
+    <xsd:element name="cap" type="xsd:string"/>
+    <xsd:element name="intermedio" type="xsd:string"/>
+    <xsd:element name="mittente-interno">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:struttura"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="struttura">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:codice"/>
+                <xsd:element ref="tns:descrizione"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="codice" type="xsd:string"/>
+    <xsd:element name="descrizione" type="xsd:string"/>
+    <xsd:element name="destinatari">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="tns:destinatario-esterno"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="tns:destinatario-interno"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="destinatario-esterno">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:denominazione"/>
+                <xsd:element ref="tns:tipo_soggetto"/>
+                <xsd:element ref="tns:indirizzo"/>
+                <xsd:element ref="tns:citta"/>
+                <xsd:element ref="tns:provincia"/>
+                <xsd:element ref="tns:cap"/>
+                <xsd:element ref="tns:intermedio"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="destinatario-interno">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:struttura"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="societa">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:codice"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:descrizione"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="struttura_protocollante">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:codice"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:descrizione"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="business" type="xsd:string"/>
+    <xsd:element name="area_territoriale" type="xsd:string"/>
+    <xsd:element name="cod_tipo_documento" type="xsd:string"/>
+    <xsd:element name="tipo_documento" type="xsd:string"/>
+    <xsd:element name="riferimento_IREN" type="xsd:string"/>
+    <xsd:element name="data_riferimento_IREN" type="xsd:string"/>
+    <xsd:element name="riferimenti_IREN">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="tns:riferimento_IREN"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="riferimento_ESTERNO" type="xsd:string"/>
+    <xsd:element name="data_riferimento_ESTERNO" type="xsd:string"/>
+    <xsd:element name="note">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="tns:nota"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="nota">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:data_inserimento"/>
+                <xsd:element ref="tns:attivita"/>
+                <xsd:element ref="tns:utente_inserimento"/>
+                <xsd:element ref="tns:nota"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="data_inserimento" type="xsd:string"/>
+    <xsd:element name="attivita" type="xsd:string"/>
+    <xsd:element name="utente_inserimento" type="xsd:string"/>
+    <xsd:element name="registro" type="xsd:string"/>
+    <xsd:element name="stato_documento" type="xsd:string"/>
+    <xsd:element name="path_di_collocazione" type="xsd:string"/>
+    <xsd:element name="attributi">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" ref="tns:attributo"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="attributo">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:nome"/>
+                <xsd:element ref="tns:valore"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="nome" type="xsd:string"/>
+    <xsd:element name="valore" type="xsd:string"/>
+    <xsd:element name="voci_titolario">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" ref="tns:voce_titolario"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="voce_titolario">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tns:codice"/>
+                <xsd:element ref="tns:descrizione"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="allegati">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" ref="tns:allegato"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="allegato">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:tipo"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:file"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:versione"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:nuova-versione"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:descrizione"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="tns:acls"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="tipo" type="xsd:string"/>
+    <xsd:element name="file" type="xsd:string"/>
+    <xsd:element name="versione" type="xsd:string"/>
+    <xsd:element name="nuova-versione" type="xsd:string"/>
+    <xsd:element name="acls">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="tns:acl"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="acl">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:soggetto"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:tipo_accesso"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="tns:cod_struttura"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="soggetto" type="xsd:string"/>
+    <xsd:element name="tipo_accesso" type="xsd:string"/>
+    <xsd:element name="cod_struttura" type="xsd:string"/>
+    <xsd:element name="allegati-da-cancellare">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" ref="tns:file"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

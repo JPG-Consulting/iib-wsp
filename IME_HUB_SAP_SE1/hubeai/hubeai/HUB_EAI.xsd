@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://hub_eai/hub_eai" xmlns:hub_eaihub_eai="http://hub_eai/hub_eai" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+  <!-- Message definition generated from P:\Users\e-decaro\IBM\IIBT10\workspace_TEST\DBSE1_SAP\HUB_EAI.dbm -->
+
+<!-- Complex type for HUB_EAI.HUB_EAI.IIB_SE1_TO_SAP_EVENT -->
+    <xsd:complexType name="IIB_SE1_TO_SAP_EVENTType">
+    <xsd:sequence>
+      <xsd:element name="ID_EE_PRESTAZIONE_TRACKING">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="POD" nillable="true">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="100"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="DATASWITCH" nillable="true">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="8"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="DATARIC" nillable="true">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="8"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="ORIGINE" nillable="true">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="1"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="TMS_CREATED" nillable="true" type="xsd:dateTime"/>
+      <xsd:element minOccurs="0" name="FLG_ACQUISITO" nillable="true">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="1"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="TMS_ACQUISITO" nillable="true" type="xsd:dateTime"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- Global element for HUB_EAI.HUB_EAI.IIB_SE1_TO_SAP_EVENT -->
+    <xsd:element ibmSchExtn:docRoot="true" name="IIB_SE1_TO_SAP_EVENT" type="hub_eaihub_eai:IIB_SE1_TO_SAP_EVENTType"/>
+</xsd:schema>

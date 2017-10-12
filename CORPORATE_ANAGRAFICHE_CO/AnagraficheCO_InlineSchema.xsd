@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/AnagraficheCO/" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.gruppoiren.it/AnagraficheCO/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd1="www.gruppoiren.it">
+	
+	<xsd:element ibmSchExtn:docRoot="true" name="Input">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element minOccurs="1" name="tipo" nillable="false"
+					type="xsd:string" />
+				<xsd:element minOccurs="1" name="dataInizioValidita"
+					nillable="true" type="xsd:string" />
+				<xsd:element minOccurs="1" name="societa"
+					nillable="true" type="xsd:string" />
+				<xsd:element minOccurs="1" name="oggetto"
+					nillable="true" type="xsd:string" />
+				<xsd:element name="tipoOdi" type="xsd:string" maxOccurs="1" minOccurs="0"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	
+	
+	<xsd:element ibmSchExtn:docRoot="true" name="Output">
+	<xsd:complexType>	
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="oggettoContabile">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="1" name="codice"
+							type="xsd:string" />
+						<xsd:element name="descrizione" nillable="true"
+							type="xsd:string" />
+						<xsd:element name="societa" nillable="true"
+							type="xsd:string" />
+						<xsd:element minOccurs="0"
+							name="dataInizioValidita" type="xsd:string" maxOccurs="1"/>
+						<xsd:element minOccurs="0"
+							name="dataFineValidita" type="xsd:string" maxOccurs="1"/>
+						<xsd:element name="flagCostiPrimari"
+							type="xsd:string" maxOccurs="1" minOccurs="0">
+						</xsd:element>
+						<xsd:element name="ambito" type="xsd:string"
+							maxOccurs="1" minOccurs="0">
+						</xsd:element>
+						<xsd:element name="subambito" type="xsd:string"
+							maxOccurs="1" minOccurs="0">
+						</xsd:element>
+						<xsd:element name="areaBusiness"
+							type="xsd:string" maxOccurs="1" minOccurs="0">
+						</xsd:element>
+						<xsd:element name="elementoContab"
+							type="xsd:string" maxOccurs="1" minOccurs="0">
+						</xsd:element>
+						<xsd:element name="motivoInvestimento"
+							type="xsd:string" maxOccurs="1" minOccurs="0">
+						</xsd:element>
+						<xsd:element name="stato" type="xsd:string"
+							maxOccurs="1" minOccurs="0">
+						</xsd:element>
+						<xsd:element name="societaPartner"
+							type="xsd:string" maxOccurs="1" minOccurs="0">
+						</xsd:element>
+						<xsd:element name="tipoOdi"
+							type="xsd:string" maxOccurs="1" minOccurs="0">
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:attribute name="tipo" type="xsd:string" use="required"/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	</xsd:element>
+
+
+</xsd:schema>

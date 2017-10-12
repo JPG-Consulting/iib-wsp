@@ -1,0 +1,46 @@
+CREATE COMPUTE MODULE CDC_getDetailToResp
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		IF InputLocalEnvironment.Variables.Final = 'YES' THEN
+			CALL CopyMessageHeaders();
+			CREATE FIELD OutputRoot.XMLNSC.ns:Output;
+			SET OutputRoot.XMLNSC.ns:Output = Environment.Data.Output;
+			FOR ogg AS OutputRoot.XMLNSC.ns:Output.oggettoContabile[] DO
+				SET ogg.(XMLNSC.Attribute)tipo = 'CDC';
+			END FOR;
+			
+			RETURN TRUE;
+		ELSE
+			DECLARE cdc REFERENCE TO Environment.Data.Output;
+			FOR input AS InputRoot.DataObject.ns23:SapBapiCostcenterGetdetail1.SapCostcenterdetail[] DO
+			IF input.COSTCENTER IS NOT NULL THEN
+				CREATE LASTCHILD OF Environment.Data.Output AS cdc NAME 'oggettoContabile';
+				SET cdc.codice = input.COSTCENTER;
+				SET cdc.descrizione = input.DESCRIPT;
+				SET cdc.societa = Environment.Variables.societa;
+				SET cdc.dataInizioValidita = input.VALID_FROM;
+				SET cdc.dataFineValidita = input.VALID_TO;
+				SET cdc.flagCostiPrimari = input.LOCK_IND_ACTUAL_PRIMARY_COSTS;
+				SET cdc.ambito = input.ZZ1AMBITO;
+				SET cdc.subambito = input.ZZ1SUBAMB;
+				SET cdc.areaBusiness = input.ZZ1ADB;
+			END IF;
+			END FOR;
+			RETURN FALSE;			
+		END IF;
+	END;
+	
+	CREATE PROCEDURE CopyMessageHeaders() 
+	BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+END MODULE;
+

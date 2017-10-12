@@ -1,0 +1,41 @@
+DECLARE ns6 NAMESPACE 'http://www.gruppoiren.it/CORPORATE_DOCUMENTALE';
+DECLARE ns NAMESPACE 'http://prodoc.iren.it/protocollo';
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_BuildRetrieve
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- IN QUESTA PARTE DI CODICE, SI VUOLE UNIFORMARE IL NS DI INPUT AD UN UNICO NOME.
+		-- SI è CAMBIATO IL DOMINIO DEL PARSER DA XMLNSC A BLOB , E SUCCESSIVAMENTE SI è FATTO UN REPLACE NEL DOCUMENTO DI INPUT DEL TAG
+		-- CORRISPONDENTE.
+		SET Environment.Variables.idFlux = CAST(InputRoot.MQMD.CorrelId AS CHARACTER CCSID 1208);
+
+		DECLARE data_protocollo CHARACTER;
+		
+		SET Environment.Variabili.statistiche.delete = 0; -- CANCELLATI DAL SERVIZIO WSERVICE DELETE
+		SET Environment.Variabili.statistiche.insert = 0; -- INSERITI   DAL SERVIZIO WSERVICE INSERT
+		SET Environment.Variabili.messaggio = '';
+		SET Environment.Variabili.XMLNSC = InputRoot.XMLNSC;
+		
+		
+		SET OutputRoot.SOAP.Body.ns6:Retrieve.ns6:Authorization.username ='ftp_bis';
+		SET OutputRoot.SOAP.Body.ns6:Retrieve.ns6:Authorization.password ='Password1FTP';
+		
+		set data_protocollo = InputRoot.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo;
+		SET OutputRoot.SOAP.Body.ns6:Retrieve.query.tipoDocumento    =  'cm:folder';
+		SET OutputRoot.SOAP.Body.ns6:Retrieve.query.nomeFile         =  'numprot_'||InputRoot.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo;
+
+		  
+		SET OutputRoot.SOAP.Body.ns6:Retrieve.query.path             =  'IrenSpa/protocollo/anno_'||SUBSTRING(data_protocollo FROM 7 FOR 4)||'/mese_'||SUBSTRING(data_protocollo FROM 4 FOR 2)||'/giorno_'||SUBSTRING(data_protocollo FROM 1 FOR 2)||'/registro_'||LEFT(InputRoot.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo, 2);
+		SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'FLUX_ALFRESCO' AND T.VARIABILE = 'ENDPOINT_ALFRESCO');
+		
+		SET Environment.Variables.idRichiesta = UUIDASCHAR;
+		--||LOG RETRIEVE REQUEST
+		INSERT INTO Database.IIB_FLUX_DOCUMENTALE 
+		(ID_RICHIESTA, ID_FLUX, NUMERO_PROTOCOLLO, RICHIESTA, DESCRIZIONE_RICHIESTA, TMS_RICHIESTA)
+		VALUES
+		(Environment.Variables.idRichiesta, Environment.Variables.idFlux, InputRoot.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo, ASBITSTREAM(OutputRoot.SOAP), 'Ricerca percorso '||OutputRoot.SOAP.Body.ns6:Retrieve.query.path, CURRENT_TIMESTAMP);
+		PASSTHRU('COMMIT');
+		RETURN TRUE;
+	END;
+	 
+END MODULE;

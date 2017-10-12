@@ -1,0 +1,21 @@
+
+
+CREATE COMPUTE MODULE AMBIENTE_ECOS_SAP_SVUOTAMENTI_RispostaVideo
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.Info.testo;
+		DECLARE sapexpv_cod CHARACTER;
+		---leggo  i parametri da input query string
+		SET sapexpv_cod = InputLocalEnvironment.HTTP.Input.QueryString.sapexpv_cod;
+		
+		IF sapexpv_cod IS NOT NULL THEN	    	
+	    	SET OutputRoot.XMLNSC.Info.testo     = 'OK - PROCESSO AVVIATO';
+		ELSE
+			SET OutputRoot.XMLNSC.Info.testo     = 'KO - PROFILO NON SELEZIONATO, IMPOSSIBILE AVVIARE IL PROCESSO';
+		END IF;
+		
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+	    RETURN TRUE;
+	END;
+
+END MODULE;

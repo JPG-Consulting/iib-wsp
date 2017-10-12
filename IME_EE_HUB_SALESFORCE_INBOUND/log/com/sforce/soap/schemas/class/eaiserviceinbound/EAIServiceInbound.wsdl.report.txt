@@ -1,0 +1,22 @@
+
+
+Importing file: C:\Users\danie\Documents\PIC\IREN\EAIServiceInbound.wsdl
+
+The WSDL import will proceed with bindings EAIServiceInboundBinding.
+Creating wsdl schema document for file:///C:/Users/danie/Documents/PIC/IREN/EAIServiceInbound.wsdl.
+Parsing wsdl binding {http://soap.sforce.com/schemas/class/EAIServiceInbound}EAIServiceInboundBinding.
+Parsing wsdl binding input SendRequestEE.
+Parsing wsdl binding output SendRequestEE.
+Processing doc style for operation SendRequestEE.
+Populating WSDL schema EAIServiceInbound.xsd.
+Creating file EAIServiceInbound.xsd in the workspace.
+Creating file EAIServiceInbound_InlineSchema1.xsd in the workspace.
+Copying source WSDL EAIServiceInbound.wsdl to EAIServiceInbound.wsdl.
+
+Elapsed time processing this message definition file: 0.145 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

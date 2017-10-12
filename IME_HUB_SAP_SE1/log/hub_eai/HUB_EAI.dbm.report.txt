@@ -1,0 +1,17 @@
+
+
+Importing file: P:\Users\e-decaro\IBM\IIBT10\workspace_TEST\DBSE1_SAP\HUB_EAI.dbm
+
+
+Processing schema HUB_EAI.
+Creating complex type for table IIB_SE1_TO_SAP_EVENT.
+Creating global element for table IIB_SE1_TO_SAP_EVENT.
+Creating file \HUB_SAP_SE1\hubeai\hubeai\HUB_EAI.xsd in the workspace.
+
+Elapsed time processing this message definition file: 4.699 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

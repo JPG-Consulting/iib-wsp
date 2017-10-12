@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_Reply
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	    SET OutputRoot.XMLNSC.result.esito = 'OK';
+		SET OutputRoot.XMLNSC.result.messaggio = 'Preso in carico';
+		RETURN TRUE;
+	END;
+
+END MODULE;

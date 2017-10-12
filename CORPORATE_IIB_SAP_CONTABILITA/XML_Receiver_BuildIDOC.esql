@@ -1,0 +1,211 @@
+DECLARE ns24 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfidccp02n';
+
+
+CREATE COMPUTE MODULE XML_Receiver_BuildIDOC
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		DECLARE testata REFERENCE TO Environment.Storage.Testata;
+		DECLARE addebito REFERENCE TO Environment.Storage.ns:addebiti.addebito[>];
+		DECLARE iva REFERENCE TO Environment.Storage.Testata.dettagli_iva.iva[>];
+		CREATE FIELD OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		DECLARE outputTestata REFERENCE TO OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007[1];
+		
+		DECLARE bukrs CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'XML_BUKRS');
+		DECLARE kostl CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'XML_KOSTL');
+		DECLARE prctr CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'XML_PRCTR');
+		DECLARE blart CHARACTER 'E2';
+		DECLARE zterm CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'XML_ZTERM');
+		DECLARE fornitore CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'XML_FORNITORE');
+		DECLARE dataRegistrazione CHARACTER InputLocalEnvironment.Variables.DataRegistrazione;
+		DECLARE anno CHARACTER SUBSTRING(InputLocalEnvironment.Variables.DataRegistrazione FROM 7 FOR 4);
+		DECLARE dataEmiss CHARACTER TRIM(testata.data_emissione);
+		DECLARE mese CHARACTER;
+		DECLARE bldat CHARACTER;
+		
+		SET mese = 
+			CASE
+			WHEN (CONTAINS(dataEmiss, 'GENNAIO')) THEN '01'
+			WHEN (CONTAINS(dataEmiss, 'FEBBRAIO')) THEN '02'
+			WHEN (CONTAINS(dataEmiss, 'MARZO')) THEN '03'
+			WHEN (CONTAINS(dataEmiss, 'APRILE')) THEN '04'
+			WHEN (CONTAINS(dataEmiss, 'MAGGIO')) THEN '05'
+			WHEN (CONTAINS(dataEmiss, 'GIUGNO')) THEN '06'
+			WHEN (CONTAINS(dataEmiss, 'LUGLIO')) THEN '07'
+			WHEN (CONTAINS(dataEmiss, 'AGOSTO')) THEN '08'
+			WHEN (CONTAINS(dataEmiss, 'SETTEMBRE')) THEN '09'
+			WHEN (CONTAINS(dataEmiss, 'OTTOBRE')) THEN '10'
+			WHEN (CONTAINS(dataEmiss, 'NOVEMBRE')) THEN '11'
+			WHEN (CONTAINS(dataEmiss, 'DICEMBRE')) THEN '12'
+			ELSE 'yyyymmdd'
+			END;
+		SET bldat = RIGHT(dataEmiss, 4)||mese||SUBSTRING(dataEmiss BEFORE ' ');
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZFIDCCP02_N';
+		SET outputCR.MESTYP = 'ZFIDCC2_N';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		SET outputCR.ARCKEY = blart || '-' || anno || '-' || testata.fattura;
+		
+		
+		SET outputTestata.BUKRS = bukrs;
+		SET outputTestata.GJAHR = anno;
+		SET outputTestata.BLART = blart;
+		SET outputTestata.BLDAT = bldat;
+		SET outputTestata.BUDAT = RIGHT(dataRegistrazione, 4)||SUBSTRING(dataRegistrazione FROM 4 FOR 2)||LEFT(dataRegistrazione, 2);
+		SET outputTestata.XBLNR = testata.fattura;
+		SET outputTestata.BKTXT = blart || '-' || anno || '-' || testata.fattura;
+		SET outputTestata.WAERS = 'EUR';
+		SET outputTestata.LDGRP = '0L';
+		
+		CREATE FIELD outputTestata.SapZfidccp02NE2fiseg006;
+		DECLARE outputAddebito REFERENCE TO outputTestata.SapZfidccp02NE2fiseg006[>];
+		
+		
+		WHILE LASTMOVE(addebito) = TRUE DO
+			DECLARE dmbtr DECIMAL;
+			--IF CAST(TRANSLATE(TRANSLATE(CAST(addebito.importo AS CHARACTER), '.', ''), ',', '.') AS DECIMAL) >= 0 THEN
+			IF addebito.importo >= 0 THEN
+				--SET dmbtr = CAST(TRANSLATE(TRANSLATE(CAST(addebito.importo AS CHARACTER), '.', ''), ',', '.') AS DECIMAL);
+				SET dmbtr = addebito.importo;
+			ELSE
+				SET dmbtr = CAST(SUBSTRING(CAST(addebito.importo AS CHARACTER) FROM 2 FOR 16) AS DECIMAL);
+			END IF;
+			
+			IF dmbtr IS NOT NULL AND dmbtr <> 0 THEN
+				DECLARE codiceAddebito CHARACTER;
+				DECLARE contoDest CHARACTER;
+				DECLARE tipoConto CHARACTER;
+				IF addebito.tipoAddebitoCodice = 'BE' OR addebito.tipoAddebitoCodice = 'BF' THEN
+					SET codiceAddebito = '';
+				ELSE
+					SET codiceAddebito = addebito.tipoAddebitoCodice;
+				END IF;
+				SET Environment.result[] = PASSTHRU('SELECT T.CONTO_DESTINAZIONE, T.TIPO_CONTO 
+													FROM S1_DEC_TIB_026_ADDEBITI T
+													WHERE trim(T.CODICE_ADDEBITO_XML) = '''||codiceAddebito||''' ');
+				SET contoDest = Environment.result[1].CONTO_DESTINAZIONE;
+				SET tipoConto = Environment.result[1].TIPO_CONTO;
+				
+				DECLARE codiceIvaSap CHARACTER;
+				DECLARE contoCogeIvaSap CHARACTER;
+				SET Environment.result[] = SELECT T.CODICE_IVA_SAP, T.CONTO_COGE_IVA_SAP 
+										FROM Database.S1_DEC_TIB_026_CODICI_IVA AS T 
+										WHERE T.CODICE_IVA_XML = SUBSTRING(addebito.tipoIva FROM 1 FOR 50);
+				SET codiceIvaSap = Environment.result[1].CODICE_IVA_SAP;
+				SET contoCogeIvaSap = Environment.result[1].CONTO_COGE_IVA_SAP;
+				
+				--IF CAST(TRANSLATE(TRANSLATE(CAST(addebito.importo AS CHARACTER), '.', ''), ',', '.') AS DECIMAL) > 0 THEN
+				IF addebito.importo > 0 THEN
+					SET outputAddebito.BSCHL = '40';
+				ELSE
+					SET outputAddebito.BSCHL = '50';
+				END IF;
+				SET outputAddebito.GSBER = '';
+				SET outputAddebito.MWSKZ = codiceIvaSap;
+				SET outputAddebito.WRBTR = ROUND(dmbtr, 2);
+				SET outputAddebito.ZUONR = '';
+				SET outputAddebito.SGTXT = testata.fattura || '-cod add origine ' || addebito.tipoAddebitoCodice;
+				SET outputAddebito.VBUND = '';
+				IF TRIM(tipoConto) = 'EC' THEN
+					IF testata.id_cliente = '61117034' OR testata.id_cliente = '61184779' OR testata.id_cliente = '61582374' OR testata.id_cliente = '61582375' THEN
+						SET outputAddebito.KOSTL = kostl;
+					END IF;
+				END IF;
+				SET outputAddebito.HKONT = contoDest;
+				SET outputAddebito.PRCTR = prctr;
+				
+				CREATE NEXTSIBLING OF outputAddebito AS outputAddebito REPEAT;	
+			END IF;
+			
+			MOVE addebito NEXTSIBLING REPEAT TYPE NAME;
+			
+		END WHILE;
+		IF CAST(TRANSLATE(TRANSLATE(testata.importo, '.', ''), ',', '.') AS DECIMAL)>=0 THEN
+			SET outputAddebito.BSCHL = '31';
+		ELSE
+			SET outputAddebito.BSCHL = '21';
+		END IF;
+		--SET outputAddebito.WRBTR = ROUND(CAST(TRANSLATE(TRANSLATE(CAST(addebito.importo AS CHARACTER), '.', ''), ',', '.') AS DECIMAL), 2);
+		SET outputAddebito.WRBTR = ROUND(CAST(TRANSLATE(TRANSLATE(testata.importo, '.', ''), ',','.') AS DECIMAL), 2);
+		SET outputAddebito.SGTXT = testata.fattura;
+		SET outputAddebito.ZUONR = testata.fattura;
+		SET outputAddebito.VBUND = '5100';
+		SET outputAddebito.SapZfidccp02NE2finbu007.LIFNR = fornitore;
+		SET outputAddebito.SapZfidccp02NE2finbu007.ZFBDT = RIGHT(dataRegistrazione, 4)||SUBSTRING(dataRegistrazione FROM 4 FOR 2)||LEFT(dataRegistrazione, 2);
+		SET outputAddebito.SapZfidccp02NE2finbu007.ZTERM = zterm;
+		
+		CREATE FIELD outputTestata.SapZfidccp02NE2fiset003;
+		DECLARE outputIva REFERENCE TO outputTestata.SapZfidccp02NE2fiset003[>];
+		WHILE LASTMOVE(iva) = TRUE DO
+			DECLARE codiceIvaSap CHARACTER;
+			DECLARE contoCogeIvaSap CHARACTER;
+			SET Environment.result[] = SELECT T.CODICE_IVA_SAP, T.CONTO_COGE_IVA_SAP 
+										FROM Database.S1_DEC_TIB_026_CODICI_IVA AS T 
+										WHERE T.CODICE_IVA_XML = SUBSTRING(iva.tipo FROM 1 FOR 50);
+			SET codiceIvaSap = Environment.result[1].CODICE_IVA_SAP;
+			SET contoCogeIvaSap = Environment.result[1].CONTO_COGE_IVA_SAP;
+			IF codiceIvaSap IS NOT NULL AND codiceIvaSap <> '' THEN
+				IF CAST(TRANSLATE(TRANSLATE(iva.importo, '.', ''), ',', '.') AS DECIMAL) > 0 THEN
+					SET outputIva.SHKZG = 'S';
+				ELSE
+					SET outputIva.SHKZG = 'H';
+				END IF;
+				SET outputIva.MWSKZ = codiceIvaSap;
+				SET outputIva.FWBAS = ABSVAL(ROUND(CAST(TRANSLATE(TRANSLATE(iva.imponibile, '.', ''), ',', '.') AS DECIMAL), 2));
+				SET outputIva.FWSTE = ABSVAL(ROUND(CAST(TRANSLATE(TRANSLATE(iva.importo, '.', ''), ',', '.') AS DECIMAL), 2));
+				
+				CREATE NEXTSIBLING OF outputIva AS outputIva REPEAT;
+			END IF;
+			MOVE iva NEXTSIBLING REPEAT TYPE NAME;
+			
+		END WHILE;
+		
+		DECLARE nonSoggetta REFERENCE TO testata.importi_bolletta.non_soggetta[>];
+		WHILE LASTMOVE(nonSoggetta) = TRUE DO
+			DECLARE codiceIvaSap CHARACTER;
+			DECLARE contoCogeIvaSap CHARACTER;
+			SET Environment.result[] = SELECT T.CODICE_IVA_SAP, T.CONTO_COGE_IVA_SAP 
+										FROM Database.S1_DEC_TIB_026_CODICI_IVA AS T 
+										WHERE T.CODICE_IVA_XML = SUBSTRING(nonSoggetta.descrizione FROM 1 FOR 50);
+			SET codiceIvaSap = Environment.result[1].CODICE_IVA_SAP;
+			SET contoCogeIvaSap = Environment.result[1].CONTO_COGE_IVA_SAP;
+			
+			IF codiceIvaSap IS NOT NULL AND codiceIvaSap <> '' THEN
+				IF CAST(TRANSLATE(TRANSLATE(nonSoggetta.importo, '.', ''), ',', '.') AS DECIMAL) > 0 THEN
+					SET outputIva.SHKZG = 'S';
+				ELSE
+					SET outputIva.SHKZG = 'H';
+				END IF;
+				SET outputIva.MWSKZ = codiceIvaSap;
+				SET outputIva.FWBAS = ABSVAL(ROUND(CAST(TRANSLATE(TRANSLATE(nonSoggetta.importo, '.', ''), ',', '.') AS DECIMAL), 2));
+				SET outputIva.FWSTE = '0';
+				
+				CREATE NEXTSIBLING OF outputIva AS outputIva REPEAT;
+			END IF;
+			MOVE nonSoggetta NEXTSIBLING REPEAT TYPE NAME;
+			
+		END WHILE;
+		DELETE FIELD outputIva;
+		
+		SET OutputLocalEnvironment.Variables.IDFlusso = blart || '-' || anno || '-' || testata.fattura;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

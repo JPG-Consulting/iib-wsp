@@ -1,0 +1,28 @@
+BROKER SCHEMA gen
+
+
+CREATE COMPUTE MODULE Delete_Request_Response_buildRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE inCCSID INT InputProperties.CodedCharSetId;                     
+		DECLARE inEncoding INT InputProperties.Encoding;
+
+		SET Environment.Variables.noderef = COALESCE(InputRoot.XMLNSC.ns:Delete.metadata.URL, InputRoot.XMLNSC.ns:Delete.metadata.ID, '');
+		DECLARE nodeID CHARACTER COALESCE(InputRoot.XMLNSC.ns:Delete.metadata.URL, InputRoot.XMLNSC.ns:Delete.metadata.ID,'');
+		IF (LENGTH(SUBSTRING(nodeID AFTER '//')) > 0) THEN
+			SET nodeID = SUBSTRING(nodeID AFTER '//');
+		END IF;
+		
+		WHILE (LENGTH(SUBSTRING(nodeID AFTER '/')) > 0) DO
+			SET nodeID = SUBSTRING(nodeID AFTER '/');
+		END WHILE;
+		IF(CONTAINS(nodeID, '?')) THEN
+			SET nodeID = SUBSTRING(nodeID BEFORE '?');
+		END IF;
+		SET OutputLocalEnvironment.Destination.HTTP.RequestURL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'DOCUMENTALE_DELETE' AND T.VARIABILE = 'ENDPOINT_ALFRESCO')||nodeID;
+		SET OutputRoot.HTTPRequestHeader.Authorization = 'Basic '||BASE64ENCODE(InputRoot.XMLNSC.ns:Delete.ns:Authorization.username||':'||InputRoot.XMLNSC.ns:Delete.ns:Authorization.password);
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

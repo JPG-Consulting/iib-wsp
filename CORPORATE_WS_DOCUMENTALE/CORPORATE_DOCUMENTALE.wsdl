@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	name="CORPORATE_DOCUMENTALE" targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:tns="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<wsdl:documentation>
+		<wsdl:appinfo source="WMQI_APPINFO">
+			<MRWSDLAppInfo imported="true">
+				<binding hasEncoding="false" imported="true"
+					name="CORPORATE_DOCUMENTALEHttpBinding" originalBindingStyle="document" />
+				<generatedXSD location="CORPORATE_DOCUMENTALE.xsd" />
+			</MRWSDLAppInfo>
+		</wsdl:appinfo>
+	</wsdl:documentation>
+
+
+
+
+	<wsdl:types>
+
+		<xsd:schema targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE"
+			xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+			<xsd:include schemaLocation="CORPORATE_DOCUMENTALE.xsd" />
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="CreateRequestMsg">
+		<wsdl:part element="tns:Create" name="CreateParameters" />
+		
+	</wsdl:message>
+	<wsdl:message name="CreateResponseMsg">
+		<wsdl:part element="tns:CreateResponse" name="CreateResult" />
+	</wsdl:message>
+	<wsdl:message name="RetrieveRequestMsg">
+		<wsdl:part element="tns:Retrieve" name="RetrieveParameters" />
+	</wsdl:message>
+	<wsdl:message name="RetrieveResponseMsg">
+		<wsdl:part element="tns:RetrieveResponse" name="RetrieveResult" />
+	</wsdl:message>
+	<wsdl:message name="UpdateRequestMsg">
+		<wsdl:part element="tns:Update" name="UpdateParameters" />
+	</wsdl:message>
+	<wsdl:message name="UpdateResponseMsg">
+		<wsdl:part element="tns:UpdateResponse" name="UpdateResult" />
+	</wsdl:message>
+	<wsdl:message name="DeleteRequestMsg">
+		<wsdl:part element="tns:Delete" name="DeleteParameters" />
+	</wsdl:message>
+	<wsdl:message name="DeleteResponseMsg">
+		<wsdl:part element="tns:DeleteResponse" name="DeleteResult" />
+	</wsdl:message>
+	<wsdl:portType name="CORPORATE_DOCUMENTALE">
+		<wsdl:operation name="Create">
+			<wsdl:input message="tns:CreateRequestMsg" name="CreateRequest" />
+			<wsdl:output message="tns:CreateResponseMsg" name="CreateResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="Retrieve">
+			<wsdl:input message="tns:RetrieveRequestMsg" name="RetrieveRequest" />
+			<wsdl:output message="tns:RetrieveResponseMsg" name="RetrieveResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="Update">
+			<wsdl:input message="tns:UpdateRequestMsg" name="UpdateRequest" />
+			<wsdl:output message="tns:UpdateResponseMsg" name="UpdateResponse" />
+		</wsdl:operation>
+		<wsdl:operation name="Delete">
+			<wsdl:input message="tns:DeleteRequestMsg" name="DeleteRequest" />
+			<wsdl:output message="tns:DeleteResponseMsg" name="DeleteResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="CORPORATE_DOCUMENTALEHttpBinding"
+		type="tns:CORPORATE_DOCUMENTALE">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="Create">
+			<soap:operation
+				soapAction="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE/Create" />
+			<wsdl:input name="CreateRequest">
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="CreateResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="Retrieve">
+			<soap:operation
+				soapAction="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE/Retrieve" />
+			<wsdl:input name="RetrieveRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="RetrieveResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="Update">
+			<soap:operation
+				soapAction="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE/Update" />
+			<wsdl:input name="UpdateRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="UpdateResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="Delete">
+			<soap:operation
+				soapAction="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE/Delete" />
+			<wsdl:input name="DeleteRequest">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="DeleteResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+
+	<wsdl:service name="CORPORATE_DOCUMENTALEHttpService">
+		<wsdl:port binding="tns:CORPORATE_DOCUMENTALEHttpBinding"
+			name="CORPORATE_DOCUMENTALEHttpPort">
+			<soap:address location="http://ibmprdiblb.master.local:7800/corporate/SOAP/documentale" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

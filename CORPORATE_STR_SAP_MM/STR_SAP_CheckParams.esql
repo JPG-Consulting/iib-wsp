@@ -1,0 +1,104 @@
+
+
+CREATE COMPUTE MODULE STR_SAP_CheckParams
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--THROW USER EXCEPTION MESSAGE 2951 VALUES('DEBUG', NULL);
+		IF InputLocalEnvironment.HTTP.Input.QueryString.societa IS NOT NULL THEN
+			IF InputLocalEnvironment.HTTP.Input.QueryString.dataFine IS NOT NULL THEN
+				IF InputLocalEnvironment.HTTP.Input.QueryString.dataInizio IS NOT NULL THEN
+					IF InputLocalEnvironment.HTTP.Input.QueryString.check IS NOT NULL AND InputLocalEnvironment.HTTP.Input.QueryString.invio IS NOT NULL THEN
+						IF InputLocalEnvironment.HTTP.Input.QueryString.check = 'N' AND InputLocalEnvironment.HTTP.Input.QueryString.invio = 'N' THEN
+							CREATE FIELD OutputRoot.XMLNSC.Result;
+							SET OutputRoot.XMLNSC.Result.Status.Codice = '906';
+							SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'Casistica non gestita - check o invio devono essere valorizzati con S';
+							PROPAGATE TO TERMINAL 'out2';
+							RETURN FALSE;
+						ELSE
+							IF InputLocalEnvironment.HTTP.Input.QueryString.check IN ('S', 'N') AND InputLocalEnvironment.HTTP.Input.QueryString.invio IN ('S','N') THEN
+								SET Environment.Query.result[] = SELECT T.SOCIETA_SAP
+																, T.SOCIETA_DIAPASON
+																, T.DIVISIONE
+																, T.DB_NAME
+																, T.CODICE_AZIENDA
+															FROM Database.S1_DEC_SOCIETA AS T
+															WHERE T.DB_NAME IS NOT NULL 
+															AND   T.SOCIETA_DIAPASON = InputLocalEnvironment.HTTP.Input.QueryString.societa;
+								IF Environment.Query.result.DB_NAME IS NULL THEN
+									CREATE FIELD OutputRoot.XMLNSC.Result;
+									SET OutputRoot.XMLNSC.Result.Status.Codice = '911';
+									SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'Società non trovata';
+									PROPAGATE TO TERMINAL 'out2';
+									RETURN FALSE;
+								ELSE
+									CREATE FIELD OutputRoot.JSON.Data;
+									SET OutputRoot.JSON.Data.Societa = InputLocalEnvironment.HTTP.Input.QueryString.societa;
+									SET OutputRoot.JSON.Data.SocietaSap = Environment.Query.result.SOCIETA_SAP;
+									SET OutputRoot.JSON.Data.Divisione = Environment.Query.result.DIVISIONE;
+									SET OutputRoot.JSON.Data.CodiceAzienda = Environment.Query.result.CODICE_AZIENDA;
+									SET OutputRoot.JSON.Data.DataInizio = InputLocalEnvironment.HTTP.Input.QueryString.dataInizio;
+									SET OutputRoot.JSON.Data.DataFine = InputLocalEnvironment.HTTP.Input.QueryString.dataFine;
+									SET OutputRoot.JSON.Data.Check = InputLocalEnvironment.HTTP.Input.QueryString.check;
+									SET OutputRoot.JSON.Data.Invio = InputLocalEnvironment.HTTP.Input.QueryString.invio;
+									SET OutputRoot.JSON.Data.DataReg = InputLocalEnvironment.HTTP.Input.QueryString.dataReg;
+									SET OutputRoot.JSON.Data.ForzaData = InputLocalEnvironment.HTTP.Input.QueryString.forzaData;
+									SET OutputRoot.JSON.Data.DB = Environment.Query.result.DB_NAME;
+									--SET OutputRoot.JSON.Data.Record = Environment.Query.result;
+									
+									SET Environment.Query.result = NULL;
+									IF OutputRoot.JSON.Data.DB = 'STR' THEN
+										RETURN TRUE;
+									ELSE
+										IF OutputRoot.JSON.Data.DB = 'STR1B' THEN
+											PROPAGATE TO TERMINAL 'out1';
+											RETURN FALSE;
+										ELSE
+											CREATE FIELD OutputRoot.XMLNSC.Result;
+											SET OutputRoot.XMLNSC.Result.Status.Codice = '921';
+											SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'Database non gestito';
+											PROPAGATE TO TERMINAL 'out2';
+											RETURN FALSE;
+										END IF;
+									END IF;
+								END IF;
+							ELSE
+								CREATE FIELD OutputRoot.XMLNSC.Result;
+								SET OutputRoot.XMLNSC.Result.Status.Codice = '905';
+								SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'I flag di check e invio devono essere valorizzati con S o N';
+								PROPAGATE TO TERMINAL 'out2';
+								RETURN FALSE;
+							END IF;
+						END IF;
+					ELSE
+						CREATE FIELD OutputRoot.XMLNSC.Result;
+						SET OutputRoot.XMLNSC.Result.Status.Codice = '904';
+						SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'I flag di check e invio devono essere valorizzati';
+						PROPAGATE TO TERMINAL 'out2';
+						RETURN FALSE;
+					END IF;
+				ELSE
+					CREATE FIELD OutputRoot.XMLNSC.Result;
+					SET OutputRoot.XMLNSC.Result.Status.Codice = '902';
+					SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'Inserire la data di inizio';
+					PROPAGATE TO TERMINAL 'out2';
+					RETURN FALSE;
+				END IF;
+			ELSE
+				CREATE FIELD OutputRoot.XMLNSC.Result;
+				SET OutputRoot.XMLNSC.Result.Status.Codice = '903';
+				SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'Inserire la data di fine';
+				PROPAGATE TO TERMINAL 'out2';
+				RETURN FALSE;
+			END IF;
+		ELSE
+			CREATE FIELD OutputRoot.XMLNSC.Result;
+			SET OutputRoot.XMLNSC.Result.Status.Codice = '901';
+			SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'Inserire la società';
+			PROPAGATE TO TERMINAL 'out2';
+			RETURN FALSE;
+		END IF;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;

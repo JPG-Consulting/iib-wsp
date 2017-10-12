@@ -1,0 +1,26 @@
+
+
+CREATE COMPUTE MODULE Setta_Parametri_Email_Errore
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.ns8:Params;
+		DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns8:Params;
+		DECLARE forn CHARACTER;
+		DECLARE nomeForn CHARACTER;
+		DECLARE msgnum CHARACTER;
+		DECLARE msgid CHARACTER;
+		SET forn = Environment.Variables.BID;
+		SET	nomeForn =  Environment.Variables.CNAME;
+		SET msgid  = Environment.Variables.MSGID;
+		SET msgnum = Environment.Variables.MSGNR;
+		
+		SET param.obj1 = 'Errore SAP per Bravo ID: '||forn||' - Company: '||nomeForn;--OGGETTO E-MAIL
+		SET param.body1 = 'MSGTYP: '||msgid;
+		SET param.body2 = 'MSGNR: '||msgnum;
+		set param.body3 = 'TEXT: ' || Environment.Variables.MSG;
+		SET param.flusso = 'FORNITORI_BRAVOSOLUTION';
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

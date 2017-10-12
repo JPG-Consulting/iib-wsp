@@ -1,0 +1,69 @@
+
+
+CREATE COMPUTE MODULE AMBIENTE_ECOS_SAP_SVUOTAMENTI_SetFlagElaborato
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE data_exp DATE;
+		SET data_exp = CURRENT_TIMESTAMP ;  --   FORMAT 'yyyyMMddhhmm'  --  MODIFICA (2) 27marzo2017 , richiesta da mail 23.marzo.2017 Dario Rizzo.  ( update campo tasapexpsv.sapexpsv_data_exp )
+		
+		DECLARE sapexpv_cod CHARACTER;
+		SET sapexpv_cod = Environment.Variables.sapexpv_cod ; --previously set in compute node 1
+		DECLARE idunico INTEGER;
+		SET 	idunico = CAST(Environment.Variables.idunico AS INTEGER)  ;
+		
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER CARDINALITY(Environment.result[]) ; --== Environment.Variables.Count
+		WHILE I <= J DO
+--			
+			UPDATE Database.tasapexpsvd as t
+			SET sapexpsvd_flag_exp = 'P',
+			usersapbuslog_id = idunico,         --UPDATE tabella Oracle di count=Ins+Upd records
+			sapexpsvd_data_exp= data_exp		--  MODIFICA (3) Dalla mail del 04/05/2017 aggiungere la data anche nel corpo di ECOS
+			WHERE t.imp_cod_ut = Environment.result[I].imp_cod_ut and t.imp_uni_ut = Environment.result[I].imp_uni_ut and t.sapexpsv_cod = sapexpv_cod and t.sapexpsvd_prog = Environment.result[I].sapexpsvd_prog ; 
+
+-- 		 MODIFICA (2) 27marzo2017 , richiesta da mail 23.marzo.2017 Dario Rizzo.  ( update campo tasapexpsv.sapexpsv_data_exp )
+
+		IF (Environment.Variables.sapexpv_cod <> '') THEN		-- SINGOLO UTENTE
+			
+			UPDATE Database.tasapexpsv as t
+				SET sapexpsv_data_exp= data_exp
+			WHERE 	t.imp_cod_ut = Environment.result[I].imp_cod_ut and  	
+			t.imp_uni_ut = Environment.result[I].imp_uni_ut 			and 
+			t.sapexpsv_cod = Environment.Variables.sapexpv_cod; 	-- id input query
+			
+												
+		ELSE													-- TUTTI (senza parametro in input query)
+			
+			UPDATE Database.tasapexpsv as t
+				SET sapexpsv_data_exp= data_exp
+			WHERE 	t.imp_uni_ut = Environment.result[I].imp_uni_ut 			and  	
+			t.sapexpsv_flag_tipo_exp ='S';
+			
+			
+		END IF;
+
+
+-- 		 FINE MODIFICA (2) 27marzo2017 , richiesta da mail 23.marzo.2017 Dario Rizzo.  ( update campo tasapexpsv.sapexpsv_data_exp )
+
+			SET I=I+1;
+		END WHILE;	
+		
+		
+ 		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;
+

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmJavaCompute.msgnode="ComIbmJavaCompute.msgnode" xmlns:ComIbmLabel.msgnode="ComIbmLabel.msgnode" xmlns:ComIbmMSLMapping.msgnode="ComIbmMSLMapping.msgnode" xmlns:ComIbmRouteToLabel.msgnode="ComIbmRouteToLabel.msgnode" xmlns:ComIbmWSInput.msgnode="ComIbmWSInput.msgnode" xmlns:ComIbmWSReply.msgnode="ComIbmWSReply.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor"
+    xmlns:sub_ElaboraFlussi.subflow="sub/ElaboraFlussi.subflow" xmlns:sub_EmessoOIncassato.subflow="sub/EmessoOIncassato.subflow" xmlns:sub_PassivoIntercompany.subflow="sub/PassivoIntercompany.subflow" xmlns:sub_Publish_UpdateDB.subflow="sub/Publish_UpdateDB.subflow" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="NETA1.msgflow" nsPrefix="NETA1.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="NETA1" bundleName="NETA1" pluginId="CORPORATE_IIB_SAP_CONTABILITA"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_IIB_SAP_CONTABILITA/icons/full/obj16/NETA1.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_IIB_SAP_CONTABILITA/icons/full/obj30/NETA1.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmMSLMapping.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="74,66" mappingExpression="msl://{default}#Contabilita_getLanci_N1">
+        <translation xmi:type="utility:ConstantString" string="getLanci_N1"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="getLanci_N1.terminal.failure" eventIdentity="Contabilità NETA1 - Elaborazione fallita">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Contabilità NETA1 - Elaborazione fallita"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="335,36" labelName="EmessoOIncassato">
+        <translation xmi:type="utility:ConstantString" string="EmessoIncassato"/>
+      </nodes>
+      <nodes xmi:type="sub_EmessoOIncassato.subflow:FCMComposite_1" xmi:id="FCMComposite_1_4" location="429,38">
+        <translation xmi:type="utility:ConstantString" string="EmessoOIncassato"/>
+      </nodes>
+      <nodes xmi:type="ComIbmLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="357,99" labelName="PassivoIntercompany">
+        <translation xmi:type="utility:ConstantString" string="Passivo"/>
+      </nodes>
+      <nodes xmi:type="sub_PassivoIntercompany.subflow:FCMComposite_1" xmi:id="FCMComposite_1_6" location="420,99">
+        <translation xmi:type="utility:ConstantString" string="PassivoIntercompany"/>
+      </nodes>
+      <nodes xmi:type="sub_Publish_UpdateDB.subflow:FCMComposite_1" xmi:id="FCMComposite_1_7" location="563,71">
+        <translation xmi:type="utility:ConstantString" string="Publish"/>
+      </nodes>
+      <nodes xmi:type="sub_ElaboraFlussi.subflow:FCMComposite_1" xmi:id="FCMComposite_1_8" location="159,71">
+        <translation xmi:type="utility:ConstantString" string="ElaboraFlussi"/>
+      </nodes>
+      <nodes xmi:type="ComIbmRouteToLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="235,72">
+        <translation xmi:type="utility:ConstantString" string="Route To Label"/>
+      </nodes>
+      <nodes xmi:type="ComIbmLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="351,178" labelName="FlussoSconosciuto">
+        <translation xmi:type="utility:ConstantString" string="FlussoSconosciuto"/>
+      </nodes>
+      <nodes xmi:type="ComIbmJavaCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="468,178" javaClass="sub.Update_FlussoSconosciuto">
+        <translation xmi:type="utility:ConstantString" string="Update_FlussoSconosciuto"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_14" location="16,74" URLSpecifier="/corporate/contabilita/sched/NETA1" parseQueryString="true">
+        <translation xmi:type="utility:ConstantString" string="N1"/>
+        <monitorEvents eventSourceDescription="Catch terminal" eventSourceName="N1.terminal.catch" eventIdentity="Errore flusso contabile NETA1">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/HTTP/Input/RequestLine/RequestURI" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Errore flusso contabile NETA1"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="688,117">
+        <translation xmi:type="utility:ConstantString" string="HTTP Reply"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_14" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_14" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in">
+        <bendPoints>17,181,-665,138</bendPoints>
+        <bendPoints>661,180,-21,137</bendPoints>
+      </connections>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

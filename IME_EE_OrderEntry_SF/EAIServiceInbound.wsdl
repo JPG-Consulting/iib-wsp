@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+ Web Services API : EAIServiceInbound
+--><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://soap.sforce.com/schemas/class/EAIServiceInbound" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/schemas/class/EAIServiceInbound" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <documentation>
+    <appinfo source="WMQI_APPINFO">
+      <MRWSDLAppInfo imported="true">
+        <generatedXSD location="EAIServiceInbound_InlineSchema1.xsd"/>
+        <binding hasEncoding="false" imported="true" name="EAIServiceInboundBinding" originalBindingStyle="document"/>
+      </MRWSDLAppInfo>
+    </appinfo>
+  </documentation>
+ <types>
+  
+         <xsd:schema elementFormDefault="qualified" targetNamespace="http://soap.sforce.com/schemas/class/EAIServiceInbound" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+<xsd:include schemaLocation="EAIServiceInbound_InlineSchema1.xsd"/>
+    </xsd:schema>
+    </types>
+ <!-- Message for the header parts -->
+ <message name="Header">
+  <part element="tns:AllowFieldTruncationHeader" name="AllowFieldTruncationHeader"/>
+  <part element="tns:CallOptions" name="CallOptions"/>
+  <part element="tns:DebuggingHeader" name="DebuggingHeader"/>
+  <part element="tns:DebuggingInfo" name="DebuggingInfo"/>
+  <part element="tns:SessionHeader" name="SessionHeader"/>
+ </message>
+ <!-- Operation Messages -->
+ <message name="OEWebFormRequest">
+  <part element="tns:OEWebForm" name="parameters"/>
+ </message>
+ <message name="OEWebFormResponse">
+  <part element="tns:OEWebFormResponse" name="parameters"/>
+ </message>
+ <message name="SendRequestEERequest">
+  <part element="tns:SendRequestEE" name="parameters"/>
+ </message>
+ <message name="SendRequestEEResponse">
+  <part element="tns:SendRequestEEResponse" name="parameters"/>
+ </message>
+ <portType name="EAIServiceInboundPortType">
+  <operation name="OEWebForm">
+   <input message="tns:OEWebFormRequest"/>
+   <output message="tns:OEWebFormResponse"/>
+  </operation>
+  <operation name="SendRequestEE">
+   <input message="tns:SendRequestEERequest"/>
+   <output message="tns:SendRequestEEResponse"/>
+  </operation>
+ </portType>
+ <binding name="EAIServiceInboundBinding" type="tns:EAIServiceInboundPortType">
+  <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="OEWebForm">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:header message="tns:Header" part="SessionHeader" use="literal"/>
+    <soap:header message="tns:Header" part="CallOptions" use="literal"/>
+    <soap:header message="tns:Header" part="DebuggingHeader" use="literal"/>
+    <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal"/>
+    <soap:body parts="parameters" use="literal"/>
+   </input>
+   <output>
+    <soap:header message="tns:Header" part="DebuggingInfo" use="literal"/>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+  <operation name="SendRequestEE">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:header message="tns:Header" part="SessionHeader" use="literal"/>
+    <soap:header message="tns:Header" part="CallOptions" use="literal"/>
+    <soap:header message="tns:Header" part="DebuggingHeader" use="literal"/>
+    <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal"/>
+    <soap:body parts="parameters" use="literal"/>
+   </input>
+   <output>
+    <soap:header message="tns:Header" part="DebuggingInfo" use="literal"/>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+ </binding>
+ <service name="EAIServiceInboundService">
+  <documentation/>
+  <port binding="tns:EAIServiceInboundBinding" name="EAIServiceInbound">
+   <soap:address location="https://cs82.salesforce.com/services/Soap/class/EAIServiceInbound"/>
+  </port>
+ </service>
+</definitions>

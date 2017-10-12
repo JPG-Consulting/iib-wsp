@@ -1,0 +1,210 @@
+DECLARE ns1 NAMESPACE 'http://www.w3.org/2005/05/xmlmime';
+DECLARE ns3 NAMESPACE 'http://host.bs.com/common/webservice/prextbf/';
+
+
+CREATE COMPUTE MODULE Prepare_WS_BS
+   
+		
+	DECLARE outSap 				REFERENCE TO InputRoot.DataObject.ns:SapZbapiPrGetdetail;
+	DECLARE classe_merceologica CHARACTER;
+	DECLARE id_Item 			CHARACTER;
+	DECLARE fileRda				CHARACTER;
+			
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE numItem INT CARDINALITY(outSap.SapPritem[]);
+		DECLARE numPrest INT CARDINALITY(outSap.SapZprestEban[]);		
+		DECLARE i_item INT 1;
+	    DECLARE unit_price DECIMAL;
+		DECLARE msgOk CHARACTER;
+		DECLARE msgErrore CHARACTER;
+		DECLARE matl_group CHARACTER NULL;
+		
+		SET msgOk = outSap.SapReturn.TYPE;
+		IF msgOk = 'E' THEN --errore			
+			SET msgErrore = outSap.SapReturn.MESSAGE;
+			SET OutputRoot.XMLNSC.ns1:Response.ns1:return.ns1:codice = '02';
+			SET OutputRoot.XMLNSC.ns1:Response.ns1:return.ns1:descrizione = 'ZBAPI_PR_GETDETAIL: ERRORE RECUPERO DATI RDA. Eccezione SAP= ' || msgErrore;			
+			PROPAGATE TO TERMINAL 'out1';
+		ELSE
+			--| TESTATA
+			SET fileRda = '<a href= "'|| Environment.Variables.downloadRDA || Environment.Variables.numRda ||'">'||Environment.Variables.downloadRDA || Environment.Variables.numRda ||' </a>';  --| compongo il link per il download per il servizio di download del pdf dell'rda
+			
+			
+			--| ciclo per Posizione		
+			cicloItem: LOOP
+				IF i_item > numItem THEN
+					LEAVE cicloItem;
+				END IF;
+				DECLARE i_prest INT 1;
+				DECLARE i_row INT 1;	
+				
+				CREATE FIELD OutputRoot.SOAP.Body.ns3:importInput;	
+				DECLARE 	outputRef 			REFERENCE TO OutputRoot.SOAP.Body.ns3:importInput;		
+					    
+				if outSap.SapPritem[i_item].DELETE_IND IS NULL OR outSap.SapPritem[i_item].DELETE_IND <>'X' THEN
+					
+					SET outputRef.operationCode = '005';
+					SET outputRef.purchase.PurchaseRequestHeader.prCode = Environment.Variables.numRda ||  outSap.SapPritem[i_item].PREQ_ITEM;
+					SET outputRef.purchase.PurchaseRequestHeader.creatorName = Environment.Variables.richiedenteNome;
+					SET outputRef.purchase.PurchaseRequestHeader.creatorLastName = Environment.Variables.richiedenteCognome;
+					SET outputRef.purchase.PurchaseRequestHeader.creatorEmail = 'modasso@pic-informatica.it';--Environment.Variables.richiedenteMail;
+					SET outputRef.purchase.PurchaseRequestHeader.description = COALESCE(outSap.SapZstrCustomEban.ZZTEXT, '' ) || ' ' || COALESCE(outSap.SapZstrCustomEban.ZZTEXT1,'');
+					SET outputRef.purchase.PurchaseRequestHeader.notes = outSap.SapPrheader.PR_TYPE;
+					
+				    SET id_Item = outSap.SapPritem[i_item].PREQ_ITEM;
+				    SET classe_merceologica = THE(SELECT ITEM T.CLASSE_MERCEOLOGICA
+												FROM Database.INT_ENGINE.IIB_MATL_GROUP_SAP AS T
+												WHERE T.MATL_GROUP = outSap.SapPritem[i_item].MATL_GROUP);
+				    if (matl_group IS NULL) THEN
+						SET matl_group = classe_merceologica;
+					END IF;
+										
+					IF numPrest = 0 THEN --| non ci sono prestazioni per cui è un materiale
+				      SET outputRef.purchase.PurchaseRequestRow[i_row].rowNumber = i_item;	      
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].assignedBuyerCode = outSap.SapPritem[i_item].PUR_GROUP;
+					  IF COALESCE(outSap.SapPritem[i_item].MATERIAL,'XX')='XX' THEN 
+					  	SET outputRef.purchase.PurchaseRequestRow[i_row].materialCode = id_Item ||'_'||'M';
+					  ELSE
+					    SET outputRef.purchase.PurchaseRequestRow[i_row].materialCode = id_Item ||'_'||'M_'|| CAST(outSap.SapPritem[i_item].MATERIAL AS CHARACTER);
+					  END IF;
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].customMaterialShortDescription = outSap.SapPritem[i_item].SHORT_TEXT || outSap.SapZprestEban[i_prest].KTEXT1;			  
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].customMaterialDetailedDescription = outSap.SapPritem[i_item].SHORT_TEXT;
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].goodsGroupCode = classe_merceologica;		
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].prGroupCode = outSap.SapPritem[i_item].MATL_GROUP; --| TODO: cosa ci metto? se metto la classe merceologica va in errore
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].divisionCode = 'TEST'; --| TODO: cosa ci metto?			  
+					  --| SET outputRef.purchase.PurchaseRequestRow[i_row].quantity = REPLACE(REPLACE(cast(outSap.SapPritem[i_item].QUANTITY as character),',',''),'.',',');
+					  --| TODO: mi era stato detto di mettere come separataore dei decimali la virgola, ma non va... allora per il momento ho messo il punto
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].quantity = REPLACE(cast(outSap.SapPritem[i_item].QUANTITY as character),',','');			 			 
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].measureUnitCode = 'N';--| TODO: se ci metto quella di SAP si schianta outSap.SapPritem[i_item].UNIT;
+					  SET unit_price = outSap.SapPritem[i_prest].PREQ_PRICE / outSap.SapPritem[i_item].PRICE_UNIT;
+					  --|SET outputRef.purchase.PurchaseRequestRow[i_row].unitPrice = REPLACE(REPLACE(CAST(unit_price AS CHARACTER),',',''),'.',',');	
+					  SET outputRef.purchase.PurchaseRequestRow[i_row].unitPrice = REPLACE(CAST(unit_price AS CHARACTER),',','');
+					  CALL setOut(i_item, i_row);				 
+					  SET i_prest = i_prest + 1;
+					ELSE					
+						--| RIGA
+						set i_prest = 1;
+						DECLARE idx INT 1; 
+						DECLARE found BOOLEAN FALSE;
+						--| ciclo la tabella delle prestazioni
+						cicloPrestazioni: LOOP
+								IF i_prest > numPrest THEN
+						   		  LEAVE cicloPrestazioni;
+					         	END IF;	
+					      if (outSap.SapZprestEban[i_prest].BNFPO = id_Item) THEN    				      
+						      SET outputRef.purchase.PurchaseRequestRow[i_row].rowNumber = i_row;	      
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].assignedBuyerCode = outSap.SapPritem[i_item].PUR_GROUP;
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].materialCode = outSap.SapZprestEban[i_prest].BNFPO ||'_'||'P_'|| CAST(idx AS CHARACTER) ||'_'||CAST(outSap.SapZprestEban[i_prest].SRVPOS AS CHARACTER);
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].customMaterialShortDescription = outSap.SapPritem[i_item].SHORT_TEXT || outSap.SapZprestEban[i_prest].KTEXT1;
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].customMaterialDetailedDescription = outSap.SapPritem[i_item].SHORT_TEXT;
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].goodsGroupCode = classe_merceologica;	
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].prGroupCode = 'TEST'; --| TODO: cosa ci metto? se metto la classe merceologica va in errore
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].divisionCode = 'TEST'; --| TODO: cosa ci metto?	
+							  --| SET outputRef.purchase.PurchaseRequestRow[i_row].quantity = REPLACE(REPLACE(cast(outSap.SapZprestEban[i_prest].MENGE as character),',',''),'.',',');					 
+							  --| TODO: mi era stato detto di mettere come separataore dei decimali la virgola, ma non va... allora per il momento ho messo il punto
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].quantity = REPLACE(cast(outSap.SapZprestEban[i_prest].MENGE as character),',','');			 			 					  
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].measureUnitCode = 'N'; --| TODO: se ci metto quella di SAP si schianta outSap.SapPritem[i_item].UNIT;
+							  SET unit_price = outSap.SapZprestEban[i_prest].TBTWR / outSap.SapZprestEban[i_prest].PEINH;
+							  --| SET outputRef.purchase.PurchaseRequestRow[i_row].unitPrice = REPLACE(REPLACE(CAST(unit_price AS CHARACTER),',',''),'.',',');					  
+							  SET outputRef.purchase.PurchaseRequestRow[i_row].unitPrice = REPLACE(CAST(unit_price AS CHARACTER),',','');
+							  SET idx = idx + 1;
+							  SET found = TRUE;
+							  CALL setOut(i_item, i_row);
+							  SET i_row = i_row + 1;	
+					      ELSE
+					      	 SET idx = 1; --| risetto a uno per il conteggio sul singolo idem	   			  
+					      END IF;	  			      
+					      SET i_prest = i_prest + 1;
+						END LOOP cicloPrestazioni;
+						IF (found = FALSE) THEN --| è UN MATERIALE	
+							SET outputRef.purchase.PurchaseRequestRow[i_row].rowNumber = i_row;	      
+							SET outputRef.purchase.PurchaseRequestRow[i_row].assignedBuyerCode = outSap.SapPritem[i_item].PUR_GROUP;
+							IF COALESCE(outSap.SapPritem[i_item].MATERIAL,'XX')='XX' THEN 
+							   SET outputRef.purchase.PurchaseRequestRow[i_row].materialCode = id_Item ||'_'||'M';
+							ELSE
+							   SET outputRef.purchase.PurchaseRequestRow[i_row].materialCode = id_Item ||'_'||'M_'|| CAST(outSap.SapPritem[i_item].MATERIAL AS CHARACTER);
+							END IF;
+							SET outputRef.purchase.PurchaseRequestRow[i_row].customMaterialShortDescription = outSap.SapPritem[i_item].SHORT_TEXT || outSap.SapZprestEban[i_prest].KTEXT1;					
+							SET outputRef.purchase.PurchaseRequestRow[i_row].customMaterialDetailedDescription = outSap.SapPritem[i_item].SHORT_TEXT;
+							SET outputRef.purchase.PurchaseRequestRow[i_row].goodsGroupCode = classe_merceologica;	
+							SET outputRef.purchase.PurchaseRequestRow[i_row].prGroupCode = 'TEST'; --| TODO: cosa ci metto? se metto la classe merceologica va in errore
+						    SET outputRef.purchase.PurchaseRequestRow[i_row].divisionCode = 'TEST'; --| TODO: cosa ci metto?	
+							--|SET outputRef.purchase.PurchaseRequestRow[i_row].quantity = REPLACE(REPLACE(cast(outSap.SapPritem[i_item].QUANTITY as character),',',''),'.',',');
+							--| TODO: mi era stato detto di mettere come separataore dei decimali la virgola, ma non va... allora per il momento ho messo il punto
+							SET outputRef.purchase.PurchaseRequestRow[i_row].quantity = REPLACE(cast(outSap.SapPritem[i_item].QUANTITY as character),',','');
+							SET outputRef.purchase.PurchaseRequestRow[i_row].measureUnitCode = 'N';--| TODO: se ci metto quella di SAP si schianta outSap.SapPritem[i_item].UNIT;
+							SET unit_price = outSap.SapPritem[i_item].PREQ_PRICE / outSap.SapPritem[i_item].PRICE_UNIT;
+							--| SET outputRef.purchase.PurchaseRequestRow[i_row].unitPrice = REPLACE(REPLACE(CAST(unit_price AS CHARACTER),',',''),'.',',');
+							SET outputRef.purchase.PurchaseRequestRow[i_row].unitPrice = REPLACE(CAST(unit_price AS CHARACTER),',','');
+							CALL setOut(i_item, i_row);					 
+							SET i_row = i_row + 1;								
+						END IF;	
+					END IF;	
+				END IF;			
+				
+				--| invio file in allegato dell'RDA
+				SET outputRef.purchase.PurchaseRequestAttachFiles.fileName = Environment.Variables.numRda ||'.html';
+				SET outputRef.purchase.PurchaseRequestAttachFiles.fileDescription = Environment.Variables.numRda;			
+				SET outputRef.purchase.PurchaseRequestAttachFiles.fileBase64=BASE64ENCODE(fileRda);	
+				SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL = Environment.Variables.url_import;
+				
+				--| copio il messaggio nell'environment per usarlo eventualmente nella cancellazione
+				SET Environment.Variables.Items.Item[i_item] = outputRef.purchase;
+				PROPAGATE TO TERMINAL 'out' DELETE DEFAULT;
+				
+				SET i_item = i_item +1;
+			END LOOP cicloItem;			
+			
+		END IF;
+		SET OutputLocalEnvironment.Variables.Count = numItem;
+		PROPAGATE TO TERMINAL 'out2' DELETE DEFAULT;
+		RETURN FALSE;
+	END;
+
+	CREATE PROCEDURE setOut(IN v_item INT, IN v_row INT) 
+	BEGIN
+		DECLARE i_addrDelivery  INT 1;	
+		DECLARE numAddrDelivery INT CARDINALITY(outSap.SapPraddrdelivery[]);
+		DECLARE i_itemText  	INT 1;	
+		DECLARE numItemText		INT CARDINALITY(outSap.SapPritemtext[]);
+		DECLARE 	outputRef 			REFERENCE TO OutputRoot.SOAP.Body.ns3:importInput;
+																	
+		SET outputRef.purchase.PurchaseRequestRow[v_row].unitCurrencyCode = outSap.SapPritem[v_item].CURRENCY_ISO;
+		SET outputRef.purchase.PurchaseRequestRow[v_row].deliveryDate = REPLACE(CAST(outSap.SapPritem[v_item].DELIV_DATE AS CHARACTER),'-','');
+		SET outputRef.purchase.PurchaseRequestRow[v_row].alternativeDeliveryDate = REPLACE(CAST(outSap.SapPritem[v_item].DELIV_DATE AS CHARACTER),'-','');
+		--| ACCEDO A PRADDRDELIVERY
+		SET i_addrDelivery = 1;
+		DECLARE foundAddr BOOLEAN FALSE;
+		cicloAddrDelivery: LOOP
+			IF (i_addrDelivery > numAddrDelivery or foundAddr = TRUE)  THEN
+				LEAVE cicloAddrDelivery;
+			END IF;				
+			if (outSap.SapPraddrdelivery[i_addrDelivery].PREQ_ITEM = id_Item) THEN
+			  SET outputRef.purchase.PurchaseRequestRow[v_row].deliveryInfo = outSap.SapPraddrdelivery[i_addrDelivery].STREET || ' ' || outSap.SapPraddrdelivery[i_addrDelivery].HOUSE_NO;
+			  SET outputRef.purchase.PurchaseRequestRow[v_row].deliveryCountryCode = outSap.SapPraddrdelivery[i_addrDelivery].COUNTRYISO;
+			  SET outputRef.purchase.PurchaseRequestRow[v_row].deliveryRegion = outSap.SapPraddrdelivery[i_addrDelivery].REGION;			  
+			  SET foundAddr = TRUE; 
+			END IF; 
+			SET i_addrDelivery = i_addrDelivery +1;
+		END LOOP cicloAddrDelivery;
+		--| accedo a PRITEMTEXT
+		DECLARE text CHARACTER;
+		SET text = '';
+		SET i_itemText = 1;
+		cicloItemText: LOOP
+			IF (i_itemText > numItemText)  THEN
+				LEAVE cicloItemText;
+			END IF;				
+			if (outSap.SapPritemtext[i_itemText].PREQ_ITEM = id_Item) THEN
+			  SET text = text || ' ' || outSap.SapPritemtext[i_itemText].TEXT_LINE;
+			  SET outputRef.purchase.PurchaseRequestRow[v_row].notes = text; --| TODO SE Più LUNGO DI 2000 (perché può essere su più righe slla pritemtext.text_line) SPEZZA SU additionalComment1/additionalComment2/additionalComment3
+			ELSE
+			  SET text = '';	  
+			END IF; 
+			SET i_itemText = i_itemText +1;
+		END LOOP cicloItemText;		
+		
+	END;	
+	
+END MODULE;

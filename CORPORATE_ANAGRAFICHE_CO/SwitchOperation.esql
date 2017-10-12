@@ -1,0 +1,17 @@
+
+
+CREATE COMPUTE MODULE SwitchOperation
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		IF InputRoot.XMLNSC.ns:Input.oggetto IS NOT NULL AND LENGTH(TRIM(InputRoot.XMLNSC.ns:Input.oggetto))>0 THEN
+			PROPAGATE TO TERMINAL 'out1';
+			RETURN FALSE;
+		ELSE
+			IF (InputRoot.XMLNSC.ns:Input.tipo = 'OI' AND InputRoot.XMLNSC.ns:Input.societa = '1000' AND (InputRoot.XMLNSC.ns:Input.tipoOdi IS NULL OR LENGTH(TRIM(InputRoot.XMLNSC.ns:Input.tipoOdi) ) = 0)) THEN
+				THROW USER EXCEPTION MESSAGE 2955 VALUES('Anagrafiche CO Ordini Interni', 'Non è possibile invocare la funzione per la societa 1000 senza tipo ordine');
+			END IF;
+			RETURN TRUE;
+		END IF;	
+	END;
+END MODULE;

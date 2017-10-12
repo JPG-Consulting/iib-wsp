@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmLabel.msgnode="ComIbmLabel.msgnode" xmlns:ComIbmRouteToLabel.msgnode="ComIbmRouteToLabel.msgnode" xmlns:ComIbmSOAPInput.msgnode="ComIbmSOAPInput.msgnode" xmlns:ComIbmSOAPReply.msgnode="ComIbmSOAPReply.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:gen_CORPORATE_WS_DOCUMENTALEInputCatchHandler.subflow="gen/CORPORATE_WS_DOCUMENTALEInputCatchHandler.subflow"
+    xmlns:gen_CORPORATE_WS_DOCUMENTALEInputFailureHandler.subflow="gen/CORPORATE_WS_DOCUMENTALEInputFailureHandler.subflow" xmlns:gen_CORPORATE_WS_DOCUMENTALEInputHTTPTimeoutHandler.subflow="gen/CORPORATE_WS_DOCUMENTALEInputHTTPTimeoutHandler.subflow" xmlns:gen_Create_Request_Response.subflow="gen/Create_Request_Response.subflow" xmlns:gen_Delete_Request_Response.subflow="gen/Delete_Request_Response.subflow" xmlns:gen_Retrieve_Request_Response.subflow="gen/Retrieve_Request_Response.subflow" xmlns:gen_Update_Request_Response.subflow="gen/Update_Request_Response.subflow"
+    xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="gen/CORPORATE_WS_DOCUMENTALE.msgflow" nsPrefix="gen_CORPORATE_WS_DOCUMENTALE.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="CORPORATE_WS_DOCUMENTALE" bundleName="gen/CORPORATE_WS_DOCUMENTALE" pluginId="CORPORATE_WS_DOCUMENTALE"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_WS_DOCUMENTALE/icons/full/obj16/CORPORATE_WS_DOCUMENTALE.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_WS_DOCUMENTALE/icons/full/obj30/CORPORATE_WS_DOCUMENTALE.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmRouteToLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="220,230">
+        <translation xmi:type="utility:ConstantString" string="Route To Label"/>
+      </nodes>
+      <nodes xmi:type="gen_CORPORATE_WS_DOCUMENTALEInputFailureHandler.subflow:FCMComposite_1" xmi:id="FCMComposite_1_4" location="635,88">
+        <translation xmi:type="utility:ConstantString" string="CORPORATE_WS_DOCUMENTALEInputFailureHandler"/>
+      </nodes>
+      <nodes xmi:type="gen_CORPORATE_WS_DOCUMENTALEInputHTTPTimeoutHandler.subflow:FCMComposite_1" xmi:id="FCMComposite_1_5" location="515,178">
+        <translation xmi:type="utility:ConstantString" string="CORPORATE_WS_DOCUMENTALEInputHTTPTimeoutHandler"/>
+      </nodes>
+      <nodes xmi:type="gen_CORPORATE_WS_DOCUMENTALEInputCatchHandler.subflow:FCMComposite_1" xmi:id="FCMComposite_1_6" location="455,223">
+        <translation xmi:type="utility:ConstantString" string="CORPORATE_WS_DOCUMENTALEInputCatchHandler"/>
+      </nodes>
+      <nodes xmi:type="ComIbmLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="220,310" labelName="Create">
+        <translation xmi:type="utility:ConstantString" string="Create"/>
+      </nodes>
+      <nodes xmi:type="gen_Create_Request_Response.subflow:FCMComposite_1" xmi:id="FCMComposite_1_8" location="370,310">
+        <translation xmi:type="utility:ConstantString" string="Create_Request_Response"/>
+      </nodes>
+      <nodes xmi:type="ComIbmLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="220,390" labelName="Delete">
+        <translation xmi:type="utility:ConstantString" string="Delete"/>
+      </nodes>
+      <nodes xmi:type="gen_Delete_Request_Response.subflow:FCMComposite_1" xmi:id="FCMComposite_1_10" location="370,390">
+        <translation xmi:type="utility:ConstantString" string="Delete_Request_Response"/>
+      </nodes>
+      <nodes xmi:type="ComIbmLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="220,470" labelName="Retrieve">
+        <translation xmi:type="utility:ConstantString" string="Retrieve"/>
+      </nodes>
+      <nodes xmi:type="gen_Retrieve_Request_Response.subflow:FCMComposite_1" xmi:id="FCMComposite_1_12" location="370,470">
+        <translation xmi:type="utility:ConstantString" string="Retrieve_Request_Response"/>
+      </nodes>
+      <nodes xmi:type="ComIbmLabel.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_13" location="220,550" labelName="Update">
+        <translation xmi:type="utility:ConstantString" string="Update"/>
+      </nodes>
+      <nodes xmi:type="gen_Update_Request_Response.subflow:FCMComposite_1" xmi:id="FCMComposite_1_14" location="370,550">
+        <translation xmi:type="utility:ConstantString" string="Update_Request_Response"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="20,100" wsdlFileName="CORPORATE_DOCUMENTALE.wsdl" selectedPortType="CORPORATE_DOCUMENTALE" selectedBinding="CORPORATE_DOCUMENTALEHttpBinding" selectedPort="CORPORATE_DOCUMENTALEHttpPort" targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" useHTTPTransport="true" urlSelector="/corporate/SOAP/documentale" allowQueryWSDL="true" extractSOAPBody="true" parserXmlnscBuildTreeUsingXMLSchema="false"
+          validateMaster="none">
+        <translation xmi:type="utility:ConstantString" string="SOAP Input"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="830,220">
+        <translation xmi:type="utility:ConstantString" string="SOAP Reply"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_14" sourceNode="FCMComposite_1_13" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_12" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_14" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard>
+      <stickyNote location="5,5">
+        <body xmi:type="utility:ConstantString" string="This is an automatically generated message flow.&#xA;Any changes you make may be overwritten without warning.&#xA;"/>
+      </stickyNote>
+    </stickyBoard>
+  </eClassifiers>
+</ecore:EPackage>

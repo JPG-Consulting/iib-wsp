@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="zpm_func_loc_ubi">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="SWERK"/>
+        <xsd:element ref="SORT"/>
+        <xsd:element ref="MSGRP"/>
+        <xsd:element ref="BEBER"/>
+        <xsd:element ref="ARBPL"/>
+        <xsd:element ref="ABCKZ"/>
+        <xsd:element ref="EQFNR"/>
+        <xsd:element ref="NAME1"/>
+        <xsd:element ref="STREET"/>
+        <xsd:element ref="HOUSE_NUM1"/>
+        <xsd:element ref="POST_CODE1"/>
+        <xsd:element ref="CITY1"/>
+        <xsd:element ref="COUNTRY"/>
+        <xsd:element ref="REGION"/>
+        <xsd:element ref="TEL_NUMBER"/>
+        <xsd:element ref="FAX_NUMBER"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ANLUN" type="xsd:string"/>
+  <xsd:element name="SUBMT" type="xsd:string"/>
+  <xsd:element name="DAUFN" type="xsd:string"/>
+  <xsd:element name="FAX_NUMBER" type="xsd:string"/>
+  <xsd:element name="HERLD" type="xsd:string"/>
+  <xsd:element name="BEGRU" type="xsd:string"/>
+  <xsd:element name="TPLNR" type="xsd:string"/>
+  <xsd:element name="ATWRT" type="xsd:string"/>
+  <xsd:element name="dati_st">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="zpm_func_loc_hdr" maxOccurs="1" minOccurs="1"/>
+        <xsd:element ref="zpm_func_loc_sta" maxOccurs="1" minOccurs="0"/>
+        <xsd:element ref="zpm_func_loc_gen" maxOccurs="1" minOccurs="0"/>
+        <xsd:element ref="zpm_func_loc_ubi" maxOccurs="1" minOccurs="0"/>
+        <xsd:element ref="zpm_func_loc_org" maxOccurs="1" minOccurs="0"/>
+        <xsd:element ref="zpm_func_loc_str" maxOccurs="1" minOccurs="0"/>
+        <xsd:element ref="zpm_func_loc_cla" maxOccurs="unbounded" minOccurs="0"/>
+        <xsd:element ref="zpm_func_loc_par" maxOccurs="unbounded" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="BAUMM" type="xsd:string"/>
+  <xsd:element name="INVNR" type="xsd:string"/>
+  <xsd:element name="KOKRS" type="xsd:string"/>
+  <xsd:element name="MSGRP" type="xsd:string"/>
+  <xsd:element name="zpm_func_loc_org">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="BURKS"/>
+        <xsd:element ref="GSBER"/>
+        <xsd:element ref="ANLNR"/>
+        <xsd:element ref="ANLUN"/>
+        <xsd:element ref="KOSTL"/>
+        <xsd:element ref="KOKRS"/>
+        <xsd:element ref="PROID"/>
+        <xsd:element ref="DAUFN"/>
+        <xsd:element ref="AUFNR"/>
+        <xsd:element ref="IWERK"/>
+        <xsd:element ref="INGRP"/>
+        <xsd:element ref="GEWRK"/>
+        <xsd:element ref="WERGW"/>
+        <xsd:element ref="RBNR"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ACTION" type="xsd:string"/>
+  <xsd:element name="REGION" type="xsd:string"/>
+  <xsd:element name="IWERK" type="xsd:string"/>
+  <xsd:element name="KLASS" type="xsd:string"/>
+  <xsd:element name="ANLNR" type="xsd:string"/>
+  <xsd:element name="TPLKZ" type="xsd:string"/>
+  <xsd:element name="EQART" type="xsd:string"/>
+  <xsd:element name="TEL_NUMBER" type="xsd:string"/>
+  <xsd:element name="SERGE" type="xsd:string"/>
+  <xsd:element name="KOSTL" type="xsd:string"/>
+  <xsd:element name="zpm_func_loc_cla">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="ATNAM"/>
+        <xsd:element ref="ATWRT"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GEWRK" type="xsd:string"/>
+  <xsd:element name="GEWEI" type="xsd:string"/>
+  <xsd:element name="EQFNR" type="xsd:string"/>
+  <xsd:element name="FLTYP" type="xsd:string"/>
+  <xsd:element name="ARBPL" type="xsd:string"/>
+  <xsd:element name="EINZL" type="xsd:string"/>
+  <xsd:element name="GSBER" type="xsd:string"/>
+  <xsd:element name="BRGEW" type="xsd:string"/>
+  <xsd:element name="ATNAM" type="xsd:string"/>
+  <xsd:element name="ANSDT" type="xsd:string"/>
+  <xsd:element name="RBNR" type="xsd:string"/>
+  <xsd:element name="PROID" type="xsd:string"/>
+  <xsd:element name="BAUJJ" type="xsd:string"/>
+  <xsd:element name="MAPAR" type="xsd:string"/>
+  <xsd:element name="HERST" type="xsd:string"/>
+  <xsd:element name="zpm_func_loc_str">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="TPLKZ"/>
+        <xsd:element ref="TPLMA"/>
+        <xsd:element ref="POSNR"/>
+        <xsd:element ref="TRPNR"/>
+        <xsd:element ref="IEQUI"/>
+        <xsd:element ref="EINZL"/>
+        <xsd:element ref="SUBMT"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="WAERS" type="xsd:string"/>
+  <xsd:element name="STATO" type="xsd:string"/>
+  <xsd:element name="PLTXT" type="xsd:string"/>
+  <xsd:element name="POSNR" type="xsd:string"/>
+  <xsd:element name="ABCKZ" type="xsd:string"/>
+  <xsd:element name="PARVW" type="xsd:string"/>
+  <xsd:element name="STREET" type="xsd:string"/>
+  <xsd:element name="TYPBZ" type="xsd:string"/>
+  <xsd:element name="SORT" type="xsd:string"/>
+  <xsd:element name="zpm_func_loc_sta">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="STATO"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="zpm_func_loc_par">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="PARVW"/>
+        <xsd:element ref="PARNR"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="PARNR" type="xsd:string"/>
+  <xsd:element name="INGRP" type="xsd:string"/>
+  <xsd:element name="POST_CODE1" type="xsd:string"/>
+  <xsd:element name="zpm_func_loc_hdr">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="TPLNR"/>
+        <xsd:element ref="ACTION"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="BEBER" type="xsd:string"/>
+  <xsd:element name="IEQUI" type="xsd:string"/>
+  <xsd:element name="CITY1" type="xsd:string"/>
+  <xsd:element name="COUNTRY" type="xsd:string"/>
+  <xsd:element name="GROES" type="xsd:string"/>
+  <xsd:element name="TRPNR" type="xsd:string"/>
+  <xsd:element name="INBTD" type="xsd:string"/>
+  <xsd:element name="SWERK" type="xsd:string"/>
+  <xsd:element name="AUFNR" type="xsd:string"/>
+  <xsd:element name="ANSWT" type="xsd:string"/>
+  <xsd:element name="NAME1" type="xsd:string"/>
+  <xsd:element name="HOUSE_NUM1" type="xsd:string"/>
+  <xsd:element name="BURKS" type="xsd:string"/>
+  <xsd:element name="TPLMA" type="xsd:string"/>
+  <xsd:element name="WERGW" type="xsd:string"/>
+  <xsd:element name="zpm_func_loc_gen">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="PLTXT"/>
+        <xsd:element ref="FLTYP"/>
+        <xsd:element ref="KLASS"/>
+        <xsd:element ref="EQART"/>
+        <xsd:element ref="BEGRU"/>
+        <xsd:element ref="BRGEW"/>
+        <xsd:element ref="GEWEI"/>
+        <xsd:element ref="GROES"/>
+        <xsd:element ref="INVNR"/>
+        <xsd:element ref="INBTD"/>
+        <xsd:element ref="ANSWT"/>
+        <xsd:element ref="WAERS"/>
+        <xsd:element ref="ANSDT"/>
+        <xsd:element ref="HERST"/>
+        <xsd:element ref="HERLD"/>
+        <xsd:element ref="TYPBZ"/>
+        <xsd:element ref="BAUJJ"/>
+        <xsd:element ref="BAUMM"/>
+        <xsd:element ref="MAPAR"/>
+        <xsd:element ref="SERGE"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

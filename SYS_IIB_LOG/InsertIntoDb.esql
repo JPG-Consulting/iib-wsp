@@ -1,0 +1,156 @@
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/messagebroker/6.1.0/monitoring/event';
+
+
+DECLARE V_FLOW_ID CHARACTER;
+DECLARE V_XML	  CHARACTER;
+DECLARE V_EXC	  CHARACTER;	
+DECLARE ID_MSG_F  FLOAT;
+DECLARE ID_MSG_I  INTEGER;
+DECLARE ID_MSG    CHARACTER;
+DECLARE EXC	  CHARACTER;
+
+
+CREATE COMPUTE MODULE InsertIntoDb
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE to_mail CHARACTER;
+        DECLARE da CHARACTER;
+        DECLARE oggetto_mail CHARACTER;
+        DECLARE corpo_mail CHARACTER;
+        DECLARE ins  CHARACTER;
+        DECLARE upd  CHARACTER;
+        DECLARE cc CHARACTER;
+        DECLARE ccn CHARACTER;
+        DECLARE smtp CHARACTER;
+        
+        
+        SET Environment.result[] = 
+		select t.a
+             , t.oggetto  
+             , t.corpo
+             , t.da
+             , t.cc
+             , t.ccn
+             , t.smtp    
+          from Database.IIB_MAIL_CFG as t
+         where t.flusso = InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:messageFlowData.ns:messageFlow.ns:name;
+          
+       SET to_mail = Environment.result[1].a;
+       SET oggetto_mail = Environment.result[1].oggetto;
+       SET corpo_mail	= Environment.result[1].corpo;
+       SET da = Environment.result[1].da;
+       SET cc = Environment.result[1].cc;
+       SET ccn = Environment.result[1].ccn;
+       SET smtp = Environment.result[1].smtp;
+       
+       
+       
+       
+		SET V_EXC='0';
+		--declare ptrException reference to Root.XMLNSC.ns:event.ns:applicationData.ns:complexContent.ExceptionList.*[1];
+		SET V_FLOW_ID = InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:eventData.ns:eventCorrelation.ns:localTransactionId ||'-'|| CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMdd-HHmmss');
+		if InputRoot.XMLNSC.ns:event.ns:applicationData.ns:simpleContent.ns:dataType ='float' THEN
+		  SET ID_MSG_F = CAST( InputRoot.XMLNSC.ns:event.ns:applicationData.ns:simpleContent.ns:value as FLOAT);
+		  SET ID_MSG_I = CAST(ID_MSG_F AS INTEGER);
+		  SET ID_MSG   = CAST(ID_MSG_I AS CHARACTER);
+		else 
+			SET ID_MSG = InputRoot.XMLNSC.ns:event.ns:applicationData.ns:simpleContent.ns:value;	
+		END IF;  
+			
+		IF InputRoot.XMLNSC.ns:event.ns:bitstreamData.ns:bitstream is not null THEN
+			SET V_XML = '1';
+		ELSE
+			SET V_XML = '0';
+		END IF;		
+		IF InputRoot.XMLNSC.ns:event.ns:applicationData.ns:complexContent.ns:elementName = 'ExceptionList' THEN
+			SET V_EXC = '1';
+			SET EXC = parseToString(InputRoot.XMLNSC.ns:event.ns:applicationData.ns:complexContent); 
+		ELSE
+			SET V_EXC = '0';
+			SET EXC = NULL;
+		END IF;
+		
+		
+		
+		INSERT INTO Database.INT_ENGINE.IIB_LOG 
+			       ( ID_MSG
+			       , ID_FLOW
+			       , SERVICE_NAME			       
+			       , FLOW_NAME
+			       , NODE_NAME
+			       , NODE_TYPE
+			       , HAS_XML
+			       , XML
+			       , EXCEPTION
+			       , HAS_EXCEPTION
+			       , DESCRIPTION
+			       , ID_TRANSACTION
+			       , EVENT_SRCADDR
+			       )
+		VALUES ( 
+				ID_MSG 
+			  ,	V_FLOW_ID
+			  , InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:messageFlowData.ns:messageFlow.ns:uniqueFlowName
+			  , InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:messageFlowData.ns:messageFlow.ns:name
+			  , InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:messageFlowData.ns:node.ns:nodeLabel
+			  , InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:messageFlowData.ns:node.ns:nodeType			  
+			  , V_XML
+			  , InputRoot.XMLNSC.ns:event.ns:bitstreamData.ns:bitstream		
+			  , EXC
+			  , V_EXC	 
+			  , InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:eventData.ns:eventIdentity.ns:eventName
+			  , InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:eventData.ns:eventCorrelation.ns:localTransactionId
+			  , InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:eventData.ns:eventSourceAddress
+			 );
+		
+		IF V_EXC = '0' THEN
+			RETURN FALSE;
+		ELSE
+			SET OutputRoot.EmailOutputHeader.Subject = InputRoot.XMLNSC.ns:event.ns:eventPointData.ns:messageFlowData.ns:messageFlow.ns:uniqueFlowName;
+			SET OutputRoot.EmailOutputHeader.To = to_mail;
+			SET OutputRoot.EmailOutputHeader.Cc = cc;
+			SET OutputRoot.EmailOutputHeader.Bcc = ccn;
+			SET OutputRoot.EmailOutputHeader.From = da;
+			SET OutputLocalEnvironment.Destination.Email.SMTPServer = smtp;
+			SET corpo_mail = REPLACE(corpo_mail, '%body1', EXC);
+			SET OutputRoot.BLOB.BLOB = CAST(corpo_mail AS BLOB CCSID 1208);
+			
+			RETURN TRUE;
+		END IF;
+   
+	END;
+	
+	
+	
+	
+	CREATE FUNCTION parseToString(IN root REFERENCE) RETURNS CHARACTER
+	BEGIN
+		DECLARE concatString character;
+		SET concatString = '';
+		CALL ComposeDetails(root,concatString);
+ 		return concatString;
+	END;
+
+
+	CREATE PROCEDURE ComposeDetails(IN root REFERENCE,INOUT concatString CHARACTER) 
+	BEGIN
+		DECLARE CRLF CHARACTER CAST(X'0D0A' AS CHARACTER CCSID 1208);
+		DECLARE TAB CHARACTER CAST(X'09' AS CHARACTER CCSID 1208);
+		DECLARE fieldName CHARACTER;
+		DECLARE fieldValue CHARACTER;
+		DECLARE cursor REFERENCE TO root;
+		MOVE cursor FIRSTCHILD;
+		WHILE LASTMOVE(cursor) Do
+			SET fieldName = FIELDNAME(cursor);
+			SET fieldValue = FIELDVALUE(cursor);
+			IF (fieldValue is not null) THEN
+				SET  concatString  =  concatString  ||'<'||fieldName||'>' ||fieldValue||'</'||fieldName||'>'||CRLF;
+			ELSE
+				SET  concatString  =  concatString  ||'<'||fieldName||'>'||CRLF;
+				CALL ComposeDetails(cursor, concatString);
+				SET  concatString  =  concatString  ||'</'||fieldName||'>'||CRLF;
+			END IF;
+		MOVE cursor NEXTSIBLING;
+		END WHILE;  
+	END;
+END MODULE;

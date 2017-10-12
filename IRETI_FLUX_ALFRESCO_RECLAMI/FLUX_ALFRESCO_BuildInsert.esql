@@ -1,0 +1,65 @@
+
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_BuildInsert
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		-- 
+		
+		IF  InputRoot.SOAP.Body.ns6:DeleteResponse.status.status = 'OK' THEN
+			SET Environment.Variabili.statistiche.delete = Environment.Variabili.statistiche.delete+1;
+			--||LOG TABELLA RICHIESTE ALFRESCO
+		    UPDATE Database.IIB_FLUX_DOCUMENTALE AS T
+		    SET RISPOSTA = ASBITSTREAM(InputRoot.SOAP),
+		    ESITO = InputRoot.SOAP.Body.ns6:DeleteResponse.status.status,
+		    DESCRIZIONE_ESITO = InputRoot.SOAP.Body.ns6:DeleteResponse.status.ID,
+		    TMS_RISPOSTA = CURRENT_TIMESTAMP
+		    WHERE
+		    T.ID_RICHIESTA = Environment.Variables.idRichiesta 
+		    AND T.ID_FLUX = Environment.Variables.idFlux;
+			PASSTHRU('COMMIT');
+		END IF ;
+		
+		
+		-- DEVO CICLARE SU QUANTI FILES ESISTO NEL DOCUMENTO
+		
+		
+		
+		-- DEVO CICLARE SU QUANTI FILES ALLEGATI ESISTO NEL DOCUMENTO XML (...I PDF),
+		-- PER OGNI ELEMENTO , DEVO RECUPERAREI I PARAMETRI PER L'FTP, 
+		-- ED INULTIMO INVOCARE IL SERVIZIO WSERVICE DI INSERT.
+		
+		set  OutputLocalEnvironment.Destination.File.Remote.Server  = THE (SELECT ITEM T.VALORE
+														      		 FROM Database.IIB_VAR_CFG AS T
+ 															        WHERE T.FLUSSO    ='FLUX_ALFRESCO' 
+		  													          AND T.VARIABILE ='FTP_HOST')||':21';
+		  													      
+		  													      
+		set  OutputLocalEnvironment.Destination.File.Remote.ServerDirectory  = substring (Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:path_di_collocazione after '\\srvfs22.master.local' ) ;
+		 
+		  
+		DECLARE i INTEGER 1;
+		DECLARE principale CHARACTER;
+		FOR allegato AS Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:allegati.ns:allegato[] DO
+			IF allegato.ns:tipo <> 'principale' THEN
+	     		SET OutputLocalEnvironment.Destination.File.Name = allegato.ns:file; 
+	     		PROPAGATE TO TERMINAL 'out1' DELETE NONE;
+			ELSE
+				SET principale = allegato.ns:file;
+			END IF;
+			
+		    SET i = i + 1;
+		END FOR;
+		
+		SET OutputLocalEnvironment.Destination.File.Name = principale; 
+		
+		IF principale IS NOT NULL THEN
+			PROPAGATE TO TERMINAL 'out1' DELETE NONE;
+		END IF;
+		
+		SET OutputRoot.XMLNSC.allegati.totale = i-1;
+		RETURN TRUE;
+	END;
+
+	 
+END MODULE;

@@ -1,0 +1,14 @@
+
+
+CREATE COMPUTE MODULE CONTROLLO_IMPORTO_ODL_BuildReply
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.ns3:Output.ordine.ordineId = InputLocalEnvironment.HTTP.Input.QueryString.ordineId;
+		SET OutputRoot.XMLNSC.ns3:Output.ordine.ordinePos = InputLocalEnvironment.HTTP.Input.QueryString.ordinePos;
+		SET OutputRoot.XMLNSC.ns3:Output.ordine.tipoOrdine = InputLocalEnvironment.HTTP.Input.QueryString.tipoOrdine;
+		SET OutputRoot.XMLNSC.ns3:Output.ordine.societa = InputLocalEnvironment.HTTP.Input.QueryString.societa;
+		SET OutputRoot.XMLNSC.ns3:Output.ordine.residuo = InputRoot.DataObject.ns12:SapZrfcResiduoValore.WK_NETWR;
+		RETURN TRUE;
+	END;
+
+END MODULE;

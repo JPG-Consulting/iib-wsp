@@ -1,0 +1,19 @@
+
+
+CREATE COMPUTE MODULE SMISTAMENTO_CADE_SmistaCADE
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE sistema_fatturazione CHARACTER THE(SELECT ITEM T.ID_SISTEMA_FATTURAZIONE FROM Database.HUB_EAI.THOR_OUT.FILE_OUTPUT AS T
+										WHERE T.ID_FILE_OUTPUT = InputRoot.DataObject.ns:CADE_FILE_OUT.ID_FILE_OUTPUT);
+										
+		DECLARE directory_destinazione CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.INT_ENGINE.IIB_VAR_CFG AS T
+										WHERE T.FLUSSO = 'SMISTA_CADE' AND T.VARIABILE = 'DIRECTORY_'||sistema_fatturazione);
+										
+		SET OutputLocalEnvironment.Destination.File.Directory = directory_destinazione;
+		SET OutputLocalEnvironment.Destination.File.Name = InputRoot.DataObject.ns:CADE_FILE_OUT.FILE_NAME;
+		SET OutputRoot.Properties.CodedCharSetId = 1252;
+		SET OutputRoot.BLOB.BLOB = InputRoot.DataObject.ns:CADE_FILE_OUT.FILE_BLOB;
+		RETURN TRUE;
+	END;
+
+END MODULE;

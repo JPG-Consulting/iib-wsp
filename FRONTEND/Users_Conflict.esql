@@ -1,0 +1,9 @@
+
+
+CREATE COMPUTE MODULE Users_Conflict
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 409;
+		RETURN TRUE;
+	END;
+END MODULE;

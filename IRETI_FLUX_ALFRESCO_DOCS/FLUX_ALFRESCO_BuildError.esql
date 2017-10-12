@@ -1,0 +1,34 @@
+DECLARE ns3 NAMESPACE 'www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_BuildError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DELETE FIELD InputLocalEnvironment.Destination;
+		DECLARE result CHARACTER TRIM(CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID 1208));
+		DECLARE exc REFERENCE TO InputExceptionList.RecoverableException;
+		WHILE LASTMOVE(exc) = TRUE DO
+			MOVE exc LASTCHILD NAME 'RecoverableException';
+		END WHILE;
+		--||LOG TABELLA PROTOCOLLI FLUX
+	    UPDATE Database.IIB_FLUX_PROTOCOLLO AS T
+	    SET ESITO_AGRIS = COALESCE(result,parseToString(exc)),
+	    TMS_RISPOSTA_AGRIS = CURRENT_TIMESTAMP
+	    WHERE T.ID_FLUX = Environment.Variables.idFlux;
+		PASSTHRU('COMMIT');
+		
+		IF result = 'OK' THEN
+			RETURN FALSE;
+		ELSE
+			--|BUILD EMAIL
+			SET OutputRoot.XMLNSC.ns3:Params.flusso = 'FLUX_ALFRESCO_AGRIS_KO';
+			SET OutputRoot.XMLNSC.ns3:Params.obj1 = Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo;
+			SET OutputRoot.XMLNSC.ns3:Params.body1 = parseToString(InputExceptionList);
+			SET OutputRoot.XMLNSC.ns3:Params.body2 = Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo;
+			RETURN TRUE;
+		END IF;
+		
+	END;
+
+END MODULE;
+

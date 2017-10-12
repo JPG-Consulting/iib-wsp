@@ -1,0 +1,61 @@
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_StatisticheElab
+	DECLARE ns NAMESPACE 'http://prodoc.iren.it/protocollo';
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF InputRoot.SOAP.Body.ns6:CreateResponse.status.status IS NOT NULL THEN
+			
+			--||LOG TABELLA RICHIESTE ALFRESCO
+		    UPDATE Database.IIB_FLUX_DOCUMENTALE AS T
+		    SET RISPOSTA = ASBITSTREAM(InputRoot.SOAP),
+		    ESITO = InputRoot.SOAP.Body.ns6:CreateResponse.status.status,
+		    DESCRIZIONE_ESITO = InputRoot.SOAP.Body.ns6:CreateResponse.status.ID || ' - ' || COALESCE(InputRoot.SOAP.Body.ns6:CreateResponse.status.descrizione, InputRoot.SOAP.Body.ns6:CreateResponse.status.URL),
+		    TMS_RISPOSTA = CURRENT_TIMESTAMP
+		    WHERE
+		    T.ID_RICHIESTA = Environment.Variables.idRichiesta 
+		    AND T.ID_FLUX = Environment.Variables.idFlux;
+			PASSTHRU('COMMIT');
+			
+			IF (InputRoot.SOAP.Body.ns6:CreateResponse.status.status = 'OK') THEN
+				SET Environment.Variabili.statistiche.insert = Environment.Variabili.statistiche.insert + 1;
+				SET Environment.Variabili.DocumentiAssociati.Item[Environment.Variabili.statistiche.insert] = InputRoot.SOAP.Body.ns6:CreateResponse.status.ID;
+			ELSE
+				SET Environment.Variabili.messaggio = Environment.Variabili.messaggio||'
+				'||InputRoot.SOAP.Body.ns6:CreateResponse.status.descrizione;
+			END IF;
+			
+			RETURN FALSE;
+		ELSE
+			-- HO FINITO DI ELABORARE TUTTI I FILE, INVIO LE STATISTICHE
+			--<result><esito>OK</esito><messaggio></messaggio></result>
+			IF Environment.Variabili.statistiche.insert = InputRoot.XMLNSC.allegati.totale THEN
+				SET OutputRoot.XMLNSC.result.esito = 'OK';
+				SET OutputRoot.XMLNSC.result.messaggio = CAST(Environment.Variabili.statistiche.insert AS CHARACTER)||' documenti processati correttamente';
+			ELSE
+				
+				SET OutputRoot.XMLNSC.result.esito = 'KO';
+				SET OutputRoot.XMLNSC.result.messaggio = 'PROCESSO FALLITO! Inseriti '||CAST(Environment.Variabili.statistiche.insert AS CHARACTER)||' documenti di '|| CAST(InputRoot.XMLNSC.allegati.totale AS CHARACTER) ||' presenti.';
+				SET OutputRoot.XMLNSC.result.messaggio = OutputRoot.XMLNSC.result.messaggio || Environment.Variabili.messaggio;
+				IF (Environment.Variabili.statistiche.delete = 1) THEN
+					SET OutputRoot.XMLNSC.result.messaggio = OutputRoot.XMLNSC.result.messaggio || '
+					 Rimossa la cartella numprot_' || Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo;
+				END IF;
+				
+			END IF;
+			
+			--||LOG TABELLA PROTOCOLLI FLUX
+		    UPDATE Database.IIB_FLUX_PROTOCOLLO AS T
+		    SET RISPOSTA_FLUX = ASBITSTREAM(OutputRoot.XMLNSC),
+		    ESITO_FLUX = OutputRoot.XMLNSC.result.esito,
+		    DESCRIZIONE_ESITO_FLUX = OutputRoot.XMLNSC.result.messaggio,
+		    RECLAMO = 'NO',
+		    TMS_RISPOSTA_FLUX = CURRENT_TIMESTAMP
+		    WHERE T.ID_FLUX = Environment.Variables.idFlux;
+			PASSTHRU('COMMIT');
+
+			RETURN FALSE;
+		END IF;
+		
+	END;
+ 
+END MODULE;

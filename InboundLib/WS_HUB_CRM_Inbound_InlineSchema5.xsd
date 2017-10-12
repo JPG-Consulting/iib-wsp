@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:bons1="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://WS_HUB_CRM_Inbound" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <xsd:complexType name="Cliente">
+        <xsd:sequence>
+          <xsd:element name="nome" type="xsd:string"/>
+          <xsd:element name="cognome" type="xsd:string"/>
+          <xsd:element name="ragioneSociale" type="xsd:string"/>
+          <xsd:element name="codiceFiscale" type="xsd:string"/>
+          <xsd:element name="partitaIva" type="xsd:string"/>
+          <xsd:element name="cfStraniero" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>

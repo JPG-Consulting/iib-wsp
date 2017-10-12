@@ -1,0 +1,21 @@
+
+
+CREATE COMPUTE MODULE sendEmailOK
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.ns:Params;
+		IF Environment.WARNING = 'N' THEN		
+			DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns:Params;	
+			SET param.obj1   = Environment.Variables.sistema; 					
+			SET param.body1  = Environment.FileName; 		  	
+			SET param.flusso = 'IME_EE_CNRG_AE1_OK';
+		ELSE	
+			DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns:Params;	
+			SET param.obj1   = Environment.Variables.sistema; 				
+			SET param.body1  = Environment.FileName; 		
+			SET param.flusso = 'IME_EE_CNRG_AE1_OK_WRN';
+		END IF;				
+		RETURN TRUE;
+	END;
+
+END MODULE;

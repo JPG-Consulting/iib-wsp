@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/AnagraficheCO_InlineSchema.xsd"/>
+    <output path="/SapZfmFkberGetlist.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+        <namespace kind="supplement" prefix="out2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapifuncareagetlist"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapfunctionalarealist33259375"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="AF_mapReqToAF">
+        <input namespace="http://www.gruppoiren.it/AnagraficheCO/" path="mb:msg(Input,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Input"/>
+        <output namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfmfkbergetlist" path="mb:msg(SapZfmFkberGetlist,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Properties"/>
+            <output path="$MessageAssembly/Properties"/>
+        </move>
+        <create empty="true">
+            <output path="$MessageAssembly/SapZfmFkberGetlist"/>
+        </create>
+    </mappingDeclaration>
+</mappingRoot>

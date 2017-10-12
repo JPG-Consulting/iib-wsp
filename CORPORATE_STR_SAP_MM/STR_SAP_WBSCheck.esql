@@ -1,0 +1,65 @@
+
+
+CREATE COMPUTE MODULE STR_SAP_WBSCheck
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		SET OutputRoot.JSON.Data.Esito = 'OK';
+		DECLARE cod CHARACTER InputRoot.JSON.Data.CodiceAzienda;
+		DECLARE record REFERENCE TO OutputRoot.JSON.Data.Record.result[>];
+		
+		WHILE LASTMOVE(record) = TRUE DO
+			DECLARE commessa CHARACTER;
+			
+			IF record.COMMESSA = '0' THEN
+				SET commessa = '';
+			ELSE
+				SET commessa = record.COMMESSA;
+			END IF;
+			
+
+			PASSTHRU ('call inserisci_quad_log(?,?,?,?,?,?)'
+						, record.CDC_ORIGINE
+						, record.CDC
+						, record.ATTIVITA
+						, commessa
+						, cod
+						, record.ID);
+			SET  Environment.ogg[] = PASSTHRU('select cdc_def_func(?,?,?,?,?,?) DATA FROM DUAL' 
+					 	, record.CDC_ORIGINE   
+					    , record.CDC
+					    , record.ATTIVITA	     
+					    , commessa	 
+					    , cod	      
+					    ,'OGG');
+			SET  Environment.tipo[] = PASSTHRU('select cdc_def_func(?,?,?,?,?,?) DATA FROM DUAL'
+		 				, record.CDC_ORIGINE 
+		     			, record.CDC
+		     			, record.ATTIVITA	     
+		     			, commessa	 
+		     			, cod	
+		     			,'TIPO');
+     		IF Environment.tipo.DATA = 'ER' OR Environment.tipo.DATA = '?' THEN
+     			SET record.Oggetto = Environment.ogg.DATA;
+     			SET record.Tipo = Environment.tipo.DATA;
+     			SET record.Esito = 'KO';
+     			SET record.Azienda = cod;
+     			SET OutputRoot.JSON.Data.Esito = 'KO';
+     		ELSE
+     			SET record.Oggetto = Environment.ogg.DATA;
+     			SET record.Tipo = Environment.tipo.DATA;
+     			SET record.Esito = 'OK';
+     			SET record.Azienda = cod;
+     		END IF;
+     		
+     		UPDATE Database.INT_ENGINE.IIB_CORPORATE_STR_SAP_MM_TRACE AS T
+				SET OGGETTO_CONTABILE = record.Oggetto,
+					TIPO_OGGETTO_CONTABILE = record.Tipo
+				WHERE T.ID_ESTERNO = record.ID;
+     		
+     		MOVE record NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+		RETURN TRUE;
+	END;
+
+END MODULE;

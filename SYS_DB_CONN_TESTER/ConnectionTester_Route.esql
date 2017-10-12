@@ -1,0 +1,31 @@
+
+
+CREATE COMPUTE MODULE ConnectionTester_Route
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF InputLocalEnvironment.HTTP.Input.QueryString.type <> 'JDBC' AND InputLocalEnvironment.HTTP.Input.QueryString.type <> 'ODBC' THEN
+			CREATE FIELD OutputRoot.XMLNSC.Error.Text;
+			SET OutputRoot.XMLNSC.Error.Text = 'Il tipo può essere solo "JDBC" oppure "ODBC"';
+			RETURN TRUE;
+		END IF;
+		IF InputLocalEnvironment.HTTP.Input.QueryString.dsn = NULL THEN
+			CREATE FIELD OutputRoot.XMLNSC.Error.Text;
+			SET OutputRoot.XMLNSC.Error.Text = 'Inserire il nome di un data source';
+			RETURN TRUE;
+		END IF;
+		IF InputLocalEnvironment.HTTP.Input.QueryString.type = 'ODBC' THEN
+			DECLARE dsn CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.dsn;
+			CREATE FIELD OutputRoot.XMLNSC.DATA;
+			SET OutputRoot.XMLNSC.DATA = PASSTHRU('SELECT USER, SYS_CONTEXT(''USERENV'', ''DB_NAME'') AS DB_NAME, SYS_CONTEXT(''USERENV'', ''SERVER_HOST'') AS HOST FROM DUAL;' TO Database.{dsn});
+			RETURN TRUE;
+		ELSE
+			SET OutputLocalEnvironment = InputLocalEnvironment;
+			SET OutputRoot = InputRoot;
+			PROPAGATE TO TERMINAL 'out1';
+			RETURN FALSE;
+		END IF;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

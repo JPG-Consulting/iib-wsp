@@ -1,0 +1,94 @@
+DECLARE ns23 NAMESPACE 'www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE Sort_SendMail
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE CRLF CHARACTER;
+		SET CRLF = CAST(X'0D0A' AS CHARACTER CCSID 1208);
+		SET Environment.Variables.Count = Environment.Variables.Count + 1;
+		DECLARE isPresent BOOLEAN CONTAINS(Environment.Variables.String, InputRoot.DataObject.ns1:SapBapiMessageGetdetail.MESSAGE);
+		IF isPresent = FALSE OR isPresent IS NULL THEN
+			SET Environment.Variables.String = Environment.Variables.String || InputRoot.DataObject.ns1:SapBapiMessageGetdetail.MESSAGE ||CRLF||CRLF;
+		END IF;
+		
+		IF InputLocalEnvironment.Variables.Total = Environment.Variables.Count THEN
+			DECLARE idFlusso CHARACTER;
+			SET idFlusso = Environment.Variables.IdFlusso;
+			DECLARE sistema CHARACTER;
+			SET sistema = SUBSTRING(idFlusso BEFORE '-');
+			DECLARE societa CHARACTER;
+			SET societa = SUBSTRING(idFlusso FROM 4 FOR 4);
+			DECLARE tipoFlusso CHARACTER;
+			SET tipoFlusso = SUBSTRING(idFlusso FROM 9 FOR 1);
+			DECLARE idLancio CHARACTER;
+			SET idLancio = SUBSTRING(idFlusso FROM 11);
+			DECLARE esito CHARACTER;
+			DECLARE riferimento CHARACTER;
+			
+			DECLARE flusso CHARACTER;
+			IF sistema = 'HR' THEN
+				IF tipoFlusso = 'C' THEN
+					SET flusso = 'ALEAUD_CONTABILE_'||sistema||'_'||societa;
+				ELSE
+					SET flusso = 'ALEAUD_CONTABILE_'||sistema||'_GEST';
+				END IF;
+			ELSE
+				SET flusso = 'ALEAUD_CONTABILE_'||sistema;
+			END IF;
+			
+			IF sistema = 'ZU' THEN
+				IF tipoFlusso = 'E' THEN
+					SET flusso = 'ALEAUD_CONTABILE_ZUORA_FATTURAZIONE';
+				ELSE
+					SET flusso = 'ALEAUD_CONTABILE_ZUORA_ESAZIONE';
+				END IF;
+			END IF;
+			
+			
+			SET OutputRoot.XMLNSC.ns23:Params.flusso = flusso;
+			IF Environment.Variables.Stato = 'S' THEN
+				SET esito = 'OK';
+				SET riferimento = SUBSTRING(Environment.Variables.Rif FROM 6 FOR 10);
+				SET OutputRoot.XMLNSC.ns23:Params.obj1 = esito;
+				SET OutputRoot.XMLNSC.ns23:Params.body5 = esito;
+				SET OutputRoot.XMLNSC.ns23:Params.body7 = riferimento;
+				SET OutputRoot.XMLNSC.ns23:Params.body8 = '';
+			ELSE
+				SET esito = 'KO';
+				SET riferimento = '';
+				SET OutputRoot.XMLNSC.ns23:Params.obj1 = esito;
+				SET OutputRoot.XMLNSC.ns23:Params.body5 = esito;
+				SET OutputRoot.XMLNSC.ns23:Params.body7 = riferimento;
+				SET OutputRoot.XMLNSC.ns23:Params.body8 = 'DESCRIZIONE ERRORE: '||Environment.Variables.String;
+			END IF;
+			
+			SET OutputRoot.XMLNSC.ns23:Params.obj2 = idFlusso;
+			SET OutputRoot.XMLNSC.ns23:Params.body1 = idFlusso;
+			SET OutputRoot.XMLNSC.ns23:Params.body2 = societa;
+			SET OutputRoot.XMLNSC.ns23:Params.body3 = tipoFlusso;
+			SET OutputRoot.XMLNSC.ns23:Params.body4 = idLancio;
+			SET OutputRoot.XMLNSC.ns23:Params.body6 = Environment.Variables.IdocNum;
+			
+			PROPAGATE;
+			
+			
+			IF sistema = 'HR' THEN
+				IF esito = 'OK' THEN
+					DECLARE descrizione CHARACTER 'IDOC : ' || Environment.Variables.IdocNum || ' - DOCUMENTO : ' || riferimento;
+					UPDATE Database.S1_HR_CONTABILITA_PROCESSI AS T
+					SET ESITO = esito , DESCRIZIONE_ESITO = descrizione 
+					WHERE T.LETTERA_CONTABILE = SUBSTRING(idLancio AFTER '-');
+				ELSE
+					UPDATE Database.S1_HR_CONTABILITA_PROCESSI AS T
+					SET ESITO = esito , DESCRIZIONE_ESITO = Environment.Variables.String 
+					WHERE T.LETTERA_CONTABILE = SUBSTRING(idLancio AFTER '-');
+				END IF;
+			END IF;
+
+		END IF;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;

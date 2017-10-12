@@ -1,0 +1,53 @@
+DECLARE ns100 NAMESPACE 'http://schemas.xmlsoap.org/soap/envelope/';
+declare ns1 NAMESPACE 'http://WS_HUB_CRM_Inbound';
+
+CREATE COMPUTE MODULE HUB_Neta_labelRouting
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		if (InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso ='CRM-I-ANP') then
+		  SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'APN.0200';	
+		END IF;
+		
+		if (InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso ='CRM-I-EST' AND InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.servizio = 'APR') then
+		  SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'APR.0150';	
+		END IF;
+		
+		if (InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso ='CRM-I-CRT' AND InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.servizio = 'SE3') then
+		  SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'SE3.0200';	
+		END IF;
+		
+		if (InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso ='CRM-I-AMM' AND InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.servizio = 'RC1') then
+		  SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'RC1.0100';	
+		END IF;
+		
+		if (InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso ='CRM-I-AMM' AND InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.servizio = 'APR') then
+		  SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'APR.0100';	
+		END IF;
+		
+		if (InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso ='CRM-I-CRT' AND InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.servizio <> 'SE3') then
+		  SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'CRM-I-CRT';
+		END IF;
+		
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;
+
+
+
+CREATE COMPUTE MODULE recuperoServizio
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE servizio CHARACTER;
+		SET servizio = THE (SELECT ITEM T.ID_SERVIZIO_THOR FROM Database.THOR_OWN.EE_PRESTAZIONI_TRACKING AS T
+						          WHERE T.ID_EE_PRESTAZIONE_TRACKING =InputRoot.SOAP.Body.ns12:SendRequestEE.outboundRequest.tracking.codicePratica);
+		SET OutputRoot = InputRoot;
+		SET OutputRoot.SOAP.Body.ns12:SendRequestEE.outboundRequest.tracking.servizio = servizio;
+		RETURN TRUE;
+	END;
+
+END MODULE;

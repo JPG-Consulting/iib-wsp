@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.sii.acquirenteunico.it/VTG1" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:msgSII="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII" xmlns:srv="http://www.sii.acquirenteunico.it/VTG1">
+  <xsd:import namespace="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII" schemaLocation="schemas/VTG1_msgSII.xsd"/>
+
+<!-- BEGIN Global group petaining to all wsdl:message definitions -->
+    <xsd:group name="EsitoAttivazioneContrattualeMessaggioSIIGroup">
+    <xsd:sequence>
+      <xsd:element name="MessaggioSII" type="msgSII:EsitoAttivazioneContrattualeMessaggioSIIType"/>
+    </xsd:sequence>
+  </xsd:group>
+    <xsd:group name="RichiestaAttivazioneContrattualeMessaggioSIIGroup">
+    <xsd:sequence>
+      <xsd:element name="MessaggioSII" type="msgSII:RichiestaAttivazioneContrattualeMessaggioSIIType"/>
+    </xsd:sequence>
+  </xsd:group>
+    <xsd:group name="AmmissibilitaRichiestaMessaggioSIIGroup">
+    <xsd:sequence>
+      <xsd:element name="MessaggioSII" type="msgSII:AmmissibilitaRichiestaMessaggioSIIType"/>
+    </xsd:sequence>
+  </xsd:group>
+<!-- END Global group -->
+
+
+<!-- BEGIN Message Definitions for the wsdl:operations  -->
+    <xsd:element ibmSchExtn:docRoot="true" name="VTG1.0150" type="srv:VTG1.0150_OperType"/>
+    <xsd:element ibmSchExtn:docRoot="true" name="VTG1.0050" type="srv:VTG1.0050_OperType"/>
+    <xsd:element ibmSchExtn:docRoot="true" name="VTG1.0050Response" type="srv:VTG1.0050Response_OperType"/>
+    <xsd:complexType name="VTG1.0150_OperType">
+    <xsd:choice maxOccurs="1" minOccurs="1">
+      <xsd:group ref="srv:EsitoAttivazioneContrattualeMessaggioSIIGroup"/>
+    </xsd:choice>
+  </xsd:complexType>
+    <xsd:complexType name="VTG1.0050_OperType">
+    <xsd:choice maxOccurs="1" minOccurs="1">
+      <xsd:group ref="srv:RichiestaAttivazioneContrattualeMessaggioSIIGroup"/>
+    </xsd:choice>
+  </xsd:complexType>
+    <xsd:complexType name="VTG1.0050Response_OperType">
+    <xsd:choice maxOccurs="1" minOccurs="1">
+      <xsd:group ref="srv:AmmissibilitaRichiestaMessaggioSIIGroup"/>
+    </xsd:choice>
+  </xsd:complexType>
+<!-- END Message Definitions -->
+
+
+</xsd:schema>

@@ -1,0 +1,43 @@
+
+
+CREATE COMPUTE MODULE AMBIENTE_ECOS_SAP_CONFERIMENTI_SetFlagElaborato
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE data_exp DATE;
+		SET data_exp = CURRENT_TIMESTAMP ;  --   FORMAT 'yyyyMMddhhmm'
+		
+		DECLARE sapexpv_cod CHARACTER Environment.Variables.Profilo;
+		DECLARE idunico INTEGER CAST(Environment.Variables.idunico AS INTEGER);
+		
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER CARDINALITY(Environment.Query.Result[]) ; --== Environment.Variables.Count
+		
+		WHILE I <= J DO		
+			UPDATE Database.tasapexpied as t
+			SET sapexpied_flag_exp = 'P',
+			usersapbuslog_id = idunico,
+			sapexpied_data_exp= data_exp	
+			WHERE t.imp_cod_ut = Environment.Query.Result[I].imp_cod_ut and t.imp_uni_ut = Environment.Query.Result[I].imp_uni_ut and t.sapexpsv_cod = sapexpv_cod and t.sapexpied_prog = Environment.Query.Result[I].sapexpied_prog; 
+
+			IF (Environment.Variables.Profilo IS NOT NULL AND Environment.Variables.Profilo <> '') THEN		-- SINGOLO UTENTE
+				UPDATE Database.tasapexpsv as t
+					SET sapexpsv_data_exp = data_exp
+				WHERE 	t.imp_cod_ut = Environment.Query.Result[I].imp_cod_ut and  	
+				t.imp_uni_ut = Environment.Query.Result[I].imp_uni_ut 			and 
+				t.sapexpsv_cod = Environment.Variables.Profilo; 	-- id input query
+						
+			ELSE													-- TUTTI (senza parametro in input query)
+				
+				UPDATE Database.tasapexpsv as t
+					SET sapexpsv_data_exp = data_exp
+				WHERE 	t.imp_uni_ut = Environment.Query.Result[I].imp_uni_ut and  	
+				t.sapexpsv_flag_tipo_exp = 'S';
+				
+			END IF;
+
+			SET I=I+1;
+		END WHILE;	
+		RETURN TRUE;
+	END;
+
+END MODULE;

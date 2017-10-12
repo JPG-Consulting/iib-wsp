@@ -1,0 +1,46 @@
+
+
+CREATE COMPUTE MODULE CARICA_MISURE_getVar
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		
+		SET Environment.Variables.n_files = 0; -- contatore di flussi letti
+		
+		--SET Environment.Variables.test = InputRoot.Properties.CreationTime; recupero dall'oggetto di inputroot il valore della proprietà CreationTime 
+		
+		SET Environment.Variables.ftphost = THE (SELECT ITEM T.VALORE
+														      		 FROM Database.IIB_VAR_CFG AS T
+ 															        WHERE T.FLUSSO    ='MISURE_AGGREGATE' 
+																      AND T.VARIABILE ='FTP_HOST');
+														       
+        SET Environment.Variables.ftpusername = THE (SELECT ITEM T.VALORE
+															             FROM Database.IIB_VAR_CFG AS T
+															            WHERE T.FLUSSO    ='MISURE_AGGREGATE' 
+															              AND T.VARIABILE ='FTP_USERNAME');   
+
+        SET Environment.Variables.ftppassword = THE (SELECT ITEM T.VALORE
+															             FROM Database.IIB_VAR_CFG AS T
+															            WHERE T.FLUSSO    ='MISURE_AGGREGATE' 
+															              AND T.VARIABILE ='FTP_PASSWORD');   
+
+        SET Environment.Variables.inputpathftp = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='MISURE_AGGREGATE' 
+															                   AND T.VARIABILE ='INPUTPATHFTP'); 
+        
+        SET Environment.Variables.okPathFtp = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='MISURE_AGGREGATE' 
+															                   AND T.VARIABILE ='OKPATHFTP'); 															                   															             
+															                
+		SET Environment.Variables.koPathFtp = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='MISURE_AGGREGATE' 
+															                   AND T.VARIABILE ='KOPATHFTP'); 													        
+		SET OutputRoot = InputRoot;		
+												        
+		RETURN TRUE;
+	END;
+
+END MODULE;

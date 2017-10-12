@@ -1,0 +1,7 @@
+
+
+Importing file: /home/daniele/IBM/IIBT10/workspace/CORPORATE_WS_DOCUMENTALE/CORPORATE_WS_DOCUMENTALE.wsdl
+
+The WSDL import will proceed with bindings CORPORATE_WS_DOCUMENTALEHttpBinding, CORPORATE_DOCUMENTALEHttpBinding.
+Creating wsdl schema document for platform:/resource/CORPORATE_WS_DOCUMENTALE/CORPORATE_WS_DOCUMENTALE.wsdl.
+Parsing wsdl binding {http://www.gruppoiren.it/CORPORATE_DOCUMENTALE}CORPORATE_WS_DOCUMENTALEHttpBinding.

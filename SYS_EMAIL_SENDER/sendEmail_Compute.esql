@@ -1,0 +1,184 @@
+
+DECLARE ns NAMESPACE 'www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE sendEmail_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- CALL CopyEntireMessage();
+        CALL CopyMessageHeaders();	
+        DECLARE flusso_in  CHARACTER;
+        SET     flusso_in = InputRoot.XMLNSC.ns:Params.flusso; -- prendo il nome del flusso
+        DECLARE to_mail CHARACTER;
+        DECLARE da CHARACTER;
+        DECLARE oggetto_mail CHARACTER;
+        DECLARE da_inviare_mail CHARACTER;
+        DECLARE corpo_mail CHARACTER;
+        DECLARE ins  CHARACTER;
+        DECLARE upd  CHARACTER;
+        DECLARE cc CHARACTER;
+        DECLARE ccn CHARACTER;
+        DECLARE smtp CHARACTER;
+        
+        
+        SET Environment.result[] = 
+		select t.da_inviare
+             , t.a
+             , t.oggetto  
+             , t.corpo
+             , t.da
+             , t.cc
+             , t.ccn
+             , t.smtp    
+          from Database.IIB_MAIL_CFG as t
+         where t.flusso = flusso_in;
+          
+       SET da_inviare_mail = Environment.result[1].da_inviare;
+       SET to_mail = Environment.result[1].a;
+       SET oggetto_mail = Environment.result[1].oggetto;
+       SET corpo_mail	= Environment.result[1].corpo;
+       SET da = Environment.result[1].da;
+       SET cc = Environment.result[1].cc;
+       SET ccn = Environment.result[1].ccn;
+       SET smtp = Environment.result[1].smtp;
+						          
+						          
+		
+        if da_inviare_mail = 'Y' then
+			-- Add recipient information to the EmailOutputHeader
+			SET OutputRoot.EmailOutputHeader.To = to_mail;
+			SET OutputRoot.EmailOutputHeader.Cc = cc;
+			SET OutputRoot.EmailOutputHeader.Bcc = ccn;
+			-- Add sender information to EmailOutputHeader
+			SET OutputRoot.EmailOutputHeader.From = da;
+			-- SET OutputRoot.EmailOutputHeader."Reply-To" = '<reply email address>';
+			-- Add subject to EmailOutputHeader
+			
+			IF InputRoot.XMLNSC.ns:Params.obj1 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%obj1', InputRoot.XMLNSC.ns:Params.obj1);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.obj2 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%obj2', InputRoot.XMLNSC.ns:Params.obj2);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.obj3 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%obj3', InputRoot.XMLNSC.ns:Params.obj3);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.obj4 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%obj4', InputRoot.XMLNSC.ns:Params.obj4);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.obj5 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%obj5', InputRoot.XMLNSC.ns:Params.obj5);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body1 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body1', InputRoot.XMLNSC.ns:Params.body1);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body2 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body2', InputRoot.XMLNSC.ns:Params.body2);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body3 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body3', InputRoot.XMLNSC.ns:Params.body3);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body4 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body4', InputRoot.XMLNSC.ns:Params.body4);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body5 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body5', InputRoot.XMLNSC.ns:Params.body5);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body6 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body6', InputRoot.XMLNSC.ns:Params.body6);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body7 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body7', InputRoot.XMLNSC.ns:Params.body7);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body8 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body8', InputRoot.XMLNSC.ns:Params.body8);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body9 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body9', InputRoot.XMLNSC.ns:Params.body9);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body10 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body10', InputRoot.XMLNSC.ns:Params.body10);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body11 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body11', InputRoot.XMLNSC.ns:Params.body11);
+			END IF;
+			IF InputRoot.XMLNSC.ns:Params.body12 IS NOT NULL THEN
+				SET oggetto_mail = REPLACE(oggetto_mail, '%body12', InputRoot.XMLNSC.ns:Params.body12);
+			END IF;
+			
+			SET OutputRoot.EmailOutputHeader.Subject = oggetto_mail;
+			-- Add SMTP server information to the LocalEnvironment
+			SET OutputLocalEnvironment.Destination.Email.SMTPServer = smtp;
+			-- Create a new message body, which will be sent as the main text of the email.
+			
+			IF InputRoot.XMLNSC.ns:Params.body1 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body1', InputRoot.XMLNSC.ns:Params.body1);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body2 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body2', InputRoot.XMLNSC.ns:Params.body2);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body3 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body3', InputRoot.XMLNSC.ns:Params.body3);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body4 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body4', InputRoot.XMLNSC.ns:Params.body4);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body5 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body5', InputRoot.XMLNSC.ns:Params.body5);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body6 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body6', InputRoot.XMLNSC.ns:Params.body6);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body7 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body7', InputRoot.XMLNSC.ns:Params.body7);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body8 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body8', InputRoot.XMLNSC.ns:Params.body8);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body9 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body9', InputRoot.XMLNSC.ns:Params.body9);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body10 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body10', InputRoot.XMLNSC.ns:Params.body10);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body11 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body11', InputRoot.XMLNSC.ns:Params.body11);
+			END IF;
+			
+			IF InputRoot.XMLNSC.ns:Params.body12 IS NOT NULL THEN
+				SET corpo_mail = REPLACE(corpo_mail, '%body12', InputRoot.XMLNSC.ns:Params.body12);
+			END IF;
+
+			SET OutputRoot.BLOB.BLOB = CAST(corpo_mail AS BLOB CCSID 1208);  		
+			RETURN TRUE; 
+        else
+        	PROPAGATE TO TERMINAL 'failure';
+          RETURN FALSE;
+        end if;  						
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+END MODULE;

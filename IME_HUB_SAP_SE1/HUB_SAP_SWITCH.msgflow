@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmDatabaseInput.msgnode="ComIbmDatabaseInput.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="HUB_SAP_SWITCH.msgflow" nsPrefix="HUB_SAP_SWITCH.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="HUB_SAP_SWITCH" bundleName="HUB_SAP_SWITCH" pluginId="HUB_SAP_SE1"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/HUB_SAP_SE1/icons/full/obj16/HUB_SAP_SWITCH.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/HUB_SAP_SE1/icons/full/obj30/HUB_SAP_SWITCH.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmDatabaseInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="38,46" dataSource="HUB_EAI" databaseInputExpression="esql://routine/#HUB_SAP_SWITCH_Database_Input">
+        <translation xmi:type="utility:ConstantString" string="Database Input"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="137,47" dataSource="SAP_200" computeExpression="esql://routine/#HUB_SAP_SWITCH_UpdateSAP.Main">
+        <translation xmi:type="utility:ConstantString" string="UpdateSAP"/>
+        <nsMappingTable nsPrefix="hub" namespace="http://hub_eai/hub_eai"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="UpdateSAP.terminal.failure" eventIdentity="Errore inserimento/aggiornamento tabella ZSWITCHCRM">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/hub:IIB_SE1_TO_SAP_EVENT/POD" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="hub" nsURI="http://hub_eai/hub_eai"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="hub" nsURI="http://hub_eai/hub_eai"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Errore inserimento/aggiornamento tabella ZSWITCHCRM"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="hub" nsURI="http://hub_eai/hub_eai"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="UpdateSAP.terminal.out" eventIdentity="Record inserito/aggiornato in tabella ZSWITCHCRM">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/hub:IIB_SE1_TO_SAP_EVENT/POD" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="hub" nsURI="http://hub_eai/hub_eai"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Record inserito/aggiornato in tabella ZSWITCHCRM"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="hub" nsURI="http://hub_eai/hub_eai"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="213,78" dataSource="HUB_EAI" computeExpression="esql://routine/#HUB_SAP_SWITCH_UpdateError.Main">
+        <translation xmi:type="utility:ConstantString" string="UpdateError"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="217,25" dataSource="HUB_EAI" computeExpression="esql://routine/#HUB_SAP_SWITCH_Update.Main">
+        <translation xmi:type="utility:ConstantString" string="Update"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

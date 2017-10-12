@@ -1,0 +1,53 @@
+BROKER SCHEMA sub
+DECLARE ns2 NAMESPACE 'http://www.gruppoiren.it/schemas/zuora';
+
+
+CREATE COMPUTE MODULE Zuora_Sender_parseRecords
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.ns2:ZuoraMessage.ns2:Zuora.testata.righeCoge;
+		DECLARE message REFERENCE TO OutputRoot.XMLNSC.ns2:ZuoraMessage;
+		DECLARE records REFERENCE TO InputRoot.DFDL.ns2:ZuoraRecord.record[>];
+		DECLARE numTestata INTEGER 0;
+		DECLARE numRiga INTEGER 0;
+		
+		SET message.messageType = InputLocalEnvironment.Variables.tipo;
+		SET message.fileName = InputLocalEnvironment.File.Read.Name;
+		SET message.localPath = InputLocalEnvironment.File.Read.Directory;
+		
+		WHILE LASTMOVE(records) = TRUE DO
+			IF records.tipoRecord = '1' THEN
+				-------CREA NUOVA TESTATA---------
+				SET numTestata = numTestata + 1;
+				SET numRiga = 0;
+				SET message.ns2:Zuora.testata[numTestata].societa = records.societa;
+				SET message.ns2:Zuora.testata[numTestata].esercizio = records.esercizio;
+				SET message.ns2:Zuora.testata[numTestata].idFlusso = records.idFlusso;
+				SET message.ns2:Zuora.testata[numTestata].tipoDocumento = records.tipoDocumento;
+				SET message.ns2:Zuora.testata[numTestata].dataRegistrazione = SUBSTRING(records.dettaglio FROM 1 FOR 8);
+				SET message.ns2:Zuora.testata[numTestata].dataDocumento = SUBSTRING(records.dettaglio FROM 9 FOR 8);
+				SET message.ns2:Zuora.testata[numTestata].codiceValuta = SUBSTRING(records.dettaglio FROM 37 FOR 3);
+				SET message.ns2:Zuora.testata[numTestata].nRiferimento = SUBSTRING(records.dettaglio FROM 50 FOR 16);
+			ELSE
+				--------AGGUNGI RIGA DI DETTAGLIO------------
+				SET numRiga = numRiga + 1;
+				
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].contoCoge = SUBSTRING(records.dettaglio FROM 1 FOR 10);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].importoFattura = SUBSTRING(records.dettaglio FROM 11 FOR 13);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].decimaliImportoFattura = SUBSTRING(records.dettaglio FROM 24 FOR 3);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].chiaveContabile = SUBSTRING(records.dettaglio FROM 27 FOR 2);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].importoIVA = SUBSTRING(records.dettaglio FROM 29 FOR 13);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].decimaliImportoIVA = SUBSTRING(records.dettaglio FROM 42 FOR 3);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].codiceIVA = SUBSTRING(records.dettaglio FROM 45 FOR 3);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].centroDiCosto = SUBSTRING(records.dettaglio FROM 48 FOR 10);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].profitCenter = SUBSTRING(records.dettaglio FROM 115 FOR 10);
+				SET message.ns2:Zuora.testata[numTestata].righeCoge[numRiga].testoPosizione = SUBSTRING(records.dettaglio FROM 153 FOR 50);
+				
+			END IF;
+			
+			MOVE records NEXTSIBLING REPEAT TYPE NAME;	
+		END WHILE;
+		
+		RETURN TRUE;
+	END;
+END MODULE;

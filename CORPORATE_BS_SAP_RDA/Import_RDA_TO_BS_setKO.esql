@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE Import_RDA_TO_BS_setKO
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.ns26:Response.ns26:return.ns26:codice = 1;
+		SET OutputRoot.XMLNSC.ns26:Response.ns26:return.ns26:descrizione = 'KO - importazione non riuscita';
+		RETURN TRUE;
+	END;
+
+END MODULE;

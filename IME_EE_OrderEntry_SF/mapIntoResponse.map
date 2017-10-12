@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd"/>
+    <output path="/EAIServiceInbound_InlineSchema1.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="out" uri="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="mapIntoResponse">
+        <input path="mb:msg(SOAP_Domain_Msg,assembly,SOAP,Properties)" var="ComIbmMessageAssembly_SOAP_Domain_Msg">
+            <cast path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/any" qualifier="{http://soap.sforce.com/schemas/class/EAIServiceInbound}OEWebFormResponse"/>
+        </input>
+        <output namespace="http://soap.sforce.com/schemas/class/EAIServiceInbound" path="mb:msg(OEWebFormResponse,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_OEWebFormResponse"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_SOAP_Domain_Msg/Properties"/>
+            <output path="$ComIbmMessageAssembly_OEWebFormResponse/Properties"/>
+        </move>
+        <local>
+            <input path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/OEWebFormResponse"/>
+            <output path="$ComIbmMessageAssembly_OEWebFormResponse/OEWebFormResponse"/>
+            <local>
+                <input path="result"/>
+                <output path="result"/>
+                <local>
+                    <input path="esito"/>
+                    <output path="esito"/>
+                    <move>
+                        <input path="codice"/>
+                        <output path="codice"/>
+                    </move>
+                    <move>
+                        <input path="esito"/>
+                        <output path="esito"/>
+                    </move>
+                    <move>
+                        <input path="motivazione"/>
+                        <output path="motivazione"/>
+                    </move>
+                </local>
+                <local>
+                    <input path="tracking"/>
+                    <output path="tracking"/>
+                    <move>
+                        <input path="codiceFlusso"/>
+                        <output path="codiceFlusso"/>
+                    </move>
+                    <move>
+                        <input path="codicePratica"/>
+                        <output path="codicePratica"/>
+                    </move>
+                    <move>
+                        <input path="codicePraticaDistributore"/>
+                        <output path="codicePraticaDistributore"/>
+                    </move>
+                    <move>
+                        <input path="codicePraticaOrigine"/>
+                        <output path="codicePraticaOrigine"/>
+                    </move>
+                    <move>
+                        <input path="idMessaggio"/>
+                        <output path="idMessaggio"/>
+                    </move>
+                    <move>
+                        <input path="segmentoCliente"/>
+                        <output path="segmentoCliente"/>
+                    </move>
+                    <move>
+                        <input path="servizio"/>
+                        <output path="servizio"/>
+                    </move>
+                    <move>
+                        <input path="sistemaFatturazione"/>
+                        <output path="sistemaFatturazione"/>
+                    </move>
+                    <move>
+                        <input path="sistemaOrigine"/>
+                        <output path="sistemaOrigine"/>
+                    </move>
+                    <move>
+                        <input path="societaVendita"/>
+                        <output path="societaVendita"/>
+                    </move>
+                </local>
+            </local>
+        </local>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,70 @@
+
+CREATE COMPUTE MODULE IRETI_TERRANOVA_SAP_INDENNIZZI_SAP_TRN_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- CALL CopyMessageHeaders();
+		-- CALL CopyEntireMessage();
+
+
+		DECLARE zmnc_index CHARACTER; --
+	
+		SET Environment.result[] =
+		select
+		t.ZMNC_INDEX , --
+		t.NETTOBTR , --imp_cor (con segno negativo su terranova)
+		t.BELNR , -- numdoc
+		t.DATA_OPBEL , --datafatt
+		t.OPBEL --docstampa
+
+		from Database.sapr3.ZMNC_INDEN_H2O as t
+		where t.STATO_PROCESSO = 'A';
+
+		DECLARE i INTEGER 1;
+
+		DECLARE nrecTotTRN INTEGER CARDINALITY (Environment.result[]);
+		SET Environment.Variables.count= nrecTotTRN;
+
+		IF (nrecTotTRN = 0) -- Se non ci sono record da trattare su SAP esce subito.
+			THEN
+			SET OutputRoot.XMLNSC.Status = 'Non ci sono record su SAP ISU da processare';
+			PROPAGATE TO TERMINAL 'out1';
+			RETURN FALSE;
+
+		END IF;			
+
+
+		WHILE i <= nrecTotTRN DO -- PER TEST 1 , al rilascio sostituire con : nrecTotTRN		
+
+			SET zmnc_index = Environment.result[i].ZMNC_INDEX;
+			-- SET nettobtr = Environment.result[i].NETTOBTR;
+			-- SET belnr = Environment.result[i].BELNR;
+			-- SET data_opbel = Environment.result[i].DATA_OPBEL;
+			-- SET opbel = Environment.result[i].OPBEL;
+
+			UPDATE Database.sapr3.ZMNC_INDEN_H2O as t
+			SET STATO_PROCESSO='C'
+			WHERE t.ZMNC_INDEX= zmnc_index ; --Environment.Variables.zmnc_index;			
+
+
+			SET i=i+1;
+
+		END WHILE;			
+
+
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

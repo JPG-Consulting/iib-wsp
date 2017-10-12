@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE CM_SEDI_TECNICHE_ResponseOK
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.Return.Esito = 'OK';
+		SET OutputRoot.XMLNSC.Return.SAPTransactionID = InputRoot.DataObject.ns:SapZpmFuncLoc.SAPTransactionID;
+		RETURN TRUE;
+	END;
+
+END MODULE;

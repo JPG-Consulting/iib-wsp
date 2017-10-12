@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.sii.acquirenteunico.it/AE1" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:msgSII="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII" xmlns:srv="http://www.sii.acquirenteunico.it/AE1">
+  <xsd:import namespace="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII" schemaLocation="schemas/AE1_msgSII.xsd"/>
+
+<!-- BEGIN Global group petaining to all wsdl:message definitions -->
+    <xsd:group name="EsitoAggiornamentoDatiRcuMessaggioSIIGroup">
+    <xsd:sequence>
+      <xsd:element name="MessaggioSII" type="msgSII:EsitoAggiornamentoDatiRcuMessaggioSIIType"/>
+    </xsd:sequence>
+  </xsd:group>
+    <xsd:group name="ComunicazioneAggiornamentoDatiRcuMessaggioSIIGroup">
+    <xsd:sequence>
+      <xsd:element name="MessaggioSII" type="msgSII:ComunicazioneAggiornamentoDatiRcuMessaggioSIIType"/>
+    </xsd:sequence>
+  </xsd:group>
+    <xsd:group name="AmmissibilitaComunicazioneMessaggioSIIGroup">
+    <xsd:sequence>
+      <xsd:element name="MessaggioSII" type="msgSII:AmmissibilitaComunicazioneMessaggioSIIType"/>
+    </xsd:sequence>
+  </xsd:group>
+<!-- END Global group -->
+
+
+<!-- BEGIN Message Definitions for the wsdl:operations  -->
+    <xsd:element ibmSchExtn:docRoot="true" name="AE1.0050Response" type="srv:AE1.0050Response_OperType"/>
+    <xsd:element ibmSchExtn:docRoot="true" name="AE1.0150" type="srv:AE1.0150_OperType"/>
+    <xsd:element ibmSchExtn:docRoot="true" name="AE1.0050" type="srv:AE1.0050_OperType"/>
+    <xsd:complexType name="AE1.0050Response_OperType">
+    <xsd:choice maxOccurs="1" minOccurs="1">
+      <xsd:group ref="srv:AmmissibilitaComunicazioneMessaggioSIIGroup"/>
+    </xsd:choice>
+  </xsd:complexType>
+    <xsd:complexType name="AE1.0150_OperType">
+    <xsd:choice maxOccurs="1" minOccurs="1">
+      <xsd:group ref="srv:EsitoAggiornamentoDatiRcuMessaggioSIIGroup"/>
+    </xsd:choice>
+  </xsd:complexType>
+    <xsd:complexType name="AE1.0050_OperType">
+    <xsd:choice maxOccurs="1" minOccurs="1">
+      <xsd:group ref="srv:ComunicazioneAggiornamentoDatiRcuMessaggioSIIGroup"/>
+    </xsd:choice>
+  </xsd:complexType>
+<!-- END Message Definitions -->
+
+
+</xsd:schema>

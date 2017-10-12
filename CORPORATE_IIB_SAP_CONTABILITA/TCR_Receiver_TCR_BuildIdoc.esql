@@ -1,0 +1,194 @@
+DECLARE ns11 NAMESPACE 'http://www.gruppoiren.it/schemas/tcr';
+
+CREATE COMPUTE MODULE TCR_Receiver_TCR_BuildIdoc
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Variables.fileName = InputRoot.XMLNSC.ns11:TCRMessage.fileName;
+		
+		DECLARE inputRecord REFERENCE TO InputRoot.XMLNSC.ns11:TCRMessage.ns11:TCR.record[>];
+		DECLARE numRecord INTEGER 1;
+		DECLARE numIva INTEGER 1;
+		DECLARE conto CHARACTER;
+		DECLARE maxRows INTEGER 800;
+		DECLARE contoAppoggio CHARACTER 'ZNT000002';
+		DECLARE profitAppoggio CHARACTER 'S5ASXI1001';
+		DECLARE numTestate INTEGER FLOOR(CARDINALITY(InputRoot.XMLNSC.ns11:TCRMessage.ns11:TCR.record[])/maxRows)+1;
+		
+		----------------CREAZIONE STRUTTURE E REFERENCE----------------------------------------------------
+		CREATE FIELD OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		DECLARE outputTestata REFERENCE TO OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		
+		----------------------MAP RECORD DI CONTROLLO-----------------------------------------------
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZFIDCCP02_N';
+		SET outputCR.MESTYP = 'ZFIDCC2_N';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		SET outputCR.ARCKEY = 'TC-'||'9000'||'-'||SUBSTRING(InputRoot.XMLNSC.ns11:TCRMessage.fileName BEFORE '.csv');
+		
+		
+		
+		---------------------CONTROLLO NUMERO RIGHE --------------------------------------
+		IF numTestate = 1 THEN
+			
+			---------------------MAP TESTATA---------------------------------------------
+			SET outputTestata.BUKRS = '9000';
+			SET outputTestata.GJAHR = LEFT(inputRecord.AnnoMeseContabilita, 4);
+			SET outputTestata.BLART = inputRecord.TIPO_DOCUMENTO;
+			SET outputTestata.BLDAT = inputRecord.AnnoMeseContabilita||lastDay(inputRecord.AnnoMeseContabilita);
+			SET outputTestata.BUDAT = inputRecord.AnnoMeseContabilita||lastDay(inputRecord.AnnoMeseContabilita);
+			SET outputTestata.WAERS = 'EUR';
+			SET outputTestata.XBLNR = '1';
+			SET outputTestata.XBLNR_LONG = 'TC-'||'9000'||'-'||SUBSTRING(InputRoot.XMLNSC.ns11:TCRMessage.fileName BEFORE '.csv');
+			SET outputTestata.BKTXT = 'TC-'||'9000'||'-'||SUBSTRING(InputRoot.XMLNSC.ns11:TCRMessage.fileName BEFORE '.csv');
+			SET outputTestata.LDGRP = '0L';
+				
+				
+				
+			WHILE LASTMOVE(inputRecord)=TRUE DO
+				SET conto = inputRecord.CONTO;
+				IF inputRecord.CODICE_SOCIETA_PARTNER IS NOT NULL THEN
+					SET Environment.query.resultSet[] = SELECT T.COD_CONTO_COGE_SAP
+									   FROM Database.S1_DEC_CONTI_COGE_TCR AS T
+									   WHERE T.SOC_SAP = '9000'
+									   AND T.COD_SOC_PARTNER = inputRecord.CODICE_SOCIETA_PARTNER
+									   AND T.COD_CONTO_COGE_IC = inputRecord.CONTO;
+					IF Environment.query.resultSet[1].COD_CONTO_COGE_SAP IS NOT NULL THEN
+						SET conto = Environment.query.resultSet[1].COD_CONTO_COGE_SAP;
+					END IF;
+				END IF;
+				
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].HKONT = conto;
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].WRBTR = REPLACE(inputRecord.IMPORTO, ',', '.');
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].BSCHL = inputRecord.CHIAVE_CONTABILE;
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].PRCTR = inputRecord.CENTRO_DI_PROFITTO;
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].VALUT = inputRecord.AnnoMeseContabilita||'01';
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].ZUONR = inputRecord.ATTRIBUZIONE;
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].KOSTL = inputRecord.CENTRO_DI_COSTO;
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].SGTXT = inputRecord.TIPO_SCRITTURA;
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].BZDAT = inputRecord.AnnoMeseContabilita||'01';
+				SET outputTestata.SapZfidccp02NE2fiseg006[numRecord].VBUND = inputRecord.CODICE_SOCIETA_PARTNER;
+				
+				SET numRecord = numRecord + 1;
+				MOVE inputRecord NEXTSIBLING REPEAT TYPE NAME;
+			END WHILE;
+		
+		ELSE
+			---------------------PIU DI maxRows RIGHE, TESTATE MULTIPLE -------------------------
+			DECLARE countTestata INTEGER 0;
+			DECLARE countRows INTEGER 1;
+			-------------CICLO SUL NUMERO DI TESTATE DA CREARE------------------------------	
+			WHILE countTestata < numTestate DO
+				DECLARE totale DECIMAL 0; --totale della testata per creare la riga di compensazione
+
+				SET outputTestata.BUKRS = '9000';
+			SET outputTestata.GJAHR = LEFT(inputRecord.AnnoMeseContabilita, 4);
+			SET outputTestata.BLART = inputRecord.TIPO_DOCUMENTO;
+			SET outputTestata.BLDAT = inputRecord.AnnoMeseContabilita||lastDay(inputRecord.AnnoMeseContabilita);
+			SET outputTestata.BUDAT = inputRecord.AnnoMeseContabilita||lastDay(inputRecord.AnnoMeseContabilita);
+			SET outputTestata.WAERS = 'EUR';
+			SET outputTestata.XBLNR = '1';
+			SET outputTestata.XBLNR_LONG = 'TC-'||'9000'||'-'||SUBSTRING(InputRoot.XMLNSC.ns11:TCRMessage.fileName BEFORE '.csv');
+			SET outputTestata.BKTXT = 'TC-'||'9000'||'-'||SUBSTRING(InputRoot.XMLNSC.ns11:TCRMessage.fileName BEFORE '.csv');
+			SET outputTestata.LDGRP = '0L';
+				
+				CREATE FIELD outputTestata.SapZfidccp02NE2fiseg006;
+				DECLARE record REFERENCE TO outputTestata.SapZfidccp02NE2fiseg006[>];
+				-----------CICLO SUI RECORD E POPOLAMENTO DELLE RIGHE DI DETTAGLIO---------------------
+				WHILE countRows < maxRows AND LASTMOVE(inputRecord) = TRUE DO --inserisco meno di maxRows righe o fino alla fine del resultset
+					SET conto = inputRecord.CONTO;
+					IF inputRecord.CODICE_SOCIETA_PARTNER IS NOT NULL THEN
+						SET Environment.query.resultSet[] = SELECT T.COD_CONTO_COGE_SAP
+									   FROM Database.S1_DEC_CONTI_COGE_TCR AS T
+									   WHERE T.SOC_SAP = '9000'
+									   AND T.COD_SOC_PARTNER = inputRecord.CODICE_SOCIETA_PARTNER
+									   AND T.COD_CONTO_COGE_IC = inputRecord.CONTO;
+						IF Environment.query.resultSet[1].COD_CONTO_COGE_SAP IS NOT NULL THEN
+							SET conto = Environment.query.resultSet[1].COD_CONTO_COGE_SAP;
+						END IF;
+					END IF;
+					
+					SET record.HKONT = conto;
+					SET record.WRBTR = REPLACE(inputRecord.IMPORTO, ',', '.');
+					SET record.BSCHL = inputRecord.CHIAVE_CONTABILE;
+					SET record.PRCTR = inputRecord.CENTRO_DI_PROFITTO;
+					SET record.VALUT = inputRecord.AnnoMeseContabilita||'01';
+					SET record.ZUONR = inputRecord.ATTRIBUZIONE;
+					SET record.KOSTL = inputRecord.CENTRO_DI_COSTO;
+					SET record.SGTXT = inputRecord.TIPO_SCRITTURA;
+					SET record.BZDAT = inputRecord.AnnoMeseContabilita||'01';
+					SET record.VBUND = inputRecord.CODICE_SOCIETA_PARTNER;
+					
+					IF inputRecord.CHIAVE_CONTABILE = '40' THEN
+						SET totale = totale + CAST(REPLACE(inputRecord.IMPORTO, ',', '.') AS DECIMAL);
+					ELSE
+						SET totale = totale - CAST(REPLACE(inputRecord.IMPORTO, ',', '.') AS DECIMAL);
+					END IF;
+				
+					CREATE NEXTSIBLING OF record AS record REPEAT;
+					MOVE inputRecord NEXTSIBLING REPEAT TYPE NAME;
+					SET countRows = countRows + 1;
+				END WHILE;
+				---------------CREAZIONE RIGA DI COMPENSAZIONE---------------------
+				IF totale > 0 THEN
+					SET record.BSCHL = '50';
+				ELSE
+					SET record.BSCHL = '40';
+				END IF;
+				SET record.HKONT = contoAppoggio;
+				SET record.WRBTR = ABSVAL(totale);
+				SET record.PRCTR = profitAppoggio;
+				
+				
+				CREATE NEXTSIBLING OF outputTestata AS outputTestata REPEAT;
+				SET countTestata = countTestata + 1;
+				SET countRows = 1;
+			END WHILE;
+			DELETE FIELD outputTestata;
+			
+		END IF;
+
+		
+		RETURN TRUE;
+			END;
+			
+			CREATE PROCEDURE lastDay(IN annoMese CHARACTER ) RETURNS CHARACTER
+			BEGIN
+				DECLARE lastDay CHARACTER;
+				
+				SET lastDay = 
+				CASE RIGHT(annoMese, 2)
+				WHEN '01' THEN '31'
+				WHEN '02' THEN '28'
+				WHEN '03' THEN '31'
+				WHEN '04' THEN '30'
+				WHEN '05' THEN '31'
+				WHEN '06' THEN '30'
+				WHEN '07' THEN '31'
+				WHEN '08' THEN '31'
+				WHEN '09' THEN '30'
+				WHEN '10' THEN '31'
+				WHEN '11' THEN '30'
+				WHEN '12' THEN '31'
+				ELSE '00'
+				END;
+				
+				RETURN lastDay;
+			END;
+
+END MODULE;

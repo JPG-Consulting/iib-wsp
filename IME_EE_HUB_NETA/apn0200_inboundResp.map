@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="mbsharedlib://SIILib/APN_flusso.xsd" var="var1"/>
+    <output path="mbsharedlib://InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="io2" uri="http://HUB_CRM_EE/crm_dati"/>
+        <namespace kind="supplement" prefix="io" uri="http://WS_HUB_CRM_Inbound"/>
+        <namespace kind="supplement" prefix="in2" uri="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APN/v1"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="apn0200_inboundResp">
+        <input path="$var1/mb:msg(FlussoAPN.0200Type,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <output namespace="http://WS_HUB_CRM_Inbound" path="mb:msg(WSHubCrmInboundResponse,assembly,XMLNSC,Properties)" var="MessageAssembly3"/>
+        <assign value="1">
+            <output path="$MessageAssembly3/WSHubCrmInboundResponse/inboundResponse/esito/esito"/>
+        </assign>
+        <assign value="000">
+            <output path="$MessageAssembly3/WSHubCrmInboundResponse/inboundResponse/esito/codice"/>
+        </assign>
+        <move>
+            <input path="$MessageAssembly/FlussoAPN.0200Type/@COD_FLUSSO"/>
+            <output path="$MessageAssembly3/WSHubCrmInboundResponse/inboundResponse/tracking/codiceFlusso"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/FlussoAPN.0200Type/DatiPratica/CP_GESTORE_ANN"/>
+            <output path="$MessageAssembly3/WSHubCrmInboundResponse/inboundResponse/tracking/codicePratica"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/FlussoAPN.0200Type/DatiPratica/CP_UTENTE_ANN"/>
+            <output path="$MessageAssembly3/WSHubCrmInboundResponse/inboundResponse/tracking/codicePraticaOrigine"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/AnagraficheCO_InlineSchema.xsd"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd" var="var"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="io" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="ANAGRAFICHE_CO_RESP_XML_to_SOAP">
+        <input namespace="http://www.gruppoiren.it/AnagraficheCO/" path="mb:msg(Output,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <output path="$var/mb:msg(SOAP_Domain_Msg,assembly,SOAP,Properties)" var="MessageAssembly1">
+            <cast path="$MessageAssembly1/SOAP_Domain_Msg/Body/any" qualifier="{http://www.gruppoiren.it/AnagraficheCO/}Output" ref="var1"/>
+        </output>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly1/Properties"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/Output"/>
+            <output path="$MessageAssembly1/SOAP_Domain_Msg/Body/Output"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

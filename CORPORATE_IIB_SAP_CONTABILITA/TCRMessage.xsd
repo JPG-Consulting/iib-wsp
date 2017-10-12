@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:Q1="http://www.gruppoiren.it/schemas/tcr" targetNamespace="http://www.gruppoiren.it/schemas/tcr">
+    <xsd:include schemaLocation="TCR.xsd"></xsd:include>
+	<xsd:element name="TCRMessage">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="fileName" type="xsd:string"></xsd:element>
+				<xsd:element ref="Q1:TCR"></xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

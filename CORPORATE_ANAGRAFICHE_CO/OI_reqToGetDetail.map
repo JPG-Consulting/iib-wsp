@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/AnagraficheCO_InlineSchema.xsd"/>
+    <output path="/SapZInternalorderGetdetail.xsd" var="var"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+        <namespace kind="supplement" prefix="out2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiinternalordergetdetail"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmasterdata75207936"/>
+        <namespace kind="supplement" prefix="out7" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapuserstatus1019811316"/>
+        <namespace kind="supplement" prefix="out6" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzinternalordergetdetail"/>
+        <namespace kind="supplement" prefix="out3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmasterdata1057246925"/>
+        <namespace kind="supplement" prefix="out5" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapsystemstatus2109464951"/>
+        <namespace kind="supplement" prefix="out4" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapreturn468436650"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="OI_reqToGetDetail">
+        <input namespace="http://www.gruppoiren.it/AnagraficheCO/" path="mb:msg(Input,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Input"/>
+        <output namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzinternalordergetdetail" path="$var/mb:msg(SapZInternalorderGetdetail,assembly,DataObject,Properties)" var="MessageAssembly"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Properties"/>
+            <output path="$MessageAssembly/Properties"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Input/societa"/>
+            <output path="$MessageAssembly/SapZInternalorderGetdetail/SOC"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Input/tipoOdi"/>
+            <output path="$MessageAssembly/SapZInternalorderGetdetail/ORDERTYPE"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

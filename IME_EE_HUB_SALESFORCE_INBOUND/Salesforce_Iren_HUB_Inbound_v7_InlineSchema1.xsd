@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+ Web Services API : Iren_HUB_Inbound
+--><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound">
+   <xsd:element ibmSchExtn:docRoot="true" name="AllowFieldTruncationHeader">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="allowFieldTruncation" type="xsd:boolean"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:element ibmSchExtn:docRoot="true" name="CallOptions">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="client" type="xsd:string"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:element ibmSchExtn:docRoot="true" name="DebuggingHeader">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="categories" type="tns:LogInfo"/>
+      <xsd:element name="debugLevel" type="tns:LogType"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:complexType name="LogInfo">
+    <xsd:sequence>
+     <xsd:element name="category" type="tns:LogCategory"/>
+     <xsd:element name="level" type="tns:LogCategoryLevel"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:simpleType name="LogCategory">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="Db"/>
+     <xsd:enumeration value="Workflow"/>
+     <xsd:enumeration value="Validation"/>
+     <xsd:enumeration value="Callout"/>
+     <xsd:enumeration value="Apex_code"/>
+     <xsd:enumeration value="Apex_profiling"/>
+     <xsd:enumeration value="Visualforce"/>
+     <xsd:enumeration value="System"/>
+     <xsd:enumeration value="All"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="LogCategoryLevel">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="None"/>
+     <xsd:enumeration value="Finest"/>
+     <xsd:enumeration value="Finer"/>
+     <xsd:enumeration value="Fine"/>
+     <xsd:enumeration value="Debug"/>
+     <xsd:enumeration value="Info"/>
+     <xsd:enumeration value="Warn"/>
+     <xsd:enumeration value="Error"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:simpleType name="LogType">
+    <xsd:restriction base="xsd:string">
+     <xsd:enumeration value="None"/>
+     <xsd:enumeration value="Debugonly"/>
+     <xsd:enumeration value="Db"/>
+     <xsd:enumeration value="Profiling"/>
+     <xsd:enumeration value="Callout"/>
+     <xsd:enumeration value="Detail"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:element ibmSchExtn:docRoot="true" name="DebuggingInfo">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="debugLog" type="xsd:string"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:element ibmSchExtn:docRoot="true" name="SessionHeader">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="sessionId" type="xsd:string"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:simpleType name="ID">
+    <xsd:restriction base="xsd:string">
+     <xsd:length value="18"/>
+     <xsd:pattern value="[a-zA-Z0-9]{18}"/>
+    </xsd:restriction>
+   </xsd:simpleType>
+   <xsd:complexType name="Ammissibilita">
+    <xsd:sequence>
+     <xsd:element minOccurs="0" name="causale" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="dataAmmissibilita" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="esito" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="motivazione" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="Cliente">
+    <xsd:sequence>
+     <xsd:element minOccurs="0" name="cfStraniero" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="codiceFiscale" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="cognome" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="nome" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="partitaIva" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="ragioneSociale" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="Esito">
+    <xsd:sequence>
+     <xsd:element minOccurs="0" name="codice" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="esito" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="motivazione" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="InboundRequest">
+    <xsd:sequence>
+     <xsd:element minOccurs="0" name="ammissibilita" nillable="true" type="tns:Ammissibilita"/>
+     <xsd:element minOccurs="0" name="anagraficaCliente" nillable="true" type="tns:Cliente"/>
+     <xsd:element minOccurs="0" name="canaleComunicazione" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="codiceAuthorityDL" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="dataDecorrenza" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="dataEsecuzione" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="esito" nillable="true" type="tns:Esito"/>
+     <xsd:element minOccurs="0" name="note" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="pod" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="timoe" nillable="true" type="tns:Timoe"/>
+     <xsd:element minOccurs="0" name="tracking" nillable="true" type="tns:Tracking"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="InboundResponse">
+    <xsd:sequence>
+     <xsd:element minOccurs="0" name="esito" nillable="true" type="tns:Esito"/>
+     <xsd:element minOccurs="0" name="tracking" nillable="true" type="tns:Tracking"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="Timoe">
+    <xsd:sequence>
+     <xsd:element minOccurs="0" name="cmor_in_corso" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="data_salvaguardia" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="data_ultima_rich_sosp" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="data_ultima_sosp" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="date_sospensione" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="date_switch" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="sospeso" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="Tracking">
+    <xsd:sequence>
+     <xsd:element minOccurs="0" name="codiceFlusso" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="codicePratica" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="codicePraticaDistributore" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="codicePraticaOrigine" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="idMessaggio" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="segmentoCliente" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="servizio" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="sistemaFatturazione" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="sistemaOrigine" nillable="true" type="xsd:string"/>
+     <xsd:element minOccurs="0" name="societaVendita" nillable="true" type="xsd:string"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="WSHubCrmInboundResponse">
+    <xsd:sequence>
+     <xsd:element minOccurs="0" name="inboundResponse" nillable="true" type="tns:InboundResponse"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="address">
+    <xsd:complexContent>
+     <xsd:extension base="tns:location">
+      <xsd:sequence>
+       <xsd:element name="city" type="xsd:string"/>
+       <xsd:element name="country" type="xsd:string"/>
+       <xsd:element name="countryCode" type="xsd:string"/>
+       <xsd:element name="geocodeAccuracy" type="xsd:string"/>
+       <xsd:element name="postalCode" type="xsd:string"/>
+       <xsd:element name="state" type="xsd:string"/>
+       <xsd:element name="stateCode" type="xsd:string"/>
+       <xsd:element name="street" type="xsd:string"/>
+      </xsd:sequence>
+     </xsd:extension>
+    </xsd:complexContent>
+   </xsd:complexType>
+   <xsd:complexType name="location">
+    <xsd:sequence>
+     <xsd:element name="latitude" type="xsd:double"/>
+     <xsd:element name="longitude" type="xsd:double"/>
+    </xsd:sequence>
+   </xsd:complexType>
+   <xsd:element ibmSchExtn:docRoot="true" name="WSHubCrmInbound">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="inboundRequest" nillable="true" type="tns:InboundRequest"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:element ibmSchExtn:docRoot="true" name="WSHubCrmInboundResponse">
+    <xsd:complexType>
+     <xsd:sequence>
+      <xsd:element name="result" nillable="true" type="tns:WSHubCrmInboundResponse"/>
+     </xsd:sequence>
+    </xsd:complexType>
+   </xsd:element>
+  </xsd:schema>

@@ -1,0 +1,42 @@
+
+
+CREATE COMPUTE MODULE TCR_Receiver_buildReportMailKO
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.ns2:Params.flusso = 'CONTABILE_TCR_KO';
+		SET OutputRoot.XMLNSC.ns2:Params.obj1 =  InputRoot.XMLNSC.ns11:TCRMessage.fileName;
+		SET OutputRoot.XMLNSC.ns2:Params.body1 = parseToString(InputExceptionList);
+		RETURN TRUE;
+	END;
+
+	CREATE FUNCTION parseToString(IN root REFERENCE) RETURNS CHARACTER
+	BEGIN
+		DECLARE concatString character;
+		SET concatString = '';
+		CALL ComposeDetails(root,concatString);
+ 		return concatString;
+	END;
+
+
+	CREATE PROCEDURE ComposeDetails(IN root REFERENCE,INOUT concatString CHARACTER) 
+	BEGIN
+		DECLARE CRLF CHARACTER CAST(X'0D0A' AS CHARACTER CCSID 1208);
+		DECLARE TAB CHARACTER CAST(X'09' AS CHARACTER CCSID 1208);
+		DECLARE fieldName CHARACTER;
+		DECLARE fieldValue CHARACTER;
+		DECLARE cursor REFERENCE TO root;
+		MOVE cursor FIRSTCHILD;
+		WHILE LASTMOVE(cursor) Do
+			SET fieldName = FIELDNAME(cursor);
+			SET fieldValue = FIELDVALUE(cursor);
+			IF (fieldValue is not null) THEN
+				SET  concatString  =  concatString  ||'<'||fieldName||'>' ||fieldValue||'</'||fieldName||'>'||CRLF;
+			ELSE
+				SET  concatString  =  concatString  ||'<'||fieldName||'>'||CRLF;
+				CALL ComposeDetails(cursor, concatString  );
+				SET  concatString  =  concatString  ||'</'||fieldName||'>'||CRLF;
+			END IF;
+		MOVE cursor NEXTSIBLING;
+		END WHILE;  
+	END;
+END MODULE;

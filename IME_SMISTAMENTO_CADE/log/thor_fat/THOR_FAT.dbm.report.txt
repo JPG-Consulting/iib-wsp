@@ -1,0 +1,17 @@
+
+
+Importing file: P:\Users\e-decaro\IBM\IIBT10\workspace_TEST\IME_SMISTAMENTO_CADE\THOR_FAT.dbm
+
+
+Processing schema THOR_FAT.
+Creating complex type for table CADE_FILE_OUT.
+Creating global element for table CADE_FILE_OUT.
+Creating file \IME_SMISTAMENTO_CADE\thorfat\thorfat\THOR_FAT.xsd in the workspace.
+
+Elapsed time processing this message definition file: 12.704 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

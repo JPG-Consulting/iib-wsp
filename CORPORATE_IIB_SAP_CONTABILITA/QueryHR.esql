@@ -1,0 +1,385 @@
+
+
+CREATE COMPUTE MODULE HR_Civilistico_BuildIDOC
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE maxRows INTEGER 800;
+		DECLARE contoAppoggio CHARACTER 'ZNT000002';
+		DECLARE profitAppoggio CHARACTER 'S5ASXI1001';
+		-----------DATA RETRIEVE----------------------
+		DECLARE sqlQuery CHARACTER;
+		SET sqlQuery = '
+		SELECT b.SOCIETA_SAP AS SOCIETA 
+			   , ABPER
+			   , DECODE(TIPO_CONTO_DEST,''E'', KOSTL,'''') AS KOSTL 
+			   , SUM(TO_NUMBER(BETRG)) AS IMPORTO 
+			   , PPCTR  
+			   , RUNID 
+			   , DOCNUM 
+			   , CONTO_DEST 
+			   , TIPO_CONTO_DEST 
+			   , EXTERNAL_ID  
+			   , SOC_PARTNER_DEST
+  		FROM S1_HR_CONTABILITA_DATI a, S1_DEC_SOCIETA b
+  		WHERE SOCIETA = '''|| InputRoot.JSON.Data.Societa ||'''
+  		AND ABPER = '''|| InputRoot.JSON.Data.Periodo ||'''
+  		AND EXTERNAL_ID = '''|| InputRoot.JSON.Data.ID ||'''
+ 		AND a.SOCIETA = b.SOCIETA_HR
+  		GROUP BY b.SOCIETA_SAP,ABPER,TIPO_CONTO_DEST,CONTO_DEST, DOCNUM, RUNID, DECODE(TIPO_CONTO_DEST,''E'', KOSTL,'''') ,PPCTR, EXTERNAL_ID,SOC_PARTNER_DEST
+		ORDER BY  PPCTR  , CONTO_DEST , DECODE(TIPO_CONTO_DEST,''E'', KOSTL,'''')
+		';
+		SET Environment.result[] = PASSTHRU(sqlQuery TO Database.INT_ENGINE);
+		----------------------------------------------------------------------------------------
+		-------------------CREAZIONE STRUTTURA E CONTROL RECORD-----------------------------------
+		CREATE FIELD OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		DECLARE outputTestata REFERENCE TO OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007[1];
+		
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZFIDCCP02_N';
+		SET outputCR.MESTYP = 'ZFIDCC2_N';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		IF InputRoot.JSON.Data.TipoDoc = 'YP' THEN
+			SET outputCR.ARCKEY = 'HR-'||Environment.result[1].SOCIETA||'-C-'||Environment.result[1].ABPER||'-'||Environment.result[1].RUNID||'-SIM';
+		ELSE
+			SET outputCR.ARCKEY = 'HR-'||Environment.result[1].SOCIETA||'-C-'||Environment.result[1].ABPER||'-'||Environment.result[1].RUNID;
+		END IF;
+		-------------------------------------------------------------------------------------------------
+		
+		--Ogni testata può contenere al massimo maxRows righe di dettaglio
+		------------------------CALCOLO NUMERO TESTATE---------------------
+		DECLARE righe INTEGER CARDINALITY(Environment.result[]);
+		DECLARE numTestate INTEGER FLOOR(CARDINALITY(Environment.result[])/maxRows)+1;
+		DECLARE rows REFERENCE TO Environment.result[>];
+		--------------------------------------------------------------------------------------------
+		
+		----------------MENO DI maxRows RIGHE----------------------------------------------------
+		IF numTestate = 1 THEN
+			---------------POPOLAMENTO TESTATA----------------------------
+			SET outputTestata.BUKRS = Environment.result[1].SOCIETA;
+			SET outputTestata.GJAHR = LEFT(InputRoot.JSON.Data.Periodo, 4);
+			IF InputRoot.JSON.Data.TipoDoc IS NULL THEN
+				SET outputTestata.BLART = 'ST';
+			ELSE
+				SET outputTestata.BLART = InputRoot.JSON.Data.TipoDoc;
+			END IF;
+			SET outputTestata.BLDAT = RIGHT(InputRoot.JSON.Data.DataForz, 4)||SUBSTRING(InputRoot.JSON.Data.DataForz FROM 4 FOR 2)||LEFT(InputRoot.JSON.Data.DataForz, 2);
+			SET outputTestata.BUDAT = RIGHT(InputRoot.JSON.Data.DataForz, 4)||SUBSTRING(InputRoot.JSON.Data.DataForz FROM 4 FOR 2)||LEFT(InputRoot.JSON.Data.DataForz, 2);
+			SET outputTestata.XBLNR = 'HR-'||Environment.result[1].SOCIETA||'-C-'||Environment.result[1].RUNID;
+			SET outputTestata.BKTXT = 'STIPENDI '||InputRoot.JSON.Data.Periodo||' ID '||Environment.result[1].RUNID;
+			SET outputTestata.WAERS = 'EUR';
+			SET outputTestata.XREF1_HD = '';
+			SET outputTestata.XREF2_HD = '';
+			SET outputTestata.LDGRP = '0L';
+			----------CICLO SUI RECORD E POPOLAMENTO RIGHE----------------------------
+			CREATE FIELD outputTestata.SapZfidccp02NE2fiseg006;
+			DECLARE dettaglio REFERENCE TO outputTestata.SapZfidccp02NE2fiseg006[>];
+			WHILE LASTMOVE(rows) = TRUE DO
+				IF rows.TIPO_CONTO_DEST <> 'F' THEN
+					IF rows.IMPORTO >= 0 THEN
+						SET dettaglio.BSCHL = '40';
+					ELSE
+						SET dettaglio.BSCHL = '50';
+					END IF;
+				ELSE
+					IF rows.IMPORTO >= 0 THEN
+						SET dettaglio.BSCHL = '21';
+					ELSE
+						SET dettaglio.BSCHL = '31';
+					END IF;
+				END IF;
+				IF rows.TIPO_CONTO_DEST = 'P' OR rows.TIPO_CONTO_DEST = 'E' THEN
+					SET dettaglio.HKONT = rows.CONTO_DEST;
+				END IF;
+				SET dettaglio.WRBTR = ABSVAL(rows.IMPORTO);
+				IF rows.TIPO_CONTO_DEST = 'P' OR rows.TIPO_CONTO_DEST = 'F' THEN
+					IF rows.PPCTR IS NOT NULL THEN
+						SET dettaglio.PRCTR = rows.PPCTR;
+					END IF;
+				END IF;
+				SET dettaglio.VBUND = rows.SOC_PARTNER_DEST;
+				IF rows.TIPO_CONTO_DEST = 'E' THEN
+					SET dettaglio.KOSTL = rows.KOSTL;
+				END IF;
+				SET dettaglio.SGTXT = 'STIPENDI '||InputRoot.JSON.Data.Periodo||' ID '||Environment.result[1].RUNID;
+				IF rows.TIPO_CONTO_DEST = 'F' THEN
+					SET dettaglio.SapZfidccp02NE2finbu007.ZFBDT = RIGHT(InputRoot.JSON.Data.DataForz, 4)||SUBSTRING(InputRoot.JSON.Data.DataForz FROM 4 FOR 2)||LEFT(InputRoot.JSON.Data.DataForz, 2);
+					SET dettaglio.SapZfidccp02NE2finbu007.ZTERM = 'RD';
+					SET dettaglio.SapZfidccp02NE2finbu007.LIFNR = rows.CONTO_DEST;
+				END IF;
+				CREATE NEXTSIBLING OF dettaglio AS dettaglio REPEAT;
+				MOVE rows NEXTSIBLING REPEAT TYPE NAME;
+			END WHILE;
+			DELETE FIELD dettaglio;
+			
+			ELSE
+		---------------------PIU DI maxRows RIGHE, TESTATE MULTIPLE -------------------------
+			DECLARE countTestata INTEGER 0;
+			DECLARE countRows INTEGER 1;
+			-------------CICLO SUL NUMERO DI TESTATE DA CREARE------------------------------	
+			WHILE countTestata < numTestate DO
+				DECLARE totale DECIMAL 0; --totale della testata per creare la riga di compensazione
+
+				SET outputTestata.BUKRS = Environment.result[1].SOCIETA;
+				SET outputTestata.GJAHR = LEFT(InputRoot.JSON.Data.Periodo, 4);
+				IF InputRoot.JSON.Data.TipoDoc IS NULL THEN
+					SET outputTestata.BLART = 'ST';
+				ELSE
+					SET outputTestata.BLART = InputRoot.JSON.Data.TipoDoc;
+				END IF;
+				SET outputTestata.BLDAT = RIGHT(InputRoot.JSON.Data.DataForz, 4)||SUBSTRING(InputRoot.JSON.Data.DataForz FROM 4 FOR 2)||LEFT(InputRoot.JSON.Data.DataForz, 2);
+				SET outputTestata.BUDAT = RIGHT(InputRoot.JSON.Data.DataForz, 4)||SUBSTRING(InputRoot.JSON.Data.DataForz FROM 4 FOR 2)||LEFT(InputRoot.JSON.Data.DataForz, 2);
+				SET outputTestata.XBLNR = 'HR-'||Environment.result[1].SOCIETA||'-C-'||Environment.result[1].RUNID;
+				SET outputTestata.BKTXT = 'STIPENDI '||InputRoot.JSON.Data.Periodo||' ID '||Environment.result[1].RUNID;
+				SET outputTestata.WAERS = 'EUR';
+				SET outputTestata.XREF1_HD = '';
+				SET outputTestata.XREF2_HD = '';
+				SET outputTestata.LDGRP = '0L';
+				
+				CREATE FIELD outputTestata.SapZfidccp02NE2fiseg006;
+				DECLARE dettaglio REFERENCE TO outputTestata.SapZfidccp02NE2fiseg006[>];
+				-----------CICLO SUI RECORD E POPOLAMENTO DELLE RIGHE DI DETTAGLIO---------------------
+				WHILE countRows < maxRows AND LASTMOVE(rows) = TRUE DO --inserisco meno di maxRows righe o fino alla fine del resultset
+					IF rows.TIPO_CONTO_DEST <> 'F' THEN
+						IF rows.IMPORTO >= 0 THEN
+							SET dettaglio.BSCHL = '40';
+						ELSE
+							SET dettaglio.BSCHL = '50';
+						END IF;
+					ELSE
+						IF rows.IMPORTO >= 0 THEN
+							SET dettaglio.BSCHL = '21';
+						ELSE
+							SET dettaglio.BSCHL = '31';
+						END IF;
+					END IF;
+					IF rows.TIPO_CONTO_DEST = 'P' OR rows.TIPO_CONTO_DEST = 'E' THEN
+						SET dettaglio.HKONT = rows.CONTO_DEST;
+					END IF;
+					SET dettaglio.WRBTR = ABS(rows.IMPORTO);
+					IF rows.TIPO_CONTO_DEST = 'P' OR rows.TIPO_CONTO_DEST = 'F' THEN
+						IF rows.PPCTR IS NOT NULL THEN
+							SET dettaglio.PRCTR = rows.PPCTR;
+						END IF;
+					END IF;
+					SET dettaglio.VBUND = rows.SOC_PARTNER_DEST;
+					IF rows.TIPO_CONTO_DEST = 'E' THEN
+						SET dettaglio.KOSTL = rows.KOSTL;
+					END IF;
+					SET dettaglio.SGTXT = 'STIPENDI '||InputRoot.JSON.Data.Periodo||' ID '||Environment.result[1].RUNID;
+					IF rows.TIPO_CONTO_DEST = 'F' THEN
+						SET dettaglio.SapZfidccp02NE2finbu007.ZFBDT = RIGHT(InputRoot.JSON.Data.DataForz, 4)||SUBSTRING(InputRoot.JSON.Data.DataForz FROM 4 FOR 2)||LEFT(InputRoot.JSON.Data.DataForz, 2);
+						SET dettaglio.SapZfidccp02NE2finbu007.ZTERM = 'RD';
+						SET dettaglio.SapZfidccp02NE2finbu007.LIFNR = rows.CONTO_DEST;
+					END IF;
+					
+					SET totale = totale + ROUND(rows.IMPORTO, 2);
+				
+					CREATE NEXTSIBLING OF dettaglio AS dettaglio REPEAT;
+					MOVE rows NEXTSIBLING REPEAT TYPE NAME;
+					SET countRows = countRows + 1;
+				END WHILE;
+				---------------CREAZIONE RIGA DI COMPENSAZIONE---------------------
+				IF totale > 0 THEN
+					SET dettaglio.BSCHL = '50';
+				ELSE
+					SET dettaglio.BSCHL = '40';
+				END IF;
+				SET dettaglio.HKONT = contoAppoggio;
+				SET dettaglio.WRBTR = ABSVAL(totale);
+				SET dettaglio.PRCTR = profitAppoggio;
+				
+				
+				CREATE NEXTSIBLING OF outputTestata AS outputTestata REPEAT;
+				SET countTestata = countTestata + 1;
+				SET countRows = 1;
+			END WHILE;
+			DELETE FIELD outputTestata;
+			
+		END IF;
+		--THROW USER EXCEPTION MESSAGE 2951 VALUES('DEBUG', NULL);
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+
+CREATE COMPUTE MODULE HR_Gestionale_BuildIDOC
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE maxRows INTEGER 400;
+		DECLARE contoAppoggio CHARACTER 'PZNT000002';
+		DECLARE profitAppoggio CHARACTER 'S5ASXI1001';
+		--------------------DATA RETRIEVE--------------------------------------------
+		DECLARE sqlQuery CHARACTER;
+		SET sqlQuery = '
+		SELECT b.SOCIETA_SAP AS SOCIETA
+				, a.ABPER 
+				, a.KOSTL 
+				, SUM(TO_NUMBER(BETRG)) AS IMPORTO 
+				, a.RUNID 
+				, a.MOMAG
+				, c.CONTO_ORIGINE 
+				, c.CONTO_CONTROPARTITA
+				, c.CONTO_DIRIGENTI
+				, c.CONTO_QUADRI
+				, c.CONTO_IMPIEGATI
+				, c.CONTO_OPERAI
+				, a.DOCNUM 
+				, a.CONTO_DEST 
+				, a.TIPO_CONTO_DEST 
+				, a.EXTERNAL_ID  
+  		FROM S1_HR_CONTABILITA_DATI a, S1_DEC_SOCIETA b, S1_HR_DEC_CONTI_GESTIONALI c
+  		WHERE a.SOCIETA = '''|| InputRoot.JSON.Data.Societa ||'''
+  			AND a.ABPER = '''|| InputRoot.JSON.Data.Periodo ||'''
+  			AND a.EXTERNAL_ID = '''|| InputRoot.JSON.Data.ID ||'''
+  			AND a.SOCIETA = b.SOCIETA_HR
+  			AND A.CONTO_DEST = c.CONTO_ORIGINE
+  		GROUP BY b.SOCIETA_SAP,a.ABPER,a.TIPO_CONTO_DEST,a.CONTO_DEST, a.DOCNUM, a.RUNID, a.KOSTL, a.PPCTR,
+   			a.EXTERNAL_ID, a.MOMAG, c.CONTO_ORIGINE,  c.CONTO_CONTROPARTITA,  c.CONTO_DIRIGENTI,  c.CONTO_QUADRI,  c.CONTO_IMPIEGATI,  c.CONTO_OPERAI
+  		ORDER BY a.CONTO_DEST, a.KOSTL, a.MOMAG
+		';
+		SET Environment.result[] = PASSTHRU(sqlQuery TO Database.INT_ENGINE);
+		----------------------------------------------------------------------------------------
+		
+		-------------------CREAZIONE STRUTTURA E CONTROL RECORD-----------------------------------
+		CREATE FIELD OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		DECLARE outputTestata REFERENCE TO OutputRoot.DataObject.ns24:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007[1];
+		
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZFIDCCP02_N';
+		SET outputCR.MESTYP = 'ZFIDCC2_N';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		SET outputCR.ARCKEY = 'HR-'||Environment.result[1].SOCIETA||'-G-'||Environment.result[1].ABPER||'-'||Environment.result[1].RUNID;
+		-------------------------------------------------------------------------------------------------
+		
+		--Ogni testata può contenere al massimo maxRows righe di dettaglio
+		------------------------CALCOLO NUMERO TESTATE---------------------
+		DECLARE righe INTEGER CARDINALITY(Environment.result[]);
+		DECLARE numTestate INTEGER FLOOR(CARDINALITY(Environment.result[])/(maxRows+1))+1;
+		DECLARE rows REFERENCE TO Environment.result[>];
+		--------------------------------------------------------------------------------------------
+		
+		
+		DECLARE countTestata INTEGER 0;
+		DECLARE countRows INTEGER 1;
+		-------------CICLO SUL NUMERO DI TESTATE DA CREARE------------------------------	
+		WHILE countTestata < numTestate DO
+			DECLARE data CHARACTER;
+
+			SET outputTestata.BUKRS = Environment.result[1].SOCIETA;
+			SET outputTestata.GJAHR = LEFT(InputRoot.JSON.Data.Periodo, 4);
+			SET outputTestata.BLART = 'GS';
+			CASE RIGHT(InputRoot.JSON.Data.Periodo, 2)
+			WHEN '04' THEN
+				SET data = InputRoot.JSON.Data.Periodo || '30';
+			WHEN '06' THEN
+				SET data = InputRoot.JSON.Data.Periodo || '30';
+			WHEN '09' THEN
+				SET data = InputRoot.JSON.Data.Periodo || '30';
+			WHEN '11' THEN
+				SET data = InputRoot.JSON.Data.Periodo || '30';
+			WHEN '02' THEN
+				SET data = InputRoot.JSON.Data.Periodo || '28';
+			ELSE
+				SET data = InputRoot.JSON.Data.Periodo || '31';
+			END CASE;
+			SET outputTestata.BLDAT = data;
+			SET outputTestata.BUDAT = data;
+			SET outputTestata.XBLNR = 'HR-'||Environment.result[1].SOCIETA||'-G-'||Environment.result[1].RUNID;
+			SET outputTestata.BKTXT = 'STIPENDI '||InputRoot.JSON.Data.Periodo||' ID '||Environment.result[1].RUNID;
+			SET outputTestata.WAERS = 'EUR';
+			SET outputTestata.XREF1_HD = '';
+			SET outputTestata.XREF2_HD = '';
+			SET outputTestata.LDGRP = '0L';
+			
+			CREATE FIELD outputTestata.SapZfidccp02NE2fiseg006;
+			DECLARE dettaglio REFERENCE TO outputTestata.SapZfidccp02NE2fiseg006[>];
+			-----------CICLO SUI RECORD E POPOLAMENTO DELLE RIGHE DI DETTAGLIO---------------------
+			WHILE countRows < maxRows AND LASTMOVE(rows) = TRUE DO --inserisco meno di maxRows righe o fino alla fine del resultset
+			
+				IF rows.IMPORTO >= 0 THEN
+					SET dettaglio.BSCHL = '40';
+				ELSE
+					SET dettaglio.BSCHL = '50';
+				END IF;
+				CASE rows.MOMAG 
+				WHEN '1' THEN
+					SET dettaglio.HKONT = rows.CONTO_DIRIGENTI;
+				WHEN '2' THEN
+					SET dettaglio.HKONT = rows.CONTO_QUADRI;
+				WHEN '3' THEN
+					SET dettaglio.HKONT = rows.CONTO_IMPIEGATI;
+				WHEN '4' THEN
+					SET dettaglio.HKONT = rows.CONTO_OPERAI;
+				ELSE
+					SET dettaglio.HKONT = '';
+				END CASE;
+				SET dettaglio.WRBTR = ABS(rows.IMPORTO);
+				SET dettaglio.KOSTL = rows.KOSTL;
+				SET dettaglio.SGTXT = rows.CONTO_ORIGINE||'-'||rows.MOMAG;
+				SET dettaglio.ZUONR = rows.MOMAG;
+				
+				CREATE NEXTSIBLING OF dettaglio AS dettaglio REPEAT;
+				
+				IF rows.IMPORTO >= 0 THEN
+					SET dettaglio.BSCHL = '50';
+				ELSE
+					SET dettaglio.BSCHL = '40';
+				END IF;
+				SET dettaglio.HKONT = rows.CONTO_CONTROPARTITA;
+				SET dettaglio.WRBTR = ABS(rows.IMPORTO);
+				SET dettaglio.KOSTL = rows.KOSTL;
+				SET dettaglio.SGTXT = rows.CONTO_ORIGINE||'-'||rows.MOMAG;
+				SET dettaglio.ZUONR = rows.MOMAG;
+
+			
+				CREATE NEXTSIBLING OF dettaglio AS dettaglio REPEAT;
+				MOVE rows NEXTSIBLING REPEAT TYPE NAME;
+				SET countRows = countRows + 1;
+			END WHILE;
+			DELETE FIELD dettaglio;
+			
+			CREATE NEXTSIBLING OF outputTestata AS outputTestata REPEAT;
+			SET countTestata = countTestata + 1;
+			SET countRows = 1;
+		END WHILE;
+		DELETE FIELD outputTestata;
+		
+		--THROW USER EXCEPTION MESSAGE 2951 VALUES('DEBUG', NULL);
+		
+		RETURN TRUE;
+	END;
+END MODULE;
+	

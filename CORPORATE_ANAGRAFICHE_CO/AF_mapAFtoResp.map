@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/SapZfmFkberGetlist.xsd"/>
+    <output path="/AnagraficheCO_InlineSchema.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapifuncareagetlist"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapfunctionalarealist33259375"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+        <namespace kind="supplement" prefix="in4" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfmfkbergetlist"/>
+        <namespace kind="supplement" prefix="in3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapreturn468436650"/>
+        <namespace kind="supplement" prefix="in5" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapfunctionalarealist517505523"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="AF_mapAFtoResp">
+        <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfmfkbergetlist" path="mb:msg(SapZfmFkberGetlist,assembly,XMLNSC,Properties)"/>
+        <output namespace="http://www.gruppoiren.it/AnagraficheCO/" path="mb:msg(Output,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
+        <move>
+            <input path="Properties"/>
+            <output path="$MessageAssembly1/Properties"/>
+            <override>
+                <assign value="{AnagraficheCO}">
+                    <output path="$MessageAssembly1/Properties/MessageSet"/>
+                </assign>
+            </override>
+        </move>
+        <foreach>
+            <input path="SapZfmFkberGetlist/SapFunctionalareaList" var="SapFunctionalareaList1"/>
+            <output path="$MessageAssembly1/Output/oggettoContabile"/>
+            <assign value="AF">
+                <output path="@tipo"/>
+            </assign>
+            <move>
+                <input path="$SapFunctionalareaList1/FKBER"/>
+                <output path="codice"/>
+            </move>
+            <move>
+                <input path="$SapFunctionalareaList1/FKBTX"/>
+                <output path="descrizione"/>
+            </move>
+            <condition>
+                <if>
+                    <input path="$SapFunctionalareaList1/DATAB" var="DATAB"/>
+                    <output path="dataInizioValidita"/>
+                    <test lang="xpath">$DATAB != '0000-00-00'</test>
+                    <move>
+                        <input path="$DATAB/."/>
+                        <output path="."/>
+                    </move>
+                </if>
+                <else>
+                    <output path="dataInizioValidita"/>
+                    <assign value="1900-01-01">
+                        <output path="."/>
+                    </assign>
+                </else>
+            </condition>
+            <condition>
+                <if>
+                    <input path="$SapFunctionalareaList1/DATBIS" var="DATBIS"/>
+                    <output path="dataFineValidita"/>
+                    <test lang="xpath">$DATBIS != '0000-00-00'</test>
+                    <move>
+                        <input path="$DATBIS/." var="DATBIS1"/>
+                        <output path="."/>
+                        <annotation key="$NON-PERSISTENT" value="2"/>
+                    </move>
+                </if>
+                <else>
+                    <output path="dataFineValidita"/>
+                    <assign value="9999-12-31">
+                        <output path="."/>
+                    </assign>
+                </else>
+            </condition>
+        </foreach>
+    </mappingDeclaration>
+</mappingRoot>

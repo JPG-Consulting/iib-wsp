@@ -1,0 +1,17 @@
+
+
+Importing file: P:\Users\e-decaro\IBM\IIBT10\workspace\DB\HUB_EAI_VIEWS.dbm
+
+
+Processing schema HUB_EAI.
+Creating complex type for table V_EE_DATI_PRESTAZIONI.
+Creating global element for table V_EE_DATI_PRESTAZIONI.
+Creating file \OrderEntry_SF\imestpi0\hubeai\HUB_EAI_VIEWS.xsd in the workspace.
+
+Elapsed time processing this message definition file: 2.303 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

@@ -1,0 +1,34 @@
+
+
+CREATE COMPUTE MODULE AMBIENTE_ECOS_SAP_MASSIVO_OutputStats
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- logica 
+		 
+		declare ret_val boolean false;
+		
+		 
+      	if (InputLocalEnvironment.Variables.count is null) then
+			IF(Environment.Variables.indice IS NULL) THEN
+				SET Environment.Variables.indice = 1;
+		    ELSE
+		      		
+				     SET Environment.Variables.indice = Environment.Variables.indice  +1;
+		    END IF;
+      	
+      	 else 
+      		
+      		 SET OutputRoot.XMLNSC.result.elaborati  = Environment.Variables.indice;
+      		 SET OutputRoot.XMLNSC.result.processati = InputLocalEnvironment.Variables.count;
+      		 
+      		 SET OutputRoot.XMLNSC.result.testo = 'Lanciati '|| cast(Environment.Variables.indice as character) || ' di '|| cast (InputLocalEnvironment.Variables.count as character) ||' profili.';
+      		 SET ret_val = true;
+      		
+      	 end if;
+      	
+		 RETURN ret_val;
+		 
+	END;
+
+	 
+END MODULE;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><!--File Metadata.xsd, application CORPORATE_WS_DOCUMENTALE--><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE">
+	<xsd:complexType name="MetadataType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="tipoDocumento" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="nomeFile" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="descrizione" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="provenienza" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="operatore" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="contentType" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="proprieta" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="path" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="URL" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="ID" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

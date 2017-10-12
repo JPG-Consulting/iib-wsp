@@ -1,0 +1,47 @@
+DECLARE ns9 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapibus2054getstatus';
+
+
+CREATE COMPUTE MODULE WBS_getInfoToResp
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		IF InputLocalEnvironment.Variables.Final = 'YES' THEN
+			CALL CopyMessageHeaders();
+			CREATE FIELD OutputRoot.DataObject.ns9:SapBapiBus2054GetStatus.SapIWbsElements;
+			SET OutputRoot.DataObject.ns9:SapBapiBus2054GetStatus.SapIWbsElements[] = SELECT ogg.codice AS WBS_ELEMENT FROM Environment.Data.Output.oggettoContabile[] AS ogg;
+			RETURN TRUE;
+		ELSE
+			DECLARE wbs REFERENCE TO Environment.Data.Output;
+			FOR input AS InputRoot.DataObject.ns12:SapBapiProjectGetinfo.SapEWbsElementTable[] DO
+			IF input.WBS_ELEMENT IS NOT NULL THEN
+				CREATE LASTCHILD OF Environment.Data.Output AS wbs NAME 'oggettoContabile';
+				SET wbs.codice = input.WBS_ELEMENT;
+				SET wbs.descrizione = input.DESCRIPTION;
+				SET wbs.societa = Environment.Variables.societa;
+				SET wbs.dataInizioValidita =  '';
+				SET wbs.dataFineValidita = '';
+				SET wbs.ambito = input.ZZ1AMBITO;
+				SET wbs.subambito = input.ZZ1SUBAMB;
+				SET wbs.areaBusiness = input.ZZ1ADB;
+				SET wbs.elementoContab = input.WBS_ACCOUNT_ASSIGNMENT_ELEMENT;
+				SET wbs.motivoInvestimento = input.USER_FIELD_CHAR10_2;
+				SET wbs.stato = '';
+				SET wbs.societaPartner = input.ZZ1SOCPAR;
+			END IF;
+			END FOR;
+			RETURN FALSE;			
+		END IF;
+	END;
+	
+	CREATE PROCEDURE CopyMessageHeaders() 
+	BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+END MODULE;

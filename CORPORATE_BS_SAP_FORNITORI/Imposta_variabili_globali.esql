@@ -1,0 +1,22 @@
+
+
+CREATE COMPUTE MODULE Imposta_variabili_globali
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE startP INTEGER;		
+		CREATE FIELD InputLocalEnvironment.HTTP.STARTATORIG;
+		CREATE FIELD InputLocalEnvironment.HTTP.ELABORATI;
+		CREATE FIELD InputLocalEnvironment.HTTP.NEWSTARTAT;
+		CREATE FIELD InputLocalEnvironment.HTTP.TOTRECDAELAB;
+		SET startP = InputLocalEnvironment.HTTP.Input.QueryString.STARTPAR;
+  	    SET InputLocalEnvironment.HTTP.STARTATORIG = startP;
+		SET Environment.Variables.Estratti = 0;
+		SET Environment.Variables.DaElaborare = 0;
+		SET Environment.Variables.Elaborati = 0;
+		SET Environment.Variables.DataFr = COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.DATAFROM,'XX');
+		SET Environment.Variables.STARTPAR = InputLocalEnvironment.HTTP.Input.QueryString.STARTPAR;
+		SET Environment.Variables.bravotest = COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.BRAVOTEST,'XX');
+		RETURN TRUE;
+
+	END;
+END MODULE;

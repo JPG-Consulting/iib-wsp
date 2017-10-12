@@ -1,0 +1,9 @@
+
+
+CREATE COMPUTE MODULE REST_showError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC = InputExceptionList.RecoverableException;
+		RETURN TRUE;
+	END;
+END MODULE;

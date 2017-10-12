@@ -1,0 +1,15 @@
+DECLARE ns12 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzrfcresiduovalore';
+DECLARE ns3 NAMESPACE 'http://www.gruppoiren.it/ResiduoOrdini';
+
+
+CREATE COMPUTE MODULE CONTROLLO_IMPORTO_ODL_BuildRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET OutputRoot.DataObject.ns12:SapZrfcResiduoValore.EBELN = InputLocalEnvironment.HTTP.Input.QueryString.ordineId;
+		SET OutputRoot.DataObject.ns12:SapZrfcResiduoValore.EBELP = InputLocalEnvironment.HTTP.Input.QueryString.ordinePos;
+		SET OutputRoot.DataObject.ns12:SapZrfcResiduoValore.BSTYP = InputLocalEnvironment.HTTP.Input.QueryString.tipoOrdine;
+	
+		RETURN TRUE;
+	END;
+END MODULE;

@@ -1,0 +1,29 @@
+
+
+CREATE COMPUTE MODULE HTTP_StarterProcess_ViewError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--SET OutputRoot = InputRoot;
+		declare messageText character;
+		declare messageNumber character;
+		CREATE FIELD OutputRoot.XMLNSC.Info.testo;
+		SET OutputRoot.XMLNSC.Info.testo = 'PROCESSO IN ERRORE';
+		CREATE FIELD OutputRoot.XMLNSC.Info.errore;      
+		SET OutputRoot.XMLNSC.Info.errore = InputExceptionList.RecoverableException;
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

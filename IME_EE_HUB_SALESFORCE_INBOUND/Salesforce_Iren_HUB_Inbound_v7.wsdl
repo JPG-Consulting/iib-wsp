@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+ Web Services API : Iren_HUB_Inbound
+--><definitions xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <documentation>
+    <appinfo source="WMQI_APPINFO">
+      <MRWSDLAppInfo imported="true">
+        <generatedXSD location="Salesforce_Iren_HUB_Inbound_v7_InlineSchema1.xsd"/>
+        <binding hasEncoding="false" imported="true" name="Iren_HUB_InboundBinding" originalBindingStyle="document"/>
+      </MRWSDLAppInfo>
+    </appinfo>
+  </documentation>
+ <types>
+  
+         <xsd:schema elementFormDefault="qualified" targetNamespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+<xsd:include schemaLocation="Salesforce_Iren_HUB_Inbound_v7_InlineSchema1.xsd"/>
+    </xsd:schema>
+    </types>
+ <!-- Message for the header parts -->
+ <message name="Header">
+  <part element="tns:AllowFieldTruncationHeader" name="AllowFieldTruncationHeader"/>
+  <part element="tns:CallOptions" name="CallOptions"/>
+  <part element="tns:DebuggingHeader" name="DebuggingHeader"/>
+  <part element="tns:DebuggingInfo" name="DebuggingInfo"/>
+  <part element="tns:SessionHeader" name="SessionHeader"/>
+ </message>
+ <!-- Operation Messages -->
+ <message name="WSHubCrmInboundRequest">
+  <part element="tns:WSHubCrmInbound" name="parameters"/>
+ </message>
+ <message name="WSHubCrmInboundResponse">
+  <part element="tns:WSHubCrmInboundResponse" name="parameters"/>
+ </message>
+ <portType name="Iren_HUB_InboundPortType">
+  <operation name="WSHubCrmInbound">
+   <input message="tns:WSHubCrmInboundRequest"/>
+   <output message="tns:WSHubCrmInboundResponse"/>
+  </operation>
+ </portType>
+ <binding name="Iren_HUB_InboundBinding" type="tns:Iren_HUB_InboundPortType">
+  <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="WSHubCrmInbound">
+   <soap:operation soapAction=""/>
+   <input>
+    <soap:header message="tns:Header" part="SessionHeader" use="literal"/>
+    <soap:header message="tns:Header" part="CallOptions" use="literal"/>
+    <soap:header message="tns:Header" part="DebuggingHeader" use="literal"/>
+    <soap:header message="tns:Header" part="AllowFieldTruncationHeader" use="literal"/>
+    <soap:body parts="parameters" use="literal"/>
+   </input>
+   <output>
+    <soap:header message="tns:Header" part="DebuggingInfo" use="literal"/>
+    <soap:body use="literal"/>
+   </output>
+  </operation>
+ </binding>
+ <service name="Iren_HUB_InboundService">
+  <documentation/>
+  <port binding="tns:Iren_HUB_InboundBinding" name="Iren_HUB_Inbound">
+   <soap:address location="https://cs82.salesforce.com/services/Soap/class/Iren_HUB_Inbound"/>
+  </port>
+ </service>
+</definitions>

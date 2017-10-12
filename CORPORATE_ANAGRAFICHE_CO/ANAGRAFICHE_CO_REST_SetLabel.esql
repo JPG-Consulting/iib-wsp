@@ -1,0 +1,21 @@
+
+CREATE COMPUTE MODULE ANAGRAFICHE_CO_REST_SetLabel
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		
+		SET OutputLocalEnvironment.Destination.RouterList.DestinationData.labelName = TRIM(InputLocalEnvironment.HTTP.Input.QueryString.tipo);
+		CREATE FIELD OutputRoot.XMLNSC.ns:Input;
+		SET OutputRoot.XMLNSC.ns:Input.tipo = InputLocalEnvironment.HTTP.Input.QueryString.tipo;
+		SET OutputRoot.XMLNSC.ns:Input.societa = InputLocalEnvironment.HTTP.Input.QueryString.societa;
+		SET OutputRoot.XMLNSC.ns:Input.dataInizioValidita = InputLocalEnvironment.HTTP.Input.QueryString.dataInizioValidita;
+		SET OutputRoot.XMLNSC.ns:Input.oggetto = InputLocalEnvironment.HTTP.Input.QueryString.oggetto;
+		IF (InputLocalEnvironment.HTTP.Input.QueryString.tipo = 'OI') THEN
+			SET OutputRoot.XMLNSC.ns:Input.tipoOdi = InputLocalEnvironment.HTTP.Input.QueryString.tipoOdi;
+		END IF;
+		DELETE FIELD OutputRoot.BLOB;
+		
+		RETURN TRUE;
+		
+	END;
+END MODULE;

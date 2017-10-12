@@ -1,0 +1,52 @@
+DECLARE ns8 NAMESPACE 'www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE mailExceptionMapping
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN		
+		CREATE FIELD OutputRoot.XMLNSC.ns8:Params;
+		DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns8:Params;
+		DECLARE forn CHARACTER;
+		DECLARE nomeForn CHARACTER;
+		DECLARE msgnum CHARACTER;
+		DECLARE msgid CHARACTER;
+		SET forn = Environment.Variables.BID;
+		SET	nomeForn =  Environment.Variables.CNAME;
+		SET param.obj1 = 'Eccezione per Bravo ID: '||forn||' - Company: '||nomeForn; --OGGETTO E-MAIL		
+		SET param.body1 = 	parseToString(InputExceptionList.RecoverableException); 		
+		SET param.flusso = 'FORNITORI_BRAVOSOLUTION_EXC';
+		RETURN TRUE;		
+	END;
+
+	CREATE FUNCTION parseToString(IN root REFERENCE) RETURNS CHARACTER
+	BEGIN
+		DECLARE concatString character;
+		SET concatString = '';
+		CALL ComposeDetails(root,concatString);
+ 		return concatString;
+	END;
+
+
+	CREATE PROCEDURE ComposeDetails(IN root REFERENCE,INOUT concatString CHARACTER) 
+	BEGIN
+		DECLARE CRLF CHARACTER CAST(X'0D0A' AS CHARACTER CCSID 1208);
+		DECLARE TAB CHARACTER CAST(X'09' AS CHARACTER CCSID 1208);
+		DECLARE fieldName CHARACTER;
+		DECLARE fieldValue CHARACTER;
+		DECLARE cursor REFERENCE TO root;
+		MOVE cursor FIRSTCHILD;
+		WHILE LASTMOVE(cursor) Do
+			SET fieldName = FIELDNAME(cursor);
+			SET fieldValue = FIELDVALUE(cursor);
+			IF (fieldValue is not null) THEN
+				SET  concatString  =  concatString  ||'<'||fieldName||'>' ||fieldValue||'</'||fieldName||'>'||CRLF;
+			ELSE
+				SET  concatString  =  concatString  ||'<'||fieldName||'>'||CRLF;
+				CALL ComposeDetails(cursor, concatString);
+				SET  concatString  =  concatString  ||'</'||fieldName||'>'||CRLF;
+			END IF;
+		MOVE cursor NEXTSIBLING;
+		END WHILE;  
+	END;
+
+END MODULE;

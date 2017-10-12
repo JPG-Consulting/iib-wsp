@@ -1,0 +1,361 @@
+DECLARE ns5 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzanagrafefornitori';
+
+CREATE COMPUTE MODULE setCallSAP
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE totRecord INTEGER;
+		DECLARE retRec INTEGER;
+		DECLARE stato CHARACTER;
+		DECLARE provincia CHARACTER;
+		DECLARE origStartAt INTEGER;
+		DECLARE elab INTEGER;
+		DECLARE totDaElaborare INTEGER;
+		DECLARE orig INTEGER;
+		DECLARE newStart INTEGER;
+		DECLARE contaLoop INTEGER 1;
+		DECLARE i_wsCompData INTEGER 1;
+		DECLARE lenName INTEGER;
+		DECLARE codConti CHARACTER;
+		DECLARE dtNascita CHARACTER;
+		DECLARE dtNascitaDt DATE;
+		DECLARE luogoNascita CHARACTER;
+		DECLARE professione CHARACTER;
+		DECLARE sesso CHARACTER;   
+		DECLARE prova character;	
+		DECLARE IBAN CHARACTER;
+		DECLARE IBAN1 CHARACTER; 
+		DECLARE DeleteChar CHARACTER; 
+		SET DeleteChar=CAST(X'0D' AS CHAR CCSID 819) || CAST(X'0A' AS CHAR CCSID 819);
+		SET totRecord = InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.totRecords;
+		SET retRec = InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnedRecords;
+		SET Environment.Variables.Estratti = totRecord;
+		
+		
+			CREATE FIELD InputLocalEnvironment.HTTP.BID;
+			CREATE FIELD InputLocalEnvironment.HTTP.CNAME;
+				
+			DECLARE c_wsCompData    INT CARDINALITY(InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnCompanyData[]);
+			ciclo_wsCompData: LOOP
+		        IF (i_wsCompData > c_wsCompData) THEN	        	
+				   LEAVE ciclo_wsCompData;
+			    END IF;	
+			    SET codConti     = ''; --| inizializzo codConti	   
+			    SET dtNascita 	 = ''; 
+			    SET luogoNascita = '';
+			    SET professione  = ''; 
+			    SET sesso		 = '';
+				SET Environment.Variables.mail_fornitore 	= '';
+				SET Environment.Variables.userAlias 	  	= '';
+				SET Environment.Variables.rag_soc_fornitore = '';
+				SET Environment.Variables.piva_fornitore 	= '';
+
+			    
+			    DECLARE wsCompData REFERENCE TO InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnCompanyData[i_wsCompData];
+			    DECLARE wsCompInfo REFERENCE TO wsCompData.returnCompanyInfo;
+				if (UPPER(wsCompInfo.extStatus) = UPPER('ATTIVO Codificato SAP')) THEN --| MO 15032017 FILTRO PER AGGIORNAMETI SU TAG: <extStatus>ATTIVO Codificato SAP</extStatus>
+				
+					
+					CREATE FIELD OutputRoot.DataObject.ns5:SapZAnagrafeFornitori;				
+					DECLARE forniSAP REFERENCE TO OutputRoot.DataObject.ns5:SapZAnagrafeFornitori;		
+
+					CREATE FIELD OutputRoot.DataObject.ns5:SapZAnagrafeFornitori.SapZmmAfbs;
+					DECLARE ZmmAfbs REFERENCE TO OutputRoot.DataObject.ns5:SapZAnagrafeFornitori.SapZmmAfbs;
+					
+					DECLARE codFisc CHARACTER;
+					DECLARE pIva 	CHARACTER;
+					DECLARE pIvaEu  CHARACTER;
+					DECLARE dBCode  CHARACTER;
+					CREATE FIELD InputLocalEnvironment.HTTP.Input.REG;
+					
+					DECLARE lung INTEGER;
+					--| DEBASIC				
+				    DECLARE wsdeBasic REFERENCE TO InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnCompanyData[i_wsCompData].deBasic;
+				    DECLARE c_wsDeInfo INT CARDINALITY(InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnCompanyData[i_wsCompData].deBasic.deInfo[]);
+				    DECLARE i_wsDeInfo INTEGER 1;
+				    ciclo_wsDeInfo: LOOP
+				        IF (i_wsDeInfo > c_wsDeInfo) THEN	        	
+						   LEAVE ciclo_wsDeInfo;
+					    END IF;	
+					    DECLARE wsDeInfo REFERENCE TO InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnCompanyData[i_wsCompData].deBasic.deInfo[i_wsDeInfo]; 					    
+					    if wsDeInfo.name = 'Tipologia di Operatore Economico' then--| è Tipologia di Operatore Economico
+					      SET codConti = SUBSTRING(wsDeInfo.values.value.deValue FROM 1 FOR 4); 
+					    end if;
+
+					    if wsDeInfo.name = 'Libero Professionista - Data di nascita' then--| è dataNascita
+					      SET dtNascitaDt = CAST (wsDeInfo.values.value.deValue AS DATE FORMAT 'yyyy-MM-dd');
+					      --SET dtNascita = CAST (dtNascitaDt AS CHARACTER FORMAT 'ddMMyyyy');					     
+					      SET prova = CAST (dtNascitaDt AS CHARACTER FORMAT 'yyyyMMdd');
+					      
+					    end if;
+						
+					    if wsDeInfo.name = 'Libero Professionista - Luogo di nascita' then--| è luogoNascita
+					      SET luogoNascita = wsDeInfo.values.value.deValue;
+					    end if;
+					    
+					    if wsDeInfo.name = 'Libero Professionista - Professione' then--| è professione
+					      SET professione = wsDeInfo.values.value.deValue;
+					    end if;		
+
+					    if wsDeInfo.name = 'Libero Professionista - Sesso' then--| è sesso
+					      SET sesso = wsDeInfo.values.value.deValue;
+					    end if;		
+		
+					set i_wsDeInfo = i_wsDeInfo + 1;
+					END LOOP ciclo_wsDeInfo;	    
+
+					--| DECATEGORY				
+				    DECLARE wsdeCategory REFERENCE TO InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnCompanyData[i_wsCompData].deCategory;
+				    DECLARE c_wsDeCategory INT CARDINALITY(InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnCompanyData[i_wsCompData].deCategory.deInfo[]);
+				    DECLARE i_wsDeCategory INTEGER 1;
+				    SET IBAN = '';
+				    SET IBAN1 = '';
+				    
+				    ciclo_wsDeCategory: LOOP
+				        IF (i_wsDeCategory > c_wsDeCategory) THEN	        	
+						   LEAVE ciclo_wsDeCategory;
+					    END IF;	
+					    DECLARE wsDeInfoCategory REFERENCE TO InputRoot.SOAP.Body.ns:ExportProfilesPagedResponse.returnCompanyData[i_wsCompData].deCategory.deInfo[i_wsDeCategory];
+					    						--| INDIRIZZI EMAIL
+					    if wsDeInfoCategory.name = 'Q.G. Indirizzo email aggiuntivo n.1' then
+					      SET ZmmAfbs.SMTP_ADDR = wsDeInfoCategory.values.value.deValue;
+					      SET Environment.Variables.mail_fornitore 	= wsDeInfoCategory.values.value.deValue;					      
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Indirizzo email aggiuntivo n.2' then
+					      SET ZmmAfbs.SMTP_ADDR1 = wsDeInfoCategory.values.value.deValue;
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Indirizzo email aggiuntivo n.3' then
+					      SET ZmmAfbs.SMTP_ADDR2 = wsDeInfoCategory.values.value.deValue;
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Indirizzo email aggiuntivo n.4' then
+					      SET ZmmAfbs.SMTP_ADDR3 = wsDeInfoCategory.values.value.deValue;
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Indirizzo email aggiuntivo n.5' then
+					      SET ZmmAfbs.SMTP_ADDR4 = wsDeInfoCategory.values.value.deValue;
+					    end if;		
+					    --| IBAN
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 1 - IBAN' then
+					      SET ZmmAfbs.IBAN =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue FROM 1 FOR 34),DeleteChar,''));				      
+					      SET IBAN = RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue FROM 1 FOR 34),DeleteChar,''));					      
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 2 - IBAN' then
+					      IF COALESCE(IBAN,'XX') <> COALESCE(wsDeInfoCategory.values.value.deValue,'YY') THEN	
+					        SET ZmmAfbs.IBAN1 =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue FROM 1 FOR 34),DeleteChar,''));	
+					      END IF;
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 3 - IBAN' then					      						      
+					        SET ZmmAfbs.IBAN2 =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue FROM 1 FOR 34),DeleteChar,''));		
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 4 - IBAN' then
+					      SET ZmmAfbs.IBAN3 =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue  FROM 1 FOR 34),DeleteChar,''));	
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 5 - IBAN' then
+					      SET ZmmAfbs.IBAN4 =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue  FROM 1 FOR 34),DeleteChar,''));	
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 6 - IBAN' then
+					      SET ZmmAfbs.IBAN5 =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue  FROM 1 FOR 34),DeleteChar,''));	
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 7 - IBAN' then
+					      SET ZmmAfbs.IBAN6 =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue  FROM 1 FOR 34),DeleteChar,''));	
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 8 - IBAN' then
+					      SET ZmmAfbs.IBAN7 = RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue  FROM 1 FOR 34),DeleteChar,''));	
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 9 - IBAN' then
+					      SET ZmmAfbs.IBAN8 = RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue  FROM 1 FOR 34),DeleteChar,''));	
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 10 - IBAN' then
+					      SET ZmmAfbs.IBAN9 = RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue  FROM 1 FOR 34),DeleteChar,''));	
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 11 - IBAN' then
+					      SET ZmmAfbs.IBAN10 =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue  FROM 1 FOR 34),DeleteChar,''));	
+					    end if;		
+
+					    if wsDeInfoCategory.name = 'Q.G. Istituto bancario/postale n. 12 - IBAN' then
+					      SET ZmmAfbs.IBAN11 =  RTRIM(REPLACE(SUBSTRING(wsDeInfoCategory.values.value.deValue FROM 1 FOR 34),DeleteChar,''));	
+					    end if;						    	
+					     					    
+					set i_wsDeCategory = i_wsDeCategory + 1;
+					END LOOP ciclo_wsDeCategory;
+					   
+					     
+				    
+					--QUI DEVO DICHIARARE LA STRUTTURA CHE INVIERO' ALLA FUNCTION SAP
+					SET codFisc ='';
+					SET pIva	='';
+					SET pIvaEu  ='';
+					SET dBCode  ='';
+					
+					SET codFisc = SUBSTRING(wsCompInfo.fiscalCode FROM 1 FOR 16);
+					SET pIva 	= SUBSTRING(wsCompInfo.vat FROM 1 FOR 11);
+					SET pIvaEu 	= wsCompInfo.euVat;
+					SET dBCode  = wsCompInfo.dAndBCode;
+						
+					
+					--| companyName					
+					SET lenName = LENGTH(wsCompInfo.companyName);
+					if codConti ='0005' THEN
+						 DECLARE POS INTEGER;
+						 SET POS = POSITION (' ' IN wsCompInfo.companyName FROM 1); 	
+						 IF POS <> 0 THEN
+							 SET ZmmAfbs.NAME1 = SUBSTRING(wsCompInfo.companyName  FROM 1 FOR POS);
+							 SET ZmmAfbs.NAME2 = SUBSTRING(SUBSTRING(wsCompInfo.companyName  FROM (POS+1) FOR (lenName-POS)) FROM 1 FOR 30);
+						 ELSE	 
+						  SET ZmmAfbs.NAME1 = wsCompInfo.companyName;
+						 END IF;	
+						
+					ELSE	
+						IF (lenName > 30) THEN
+						 SET ZmmAfbs.NAME1 = SUBSTRING(wsCompInfo.companyName FROM 1 FOR 30);
+						 SET ZmmAfbs.NAME2 = SUBSTRING(SUBSTRING(wsCompInfo.companyName FROM 31 FOR (lenName-30)) FROM 1 FOR 30);
+						/*IF (lenName > 30) THEN
+						 SET ZmmAfbs.NAME1 = SUBSTRING(wsCompInfo.companyName FROM 1 FOR 30);
+						 SET ZmmAfbs.NAME2 = SUBSTRING(wsCompInfo.companyName FROM 31 FOR (lenName-30));*/					 
+						ELSE
+						 SET ZmmAfbs.NAME1 = wsCompInfo.companyName;
+						END IF;
+					END IF;
+					--| 
+					if (codConti ='0001' or
+						codConti ='0005' or
+						codConti ='0006' or
+						codConti ='0008' ) then
+						SET forniSAP.STCD1 = codFisc;
+						SET forniSAP.STCD2 = pIva;
+						SET ZmmAfbs.STCD1  = codFisc;
+						SET ZmmAfbs.STCD2  = pIva;											
+					  	set Environment.Variables.piva_fornitore = pIva;	
+					else
+						if codFisc <> '' then
+							SET forniSAP.STCD1 = codFisc;
+							SET ZmmAfbs.STCD1  = codFisc;
+							set Environment.Variables.piva_fornitore = codFisc;	
+						end if;	 	
+
+						if pIva <> ''  and (length(pIvaEu)=0) and (length(dBCode)=0) then
+							SET forniSAP.STCD2 = pIva;
+							SET ZmmAfbs.STCD2  = pIva;
+							set Environment.Variables.piva_fornitore = pIva;								
+						end if;	 
+						
+						if pIvaEu <> '' then
+							SET forniSAP.STCEG = pIvaEu;
+							SET ZmmAfbs.STCEG  = pIvaEu;
+							set Environment.Variables.piva_fornitore = pIvaEu;								
+						end if;	 	
+						
+						if dBCode <> '' then
+							SET forniSAP.STCEG1 = dBCode;
+							SET ZmmAfbs.STCEG1 = dBCode;
+							set Environment.Variables.piva_fornitore = dBCode;	
+						end if;		
+						
+					end if;									
+					
+					SET stato = wsCompInfo.isoCountry;
+					SET provincia = wsCompInfo.province;
+					IF stato = 'IT' THEN
+						SET InputLocalEnvironment.HTTP.Input.REG[] = (SELECT (R.PROVINCIA_SAP) FROM Database.IIB_CORPORATE_BS_PROV AS R WHERE R.PROVINCE_BS = provincia);
+					END IF;
+					SET InputLocalEnvironment.HTTP.BID = wsCompInfo.bravoId;
+					SET InputLocalEnvironment.HTTP.CNAME = wsCompInfo.companyName;
+					SET Environment.Variables.BID = wsCompInfo.bravoId;
+					SET Environment.Variables.CNAME = wsCompInfo.companyName;
+					SET Environment.Variables.userAlias = wsCompInfo.userAlias;
+					IF LENGTH(wsCompInfo.extCode) <>0 THEN
+							SET ZmmAfbs.LIFNR = wsCompInfo.extCode;
+					END IF;
+					--SET ZmmAfbs.SMTP_ADDR = wsCompInfo.userEmail;
+					SET ZmmAfbs.SMTP_ADDR_PEC = wsCompInfo.userEmail;
+					
+					--| MO 15032017 aggiunto TELF1 e TELFX
+					SET ZmmAfbs.TELF1 = SUBSTRING(wsCompInfo.userPhone FROM 1 FOR 16); 
+					SET ZmmAfbs.TELFX = SUBSTRING(wsCompInfo.bizFax FROM 1 FOR 27);
+					--| aggiunto MOB_PHONE
+					if LENGTH(wsCompInfo.userMobPhone) <>0 THEN 
+						SET ZmmAfbs.MOB_NUMBER = SUBSTRING(wsCompInfo.userMobPhone FROM 1 FOR 30);
+					END IF;	
+					--| MO FINE
+									
+					SET ZmmAfbs.STRAS = SUBSTRING(wsCompInfo.address FROM 1 FOR 60);
+					SET ZmmAfbs.PSTLZ = wsCompInfo.zip;	
+								
+					--SET ZmmAfbs.PSTLZ = '222-222';
+					SET ZmmAfbs.ORT01 = SUBSTRING(wsCompInfo.city FROM 1 FOR 25);				
+					--| MO FINE					
+					IF codFisc <> '' THEN
+						SET ZmmAfbs.REGIO = InputLocalEnvironment.HTTP.Input.REG.PROVINCIA_SAP;	
+					END IF;
+					SET ZmmAfbs.LAND1 =   SUBSTRING(wsCompInfo.isoCountry FROM 1 FOR 2);
+					--| 31032017 mapping bizLegalStruct
+					--set ZmmAfbs.ZTEXT = SUBSTRING(wsCompInfo.bizLegalStruct FROM 1 FOR 40) ;
+					---| 20170517					
+					set ZmmAfbs.ZTEXT = codConti;
+					
+					if prova <>'' then
+						--SET ZmmAfbs.GBDAT = dtNascita;
+						SET ZmmAfbs.GBDAT = prova;
+					end if;	
+					
+					if luogoNascita <>'' then
+						SET ZmmAfbs.GBORT = luogoNascita;
+					end if;
+					
+					if professione <>'' then
+						SET ZmmAfbs.PROFS = professione;
+					end if;	
+					
+					if sesso <> '' then
+					    SET ZmmAfbs.SEXKZ = sesso;						    		
+					end if;
+					 					
+					--FINE DICHIARAZIONE STRUTTURA DA INVIARE A SAP
+					SET Environment.Variables.bravoId		    = wsCompInfo.bravoId;				
+					SET Environment.Variables.rag_soc_fornitore = wsCompInfo.companyName;
+					--SET Environment.Variables.mail_fornitore 	= wsCompInfo.userEmail;
+					SET Environment.Variables.extCode			= COALESCE(wsCompInfo.extCode,'XX');
+					if LENGTH(wsCompInfo.extCode) = 0 then
+						SET Environment.Variables.extCode = 'XX';
+					end if;						
+					SET Environment.Variables.DaElaborare		= Environment.Variables.DaElaborare + 1;
+					--Devo mandare i dati del fornitore a SAP. 
+					--Attendo risposta e poi continuo a ciclare sugli altri	
+					PROPAGATE TO TERMINAL 'out';--RICHIAMO FUNCTION SAP
+				END IF;								
+			  set i_wsCompData = i_wsCompData + 1;
+			END LOOP ciclo_wsCompData;	
+					
+	 		DECLARE estazione INT;
+			SET estazione = 	retRec + CAST(Environment.Variables.STARTPAR AS INTEGER);
+			IF (estazione < totRecord) then 	
+				SET Environment.Variables.STARTPAR =  CAST(Environment.Variables.STARTPAR AS INTEGER) + retRec;
+				PROPAGATE TO TERMINAL 'out2';--RIPARTO DALLA CHIAMATA AL WEB SERVICE*/
+			ELSE
+				DECLARE response CHARACTER;
+				SET response ='Anagrafica fornitori aggiornata: Estratti: '
+						   || CAST(Environment.Variables.Estratti AS CHARACTER) 
+						    ||' - Da Elaborare: '||CAST(Environment.Variables.DaElaborare AS CHARACTER)
+							||' - Elaborati: '||CAST(Environment.Variables.Elaborati AS CHARACTER);
+				SET OutputRoot.XMLNSC.Status = response;
+				PROPAGATE TO TERMINAL 'out1';--FINE DEL FLUSSO
+				
+			END IF;
+		RETURN FALSE;
+	END;
+
+	
+END MODULE;
+

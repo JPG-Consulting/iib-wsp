@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmMQOutput.msgnode="ComIbmMQOutput.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ComIbmWSInput.msgnode="ComIbmWSInput.msgnode" xmlns:ComIbmWSReply.msgnode="ComIbmWSReply.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility"
+    nsURI="FLUX_ALFRESCO.msgflow" nsPrefix="FLUX_ALFRESCO.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="FLUX_ALFRESCO" bundleName="FLUX_ALFRESCO" pluginId="IRETI_FLUX_ALFRESCO"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IRETI_FLUX_ALFRESCO/icons/full/obj16/FLUX_ALFRESCO.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IRETI_FLUX_ALFRESCO/icons/full/obj30/FLUX_ALFRESCO.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmWSInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="12,104" URLSpecifier="/corporate/flux/protocollo" messageDomainProperty="BLOB">
+        <translation xmi:type="utility:ConstantString" string="HTTP Input"/>
+        <nsMappingTable nsPrefix="ns" namespace="http://prodoc.iren.it/protocollo"/>
+        <nsMappingTable nsPrefix="tns1" namespace="http://prodoc.iren.it/protocollo/invio-documento"/>
+        <nsMappingTable nsPrefix="tns" namespace="http://prodoc.iren.it/protocollo/modifica-documento"/>
+        <monitorEvents eventSourceDescription="Catch terminal" eventSourceName="HTTP Input.terminal.catch" eventIdentity="Errore protocollo da FLUX">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/XMLNSC/ns:documenti/ns:documento/ns:numero_protocollo" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://prodoc.iren.it/protocollo/invio-documento"/>
+              <nsPrefixMap prefix="tns" nsURI="http://prodoc.iren.it/protocollo/modifica-documento"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://prodoc.iren.it/protocollo/invio-documento"/>
+              <nsPrefixMap prefix="tns" nsURI="http://prodoc.iren.it/protocollo/modifica-documento"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="base64Binary"/>
+            <eventName literal="Errore protocollo da FLUX"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://prodoc.iren.it/protocollo/invio-documento"/>
+              <nsPrefixMap prefix="tns" nsURI="http://prodoc.iren.it/protocollo/modifica-documento"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Out terminal" eventSourceName="HTTP Input.terminal.out" eventIdentity="Ricevuto protocollo da FLUX">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/XMLNSC/tns:documenti/tns:documento/tns:numero_protocollo" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://prodoc.iren.it/protocollo/invio-documento"/>
+              <nsPrefixMap prefix="tns" nsURI="http://prodoc.iren.it/protocollo/modifica-documento"/>
+            </applicationData>
+            <applicationData dataLocation="$Root/XMLNSC/tns1:documenti/tns1:documento/tns1:numero_protocollo" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://prodoc.iren.it/protocollo/invio-documento"/>
+              <nsPrefixMap prefix="tns" nsURI="http://prodoc.iren.it/protocollo/modifica-documento"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Ricevuto protocollo da FLUX"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ns" nsURI="http://prodoc.iren.it/protocollo"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://prodoc.iren.it/protocollo/invio-documento"/>
+              <nsPrefixMap prefix="tns" nsURI="http://prodoc.iren.it/protocollo/modifica-documento"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="390,97">
+        <translation xmi:type="utility:ConstantString" string="HTTP Reply"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="64,222" destination="none">
+        <translation xmi:type="utility:ConstantString" string="Catch"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="342,223" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_Exception.Main">
+        <translation xmi:type="utility:ConstantString" string="Exception"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_19" location="85,96" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_EnqueueRequest.Main">
+        <translation xmi:type="utility:ConstantString" string="EnqueueRequest"/>
+      </nodes>
+      <nodes xmi:type="ComIbmMQOutput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_23" location="195,54" queueName="QRECLAMI">
+        <translation xmi:type="utility:ConstantString" string="QRECLAMI"/>
+      </nodes>
+      <nodes xmi:type="ComIbmMQOutput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_24" location="197,126" queueName="QDOCS">
+        <translation xmi:type="utility:ConstantString" string="QDOCS"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_25" location="282,96" dataSource="INT_ENGINE" computeExpression="esql://routine/#FLUX_ALFRESCO_Reply.Main">
+        <translation xmi:type="utility:ConstantString" string="Reply"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_19" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_23" sourceNode="FCMComposite_1_19" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_24" sourceNode="FCMComposite_1_19" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_27" targetNode="FCMComposite_1_25" sourceNode="FCMComposite_1_23" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_28" targetNode="FCMComposite_1_25" sourceNode="FCMComposite_1_24" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_29" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_25" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmDatabase.msgnode="ComIbmDatabase.msgnode" xmlns:ComIbmDatabaseInput.msgnode="ComIbmDatabaseInput.msgnode" xmlns:ComIbmHTTPHeader.msgnode="ComIbmHTTPHeader.msgnode" xmlns:ComIbmMSLMapping.msgnode="ComIbmMSLMapping.msgnode" xmlns:ComIbmSOAPRequest.msgnode="ComIbmSOAPRequest.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow"
+    xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="Outbound.msgflow" nsPrefix="Outbound.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="Outbound" bundleName="Outbound" pluginId="IME_EE_AGGREGATORE_HUB_SWITCH"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_EE_AGGREGATORE_HUB_SWITCH/icons/full/obj16/Outbound.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_EE_AGGREGATORE_HUB_SWITCH/icons/full/obj30/Outbound.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmMSLMapping.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="444,99" mappingExpression="msl://{default}#mapIntoSendResponse">
+        <translation xmi:type="utility:ConstantString" string="mapIntoSendResponse"/>
+        <nsMappingTable nsPrefix="db3" namespace="http://db301/aaggrega"/>
+        <nsMappingTable nsPrefix="tns" namespace="http://HUB_CRM_EE/IHubCrmEE"/>
+        <monitorEvents eventEnabled="false" eventSourceDescription="In terminal" eventSourceName="mapIntoSendResponse.terminal.in" eventIdentity="mapIntoSendResponse.InTerminal">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/SOAP/Body/tns:SendRequestEEResponse/outboundResponse/tracking" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="db3" nsURI="http://db301/aaggrega"/>
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA" bitstreamContent="body"/>
+            <eventName literal="mapIntoSendResponse.InTerminal"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="db3" nsURI="http://db301/aaggrega"/>
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmDatabase.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="560,134" dataSource="AGGREGATORE" statement="esql://routine/#InsertResponseIntoDB.Main">
+        <translation xmi:type="utility:ConstantString" string="InsertResponseIntoDB"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="341,67" wsdlFileName="HUB_CRM_EE_WSHubCrmEE.wsdl" selectedPortType="IHubCrmEE" selectedBinding="WSHubCrmEE_IHubCrmEEHttpBinding" selectedOperation="SendRequestEE" selectedPort="WSHubCrmEE_IHubCrmEEHttpPort" targetNamespace="http://HUB_CRM_EE/IHubCrmEE" useHTTPTransport="true" webServiceURL="http://ibmprdbpmlb.master.local/HUB_CRM_EEWeb/sca/WSHubCrmEE" requestTimeout="300" sslProtocol="TLS" messageSetProperty="{OutboundLib}">
+        <translation xmi:type="utility:ConstantString" string="call_WS_HubCrm"/>
+        <nsMappingTable nsPrefix="tns" namespace="http://HUB_CRM_EE/IHubCrmEE"/>
+        <nsMappingTable nsPrefix="tns1" namespace="http://schemas.xmlsoap.org/soap/envelope/"/>
+        <nsMappingTable nsPrefix="db3" namespace="http://db/aaggrega"/>
+        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="call_WS_HubCrm.terminal.out" eventIdentity="Risposta OK OUTBOUND">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/SOAP/Body/tns:SendRequestEEResponse/outboundResponse/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+              <nsPrefixMap prefix="db3" nsURI="http://db/aaggrega"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Risposta OK OUTBOUND"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+              <nsPrefixMap prefix="db3" nsURI="http://db/aaggrega"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="call_WS_HubCrm.terminal.failure" eventIdentity="RISPOSTA KO (FAILURE) OUTBOUND">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/SOAP/Body/tns:SendRequestEE/outboundRequest/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="db3" nsURI="http://db301/aaggrega"/>
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="db3" nsURI="http://db301/aaggrega"/>
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="RISPOSTA KO (FAILURE) OUTBOUND"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="db3" nsURI="http://db301/aaggrega"/>
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPHeader.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_18" location="247,64" httpRequestHeader="Add">
+        <translation xmi:type="utility:ConstantString" string="HTTP Header"/>
+        <nameValue4RequestHeader name="Authorization" value="Basic V1NUSE9SOldTVEhPUg=="/>
+      </nodes>
+      <nodes xmi:type="ComIbmDatabaseInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_21" location="20,63" dataSource="AGGREGATORE" databaseInputExpression="esql://routine/#PollingDb" waitInterval="10">
+        <translation xmi:type="utility:ConstantString" string="PollingMAC"/>
+        <nsMappingTable nsPrefix="db" namespace="http://db/aaggrega"/>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Transaction start" eventSourceName="PollingMAC.transaction.Start" eventIdentity="Start Polling">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/XMLNSC/db:MAC070_SWITCH_SII/MAC070_PKEY_SEQ" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="db" nsURI="http://db/aaggrega"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Start Polling"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="db" nsURI="http://db/aaggrega"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmDatabase.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="497,25" dataSource="AGGREGATORE" statement="esql://routine/#IREN_MERCATO_AGGREGATORE_HUB_Database.Main">
+        <translation xmi:type="utility:ConstantString" string="InsertFailureIntoDb"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="128,63" computeExpression="esql://routine/#MapOutbound.Main">
+        <translation xmi:type="utility:ConstantString" string="MapOutbound"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_18" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.fault" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_21" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_18" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

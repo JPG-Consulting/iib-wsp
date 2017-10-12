@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/SapZbapiPoSalvaPdf.xsd"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/BlobMessage.xsd"/>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="PDF_ODA_pdfOutput">
+        <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbapiposalvapdf" path="mb:msg(SapZbapiPoSalvaPdf,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <output path="mb:msg(BLOB,assembly,BLOB,Properties)" var="MessageAssembly1"/>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly1/Properties"/>
+            <override>
+                <assign value="application/pdf">
+                    <output path="$MessageAssembly1/Properties/ContentType"/>
+                </assign>
+            </override>
+        </move>
+        <move>
+            <input path="$MessageAssembly/SapZbapiPoSalvaPdf/FILE_OUTPUT"/>
+            <output path="$MessageAssembly1/BLOB/text()"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

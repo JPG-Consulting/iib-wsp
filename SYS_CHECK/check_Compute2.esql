@@ -1,0 +1,51 @@
+
+
+CREATE COMPUTE MODULE check_Output
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+BEGIN
+
+/****************************************************************************
+	 * A procedure that will get the details of the last exception from a message
+	 * IN InputTree:  The incoming exception list
+	 * IN messageNumber:  The last message numberr.
+	 * IN messageText: The last message text.
+	 *****************************************************************************/
+
+		DECLARE messageNumber integer;
+		DECLARE messageText char;
+		-- Declare a reference for the InputExceptionList
+		 --  Create a reference to the first child of the exception list
+
+   	    DECLARE ptrException reference to InputExceptionList.*[1];
+   	    DECLARE lungo INTEGER 0;
+   		DECLARE details CHARACTER;
+	
+--		SET messageText  = 'OK in ' || QueueManagerName;
+		SET messageText  = QueueManagerName||' OK';
+
+			
+   	    -- keep looping while the moves to the child of exception list work 
+		WHILE lastmove(ptrException) DO
+			-- store the current values for the error number and text
+			IF ptrException.Number is not null THEN
+				IF (lungo< LENGTH(ptrException.Text)) THEN
+					SET lungo = LENGTH(ptrException.Text);
+					SET messageNumber = ptrException.Number;
+        			SET messageText = 'KO in ' || QueueManagerName || ' [Eccezione: ' || ptrException.Text || ']';
+				END IF;
+  			END IF;
+  			-- now move to the last child which should be the next exceptionlist
+			move ptrException lastchild;
+		END WHILE; 
+		-- passare l'errore all'output	--
+
+	
+		
+
+		SET OutputRoot.XMLNSC.Status.MQ = messageText ;
+		SET OutputRoot.XMLNSC.Status.DB = Environment.Variables.dbCheck ; 
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

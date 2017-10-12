@@ -1,0 +1,132 @@
+
+CREATE DATABASE MODULE IRETI_TERRANOVA_SAP_INDENNIZZI2_Database
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		DECLARE mandt CHARACTER; -- char3
+		DECLARE id INTEGER; -- bigint
+		DECLARE pdp CHARACTER; -- varchar16
+		DECLARE cf CHARACTER; -- varchar16
+		DECLARE piva CHARACTER; -- varchar16
+		DECLARE rag CHARACTER; -- varchar100
+		DECLARE datasap CHARACTER; -- varchar8
+		DECLARE codpra CHARACTER; -- varchar16
+		DECLARE codca CHARACTER; -- nvarchar16
+		DECLARE imp FLOAT; -- float --> FLOAT
+		DECLARE datada CHARACTER; -- varchar8
+		DECLARE dataa CHARACTER; -- varchar8
+		DECLARE flq INTEGER; -- int
+		DECLARE typapp CHARACTER; -- varchar1
+		DECLARE dataapp CHARACTER; -- varchar8
+		DECLARE oraapp CHARACTER; -- varchar4
+		DECLARE contratto CHARACTER; -- varchar20
+		DECLARE tiporiga CHARACTER; -- varchar10
+		DECLARE numdoc CHARACTER; -- varchar20
+		DECLARE stato CHARACTER; -- char1
+		DECLARE note CHARACTER; -- varcharMAX
+		DECLARE datafatt CHARACTER; -- varchar8
+		DECLARE datains CHARACTER; -- varchar12 -- verificare tipo dato aaaammgghhmm
+		DECLARE dataacq CHARACTER; -- varchar12 -- verificare tipo dato aaaammgghhmm
+		DECLARE stato_processo CHARACTER; -- char1 NOT
+		DECLARE docstampa CHARACTER; -- varchar12
+		DECLARE imp_cor FLOAT; -- float
+		DECLARE imp_cast FLOAT;
+		DECLARE imp_sap CHARACTER;
+		DECLARE belzart_tras CHARACTER;
+
+		DECLARE erdatsap CHARACTER;
+		DECLARE ertimsap CHARACTER;
+		DECLARE SQLErrorText_ora CHARACTER;
+
+		DECLARE nrecTotSAP INTEGER CARDINALITY (Environment.result[]);
+
+			-- DECLARE recordSAP REFERENCE TO InputRoot.DataObject.ns.SAPR3_ZINDH20; -- #dubbio. farlo con le environment.result[] o cosi?
+
+		DECLARE i INTEGER 1;		
+		 
+
+
+		WHILE i <= nrecTotSAP DO -- per test 1 , sostituire con 'nrecTotSAP'
+
+			SET mandt = coalesce(Environment.result[i].mandt,'000'); -- not nullable
+			SET id = coalesce(Environment.result[i].id,'0000000000'); -- not nullable
+			SET pdp = coalesce(Environment.result[i].pdp,' '); -- not nullable
+			SET cf = coalesce(Environment.result[i].cf,' '); -- not nullable
+			SET piva = coalesce(Environment.result[i].piva,' '); -- not nullable
+			SET rag = coalesce(Environment.result[i].rag,' '); -- not nullable
+			SET datasap = coalesce(Environment.result[i].datasap,'00000000'); -- not nullable (campi ora vuoti '00000000    ')
+			SET codpra = coalesce(Environment.result[i].codpra,' '); -- not nullable
+			SET codca = Environment.result[i].codca; ---not nullable
+			SET belzart_tras = coalesce(Environment.result[i].belzart_tras,' '); -- Trascodifica
+			SET imp = coalesce(Environment.result[i].imp,' '); -- not nullable e con segno, da inserire negativo su SAP
+			SET datada = coalesce(Environment.result[i].datada,'00000000'); -- not nullable
+			SET dataa = coalesce(Environment.result[i].dataa,'00000000'); -- not nullable
+			SET flq = coalesce(Environment.result[i].flq,' '); -- not nullable
+			SET typapp = coalesce(Environment.result[i].typapp,' '); -- not nullable
+			SET dataapp = coalesce(Environment.result[i].dataapp,'00000000'); -- not nullable
+			SET oraapp = coalesce(Environment.result[i].oraapp,'	'); -- not nullable
+			SET contratto = coalesce(Environment.result[i].contratto,' '); -- not nullable
+			SET tiporiga = coalesce(Environment.result[i].tiporiga,' '); -- not nullable
+			SET numdoc = coalesce(Environment.result[i].numdoc,' ');
+			SET stato = coalesce(Environment.result[i].stato,' ');
+			SET note = coalesce(Environment.result[i].note,' ');
+			SET datafatt = coalesce(Environment.result[i].datafatt,'00000000');
+			SET datains = coalesce(Environment.result[i].datains,'00000000'); -- not nullable (campi ora vuoti '00000000    ')
+			SET dataacq = Environment.Variables.dataacq; --coalesce(Environment.result[i].dataacq,'00000000'); -- not nullable (campi ora vuoti '00000000    ')
+			SET stato_processo = 'P'; --Environment.result[i].stato_processo; --
+			SET docstampa = coalesce(Environment.result[i].docstampa,' '); -- not nullable
+			--SET imp_cor = Environment.result[i].imp_cor,' ');
+
+			SET imp_cast = CAST(imp AS DECIMAL);
+			-- controllo del segno su imp, campo stringa, se l'importo non ha il segno meno, si aggiunge per l'inserimento in sap
+			--IF (lenght(imp)>=1 AND substring(imp FROM 1 TO 1) ) THEN
+
+			IF imp_cast >0 THEN
+				SET imp_cast= (-1)*imp_cast ;
+			END IF;
+
+			SET imp_sap = CAST (imp_cast AS CHARACTER); -- formato Character per SAP con segno negativo
+
+			SET erdatsap = CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMdd');
+			SET ertimsap = CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'hhmm');
+
+			SET Environment.Variables.datasapins = erdatsap;
+			SET Environment.Variables.orariosapins = ertimsap;
+
+			INSERT INTO Database.sapr3.ZMNC_INDEN_H2O --clients
+			(MANDT,ZMNC_INDEX,ANLAGE,ZCODFISCALE,ZPARTIVA,
+			NOME_CLIENTE,PRATICA,CAUSALE,NETTOBTR,AB,BIS,LIVELLOQ,
+			TIPO_APP,DATA_APP,ORA_APP,VERTRAG,BELZART,BELNR,STATO,
+			NOTE,DATA_OPBEL,DATA_CREA_TER,ORA_CREA_TER,
+			DATA_SCARICO,ORA_SCARICO,OPBEL, --AEDAT,AENAM, (campo utilizzato solo da SAP)
+			ERDAT,ERTIM )
+			VALUES
+			(mandt,id,pdp,cf,piva,
+			rag,codpra,substring(codca from 1 for 3),imp_sap,datada,dataa,flq, --substring di 4 su codca ( POSSONO AVERE SPAZI VUOIT!)
+			typapp,dataapp,oraapp,contratto,belzart_tras,numdoc,stato,
+			note,datafatt,SUBSTRING(datains FROM 1 FOR 8),SUBSTRING(datains FROM 9 FOR 3), -- verificare esito substring
+			SUBSTRING(dataacq FROM 1 FOR 8),SUBSTRING(dataacq FROM 9 FOR 3),docstampa, -- verificare esito substring
+			Environment.Variables.datasapins, Environment.Variables.orariosapins);
+			-- DEBUG e monitoring errori SQL
+			-- SET SQLErrorText_ora = SQLERRORTEXT; -- controllo in caso di errore Oracle nell'inserimento
+			--
+			-- IF(length(SQLErrorText_ora)<>0)
+			-- THEN
+			-- SET SQLErrorText_ora =' Errore oracle- ' || SQLErrorText_ora; -- || SQLERROR; --DEBUG
+			-- PROPAGATE TO TERMINAL 'out1';
+			--
+			-- RETURN FALSE;
+			-- END IF;
+
+			SET i= i+1;		
+
+
+		END WHILE;			
+		  
+
+
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

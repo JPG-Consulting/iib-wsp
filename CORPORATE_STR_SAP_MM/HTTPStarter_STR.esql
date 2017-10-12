@@ -1,0 +1,40 @@
+
+
+CREATE COMPUTE MODULE HTTPStarter_STR
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE dataInizio DATE CAST(InputRoot.JSON.Data.DataInizio AS DATE FORMAT 'dd/MM/yyyy');
+		DECLARE dataFine DATE CAST(InputRoot.JSON.Data.DataFine AS DATE FORMAT 'dd/MM/yyyy');
+		SET Environment.Query.result[] = SELECT T.AZIENDA
+										, T.COD_LAV
+										, T.SAL
+										, T.CDC
+										, T.ATTIVITA
+										, T.COMMESSA
+										, T.FAMIGLIA
+										, T.IMP_CONS
+										, T.CONTRATTO
+										, T.CDC_ORIGINE
+										, T.FORNITORE
+										, T.DT_SAL
+										, T.UT_OWNER
+										, T.ROWID
+									FROM Database.STR_CONTAB_CONS_FORM AS T
+									WHERE T.AZIENDA = InputRoot.JSON.Data.Societa AND T.FL_ACQ = 0
+									AND T.DT_SAL >= dataInizio
+									AND T.DT_SAL <= dataFine;
+		
+		FOR record AS Environment.Query.result[] DO
+			UPDATE Database.STR_CONTAB_CONS_FORM AS T
+			SET FL_ACQ = 2
+			WHERE T.ROWID = record.ROWID;
+		END FOR;
+						
+		SET OutputRoot = InputRoot;
+		
+		SET OutputRoot.JSON.Data.Record = Environment.Query;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

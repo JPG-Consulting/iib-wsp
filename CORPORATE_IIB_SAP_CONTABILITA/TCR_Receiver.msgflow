@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmHTTPAsyncRequest.msgnode="ComIbmHTTPAsyncRequest.msgnode" xmlns:ComIbmHTTPAsyncResponse.msgnode="ComIbmHTTPAsyncResponse.msgnode" xmlns:ComIbmMQInput.msgnode="ComIbmMQInput.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor"
+    xmlns:sub_Publish.subflow="sub/Publish.subflow" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="TCR_Receiver.msgflow" nsPrefix="TCR_Receiver.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="TCR_Receiver" bundleName="TCR_Receiver" pluginId="CORPORATE_IIB_SAP_CONTABILITA"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_IIB_SAP_CONTABILITA/icons/full/obj16/TCR_Receiver.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_IIB_SAP_CONTABILITA/icons/full/obj30/TCR_Receiver.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmHTTPAsyncRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="743,77" asyncResponseCorrelator="TCR" URLSpecifier="http://localhost:7800/sys/email_sender">
+        <translation xmi:type="utility:ConstantString" string="sendMail"/>
+      </nodes>
+      <nodes xmi:type="sub_Publish.subflow:FCMComposite_1" xmi:id="FCMComposite_1_2" location="484,76">
+        <translation xmi:type="utility:ConstantString" string="Publish"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="630,78" computeExpression="esql://routine/#TCR_Receiver_buildReportMailOK.Main">
+        <translation xmi:type="utility:ConstantString" string="buildReportMailOK"/>
+      </nodes>
+      <nodes xmi:type="ComIbmMQInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="79,72" queueName="QTCR" messageDomainProperty="XMLNSC">
+        <translation xmi:type="utility:ConstantString" string="TCR Input"/>
+        <nsMappingTable nsPrefix="Q1" namespace="http://www.gruppoiren.it/schemas/zuora"/>
+        <nsMappingTable nsPrefix="Q11" namespace="http://www.gruppoiren.it/schemas/tcr"/>
+        <monitorEvents eventSourceDescription="Catch terminal" eventSourceName="TCR Input.terminal.catch" eventIdentity="Errore nel flusso TCR">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/XMLNSC/Q11:TCRMessage/fileName" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/schemas/zuora"/>
+              <nsPrefixMap prefix="Q11" nsURI="http://www.gruppoiren.it/schemas/tcr"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/schemas/zuora"/>
+              <nsPrefixMap prefix="Q11" nsURI="http://www.gruppoiren.it/schemas/tcr"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Errore nel flusso TCR"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/schemas/zuora"/>
+              <nsPrefixMap prefix="Q11" nsURI="http://www.gruppoiren.it/schemas/tcr"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="275,76" dataSource="INT_ENGINE" computeExpression="esql://routine/#TCR_Receiver_TCR_BuildIdoc.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="TCR_BuildIdoc"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="343,162" computeExpression="esql://routine/#TCR_Receiver_buildReportMailKO.Main">
+        <translation xmi:type="utility:ConstantString" string="buildReportMailKO"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="415,228" asyncRequestCorrelator="TCR">
+        <translation xmi:type="utility:ConstantString" string="HTTP Asynchronous Response"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="612,226" destination="none">
+        <translation xmi:type="utility:ConstantString" string="Trace"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

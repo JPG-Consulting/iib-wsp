@@ -1,0 +1,12 @@
+
+
+CREATE COMPUTE MODULE HTTPStarter_BuildError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.Result;
+		SET OutputRoot.XMLNSC.Result.Status.Codice = '999';
+		SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'Errore - Di seguito i dettagli dell''eccezione';
+		SET OutputRoot.XMLNSC.Result.Status.Dettaglio = InputExceptionList;
+		RETURN TRUE;
+	END;
+END MODULE;

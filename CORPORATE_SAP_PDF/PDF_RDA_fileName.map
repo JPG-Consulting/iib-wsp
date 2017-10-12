@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">     
+    <xsd:element name="numRda" type="xsd:string"/>     
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/BlobMessage.xsd" var="var1"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var"/>
+    <output path="/SapZbapiPrSalvaPdf.xsd" var="var2"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="out2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapreturn798193681"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbapiprsalvapdf"/>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="PDF_RDA_fileName">
+        <input path="$var1/mb:msg(BLOB,assembly,BLOB,LocalEnvironment,Properties)" var="ComIbmMessageAssembly_BLOB">
+            <cast castType="userDefined" path="$ComIbmMessageAssembly_BLOB/LocalEnvironment/HTTP/Input/QueryString/any" qualifier="numRda" ref="var"/>
+        </input>
+        <output namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbapiprsalvapdf" path="$var2/mb:msg(SapZbapiPrSalvaPdf,assembly,DataObject,Properties)" var="MessageAssembly"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_BLOB/Properties"/>
+            <output path="$MessageAssembly/Properties"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_BLOB/LocalEnvironment/HTTP/Input/QueryString/numRda[1]"/>
+            <output path="$MessageAssembly/SapZbapiPrSalvaPdf/BANFN"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,69 @@
+
+
+CREATE COMPUTE MODULE XML_Receiver_MapAddebiti
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		IF InputLocalEnvironment.Variables.Final = 'YES' THEN
+			RETURN TRUE;
+		ELSE
+			
+			DECLARE addebito REFERENCE TO Environment.Storage.ns:addebiti;
+			DECLARE stampa REFERENCE TO InputRoot.XMLNSC.GENERAZIONE_MASSIVA.STAMPA_BOLLETTA[1];
+			
+			IF stampa.aemd IS NOT NULL THEN
+				
+				SET Environment.Storage.Testata = stampa;
+				
+			END IF;
+				
+			WHILE LASTMOVE(stampa) = TRUE DO
+				DECLARE m REFERENCE TO stampa.addebiti.m[1];
+				
+				
+				WHILE LASTMOVE(m) = TRUE DO
+				DECLARE n REFERENCE TO m.n[1];
+				WHILE LASTMOVE(n) = TRUE DO
+					DECLARE f INTEGER 0;
+					DECLARE i INTEGER 1;
+					DECLARE add REFERENCE TO Environment.Storage.ns:addebiti."addebito"[>];
+					WHILE f = 0 AND LASTMOVE(add) = TRUE DO
+						IF add.tipoAddebitoCodice = n.tipo_addebito_codice AND add.tipoIva = n.tipo_iva THEN
+							SET f = i;
+						END IF;
+						SET i = i + 1;
+						MOVE add NEXTSIBLING REPEAT TYPE NAME;
+					END WHILE;
+						
+					
+					IF f = 0 THEN
+						CREATE LASTCHILD OF Environment.Storage.ns:addebiti AS addebito NAME 'addebito' ;
+						SET addebito.tipoAddebitoCodice = n.tipo_addebito_codice;
+						SET addebito.tipoIva = n.tipo_iva;
+						SET addebito.importo = CAST(TRANSLATE(TRANSLATE(n.importo, '.', ''), ',', '.') AS DECIMAL);
+					ELSE
+						SET Environment.Storage.ns:addebiti."addebito"[f].importo = COALESCE(Environment.Storage.ns:addebiti."addebito"[f].importo, 0) + CAST(TRANSLATE(TRANSLATE(n.importo, '.', ''), ',', '.') AS DECIMAL);
+					END IF;
+					
+					
+					MOVE n NEXTSIBLING REPEAT TYPE NAME;
+					
+				END WHILE;
+				
+				MOVE m NEXTSIBLING REPEAT TYPE NAME;
+				END WHILE;
+				--THROW USER EXCEPTION MESSAGE 2951 VALUES('DEBUG', NULL);
+				MOVE stampa NEXTSIBLING REPEAT TYPE NAME;
+				
+			END WHILE;
+				
+			
+						
+			
+			RETURN FALSE;
+		
+		END IF;
+					
+	END;
+
+END MODULE;

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">                       
+        <xsd:element name="tracking" nillable="true">                     
+    <xsd:complexType>                     
+      <xsd:sequence>                     
+        <xsd:element name="codiceFlusso" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="codicePratica" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="codicePraticaDistributore" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="codicePraticaOrigine" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="idMessaggio" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="segmentoCliente" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="servizio" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="sistemaFatturazione" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="sistemaOrigine" nillable="true" type="xsd:string"/>                     
+        <xsd:element name="societaVendita" nillable="true" type="xsd:string"/>                     
+      </xsd:sequence>                     
+    </xsd:complexType>                     
+  </xsd:element>                     
+    <xsd:element name="Pratica" nillable="true" type="xsd:string"/>                       
+    <xsd:element name="PdF" nillable="true" type="xsd:string"/>                       
+    <xsd:element name="Cliente" nillable="true" type="xsd:string"/>                       
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/JsonDomainMsg.xsd" var="var"/>
+    <input inlinedXMLSchema="true" path="../schema_1.xsd" var="var4"/>
+    <output path="/EAIServiceInbound_InlineSchema1.xsd" var="var3"/>
+    <output path="/EAIServiceInbound_InlineSchema1.xsd" var="var6"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/iib/msl/json"/>
+        <namespace kind="supplement" prefix="out" uri="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+        <namespace kind="supplement" prefix="out3" uri="urn:sobject.enterprise.soap.sforce.com"/>
+        <namespace kind="supplement" prefix="out2" uri="urn:enterprise.soap.sforce.com"/>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
+        <namespace kind="extension" prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="OEWebForm_Mapping">
+        <input namespace="http://www.ibm.com/iib/msl/json" path="$var/mb:msg(JSON,assembly,JSON,Properties)" var="ComIbmMessageAssembly_JSON">
+            <cast path="$ComIbmMessageAssembly_JSON/JSON/Data/type('anyType')" qualifier="{http://www.ibm.com/iib/msl/json}JSONObject" ref="var" var="anyType"/>
+            <cast castType="userDefined" path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)/any" qualifier="Cliente" ref="var4" var="any1"/>
+            <cast castType="userDefined" path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)/any" qualifier="PdF" ref="var4" var="any2"/>
+            <cast castType="userDefined" path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)/any" qualifier="Pratica" ref="var4" var="any3"/>
+            <cast castType="userDefined" path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)/any" qualifier="tracking" ref="var4" var="any5"/>
+        </input>
+        <output namespace="http://soap.sforce.com/schemas/class/EAIServiceInbound" path="$var6/mb:msg(OEWebForm,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
+        <local>
+            <input path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)/tracking[1]"/>
+            <output path="$MessageAssembly1/OEWebForm/tracking"/>
+            <move>
+                <input path="codicePratica"/>
+                <output path="codicePratica"/>
+            </move>
+            <move>
+                <input path="codicePraticaDistributore"/>
+                <output path="codicePraticaDistributore"/>
+            </move>
+            <move>
+                <input path="codicePraticaOrigine"/>
+                <output path="codicePraticaOrigine"/>
+            </move>
+            <move>
+                <input path="idMessaggio"/>
+                <output path="idMessaggio"/>
+            </move>
+            <move>
+                <input path="segmentoCliente"/>
+                <output path="segmentoCliente"/>
+            </move>
+            <move>
+                <input path="servizio"/>
+                <output path="servizio"/>
+            </move>
+            <move>
+                <input path="sistemaFatturazione"/>
+                <output path="sistemaFatturazione"/>
+            </move>
+            <move>
+                <input path="sistemaOrigine"/>
+                <output path="sistemaOrigine"/>
+            </move>
+            <move>
+                <input path="societaVendita"/>
+                <output path="societaVendita"/>
+            </move>
+            <move>
+                <input path="codiceFlusso"/>
+                <output path="codiceFlusso"/>
+            </move>
+        </local>
+        <move>
+            <input path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)/Pratica[1]"/>
+            <output path="$MessageAssembly1/OEWebForm/inboundRequest/Pratica"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)/PdF[1]"/>
+            <output path="$MessageAssembly1/OEWebForm/inboundRequest/PdF"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_JSON/JSON/spath('Data',2)/Cliente[1]"/>
+            <output path="$MessageAssembly1/OEWebForm/inboundRequest/Cliente"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

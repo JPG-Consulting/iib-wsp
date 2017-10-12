@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/AnagraficheCO_InlineSchema.xsd"/>
+    <output path="/AnagraficheCO_InlineSchema.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="io" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="ANAGRAFICHE_CO_REST_Stylesheet">
+        <input namespace="http://www.gruppoiren.it/AnagraficheCO/" path="mb:msg(Output,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Output"/>
+        <output namespace="http://www.gruppoiren.it/AnagraficheCO/" path="mb:msg(Output,assembly,XMLNSC,Properties,HTTPReplyHeader)" var="ComIbmMessageAssembly_Output1"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_Output/Output"/>
+            <output path="$ComIbmMessageAssembly_Output1/Output"/>
+        </move>
+        <assign value="text/html; charset=utf-8">
+            <output path="$ComIbmMessageAssembly_Output1/HTTPReplyHeader/Content-Type"/>
+        </assign>
+        <move>
+            <input path="$ComIbmMessageAssembly_Output/Properties"/>
+            <output path="$ComIbmMessageAssembly_Output1/Properties"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

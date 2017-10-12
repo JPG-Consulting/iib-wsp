@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmSAPInput.msgnode="ComIbmSAPInput.msgnode" xmlns:ComIbmSAPReply.msgnode="ComIbmSAPReply.msgnode" xmlns:ComIbmSAPRequest.msgnode="ComIbmSAPRequest.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility"
+    nsURI="GET_ORE_LAVORATE.msgflow" nsPrefix="GET_ORE_LAVORATE.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="GET_ORE_LAVORATE" bundleName="GET_ORE_LAVORATE" pluginId="CORPORATE_GET_ORE_LAVORATE"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_GET_ORE_LAVORATE/icons/full/obj16/GET_ORE_LAVORATE.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_GET_ORE_LAVORATE/icons/full/obj30/GET_ORE_LAVORATE.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmSAPInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="25,94" adapterComponent="Adapters/SAP/ORE_LAVORATE_Inbound.inadapter">
+        <translation xmi:type="utility:ConstantString" string="ORE_LAVORATE_RFC"/>
+        <nsMappingTable nsPrefix="sap" namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiptimeoverviewget"/>
+        <monitorEvents eventSourceDescription="Catch terminal" eventSourceName="ORE_LAVORATE_RFC.terminal.catch" eventIdentity="Errore GET_ORE_LAVORATE">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/SapBapiPtimeoverviewGetWrapper/SAPTransactionID" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiptimeoverviewget"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiptimeoverviewget"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Errore GET_ORE_LAVORATE"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiptimeoverviewget"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="157,93" dataSource="INT_ENGINE" computeExpression="esql://routine/#GET_ORE_LAVORATE_AreaOrigine.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="AreaOrigine"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSAPReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="514,98">
+        <translation xmi:type="utility:ConstantString" string="SAP Reply"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="305,2" dataSource="SAP_AMIAT" computeExpression="esql://routine/#GET_ORE_LAVORATE_AMIAT.Main">
+        <translation xmi:type="utility:ConstantString" string="SAP_AMIAT"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="311,57" dataSource="SAP_PY" computeExpression="esql://routine/#GET_ORE_LAVORATE_PY.Main">
+        <translation xmi:type="utility:ConstantString" string="SAP_PY"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="318,136" adapterComponent="Adapters/SAP/AM_GetOreLavorate.outadapter" defaultMethod="executeSapBapiPtimeoverviewGet">
+        <translation xmi:type="utility:ConstantString" string="SAP_AM"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="229,131" computeExpression="esql://routine/#GET_ORE_LAVORATE_BuildRequestAM.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BuildRequestAM"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="424,152" computeExpression="esql://routine/#GET_ORE_LAVORATE_BuildOutput.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BuildOutput"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="322,199" adapterComponent="Adapters/SAP/PRD200_GetOreLavorate.outadapter" defaultMethod="executeSapBapiPtimeoverviewGet">
+        <translation xmi:type="utility:ConstantString" string="SAP_ENIA"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_13" location="221,198" computeExpression="esql://routine/#GET_ORE_LAVORATE_BuildRequestENIA.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BuildRequestENIA"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_14" location="301,257" computeExpression="esql://routine/#GET_ORE_LAVORATE_BuildError.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BuildError"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_15" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_12" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out3" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_13" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_18" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out2" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_20" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_21" targetNode="FCMComposite_1_14" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in">
+        <bendPoints>22,152,-226,-11</bendPoints>
+      </connections>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_22" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_14" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in">
+        <bendPoints>190,-10,-23,149</bendPoints>
+      </connections>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

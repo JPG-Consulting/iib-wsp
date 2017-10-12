@@ -1,0 +1,56 @@
+
+
+CREATE COMPUTE MODULE CARICA_MISURE_ko_update_status
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot; -- MANTIENE IL TUBO TRA DUE NODI 
+		SET Environment.Variables.chiamante = NodeLabel;  -- recupera il nodme del nodo attuale
+		
+		DECLARE exc REFERENCE TO InputExceptionList.RecoverableException;
+		DECLARE status CHARACTER '';
+		WHILE LASTMOVE(exc)=TRUE DO
+			MOVE exc LASTCHILD NAME 'RecoverableException';
+		END WHILE;
+		
+		IF exc.Text IS NOT NULL THEN
+			SET status = status ||exc.Text;
+		END IF;
+		
+		IF exc.Insert.Text IS NOT NULL THEN
+			MOVE exc FIRSTCHILD NAME 'Insert';
+			WHILE LASTMOVE(exc)=TRUE DO
+				SET status = status || ' - '||exc.Text;
+				MOVE exc NEXTSIBLING NAME 'Insert';
+			END WHILE;
+		END IF;
+		
+		WHILE exc.DatabaseException IS NOT NULL DO
+			MOVE exc LASTCHILD NAME 'DatabaseException';
+			IF exc.Text IS NOT NULL THEN
+				SET status = status ||exc.Text;
+			END IF;
+		
+			IF exc.Insert.Text IS NOT NULL THEN
+				MOVE exc FIRSTCHILD NAME 'Insert';
+				WHILE LASTMOVE(exc)=TRUE DO
+					SET status = status || ' - '||exc.Text;
+					MOVE exc NEXTSIBLING NAME 'Insert';
+				END WHILE;
+			END IF;
+		END WHILE;
+		
+		
+		-- visto che arrivo dal fallimento della chiamata a procedura , aggiorno il campo della tabella ..
+		
+		 UPDATE Database.LP410_00_AGGR_ORARIO_XML  AS SP
+		 SET LP410_COD_STATO_CARICAMENTO  = 'KO'  , LP410_COD_ERRORS =  status                  
+		 WHERE SP.LP410_ID_CARICAMENTO= InputRoot.XMLNSC.File.id_caricamento;
+		 
+	
+		
+		RETURN TRUE;
+	END;
+
+		
+	 
+END MODULE;

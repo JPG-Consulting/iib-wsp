@@ -1,0 +1,109 @@
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzpordcr102';
+
+
+CREATE COMPUTE MODULE STR_SAP_MapIDoc
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		DELETE FIELD OutputRoot.JSON;
+		DELETE FIELD OutputRoot.HTTPInputHeader;
+		--THROW USER EXCEPTION MESSAGE 2951 VALUES('DEBUG', NULL);
+		IF (InputRoot.JSON.Data.Check = 'S' AND InputRoot.JSON.Data.Invio = 'S' AND InputRoot.JSON.Data.Esito = 'OK') OR
+		   (InputRoot.JSON.Data.Check = 'N' AND InputRoot.JSON.Data.Invio = 'S') THEN
+		   --INVIO A SAP
+			DECLARE count INTEGER 0;
+			DECLARE tabnam CHARACTER;
+			DECLARE mandt CHARACTER;
+			DECLARE rcvprn CHARACTER;
+			SET tabnam = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+			SET mandt = THE(SELECT ITEM T.VALORE
+											FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+											WHERE T.FLUSSO = 'CONTABILE' 
+											AND T.VARIABILE = 'MANDT');
+			SET rcvprn = THE(SELECT ITEM T.VALORE
+											FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+											WHERE T.FLUSSO = 'CONTABILE' 
+											AND T.VARIABILE = 'RCVPRN');
+			FOR record AS InputRoot.JSON.Data.Record.result[] DO
+				
+				CREATE FIELD OutputRoot.DataObject.ns:SapZpordcr102.SapZpordcr102IDocBO.SapIDocControlRecord;
+				DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns:SapZpordcr102.SapZpordcr102IDocBO.SapIDocControlRecord;
+				CREATE FIELD OutputRoot.DataObject.ns:SapZpordcr102.SapZpordcr102IDocBO.SapZpordcr102DataRecord.SapZpordcr102E2pordcr1001;
+				DECLARE idoc REFERENCE TO OutputRoot.DataObject.ns:SapZpordcr102.SapZpordcr102IDocBO.SapZpordcr102DataRecord.SapZpordcr102E2pordcr1001;
+				
+				SET outputCR.TABNAM = tabnam;
+				SET outputCR.MANDT = mandt;
+				SET outputCR.IDOCTYP = 'ZPORDCR102';
+				SET outputCR.MESTYP = 'ZPORDCR102_01';
+				SET outputCR.SNDPOR = 'TRFC';
+				SET outputCR.RCVPRT = 'LS';
+				SET outputCR.RCVPRN = rcvprn;
+				SET outputCR.SNDPRT = 'LS';
+				SET outputCR.SNDPRN = 'WEBSPHERE';
+				SET outputCR.ARCKEY = record.ID;
+				SET idoc.SapZpordcr102Zpordcr1000.ZDEST_CONT = CAST(CAST(THE(SELECT ITEM T.DESTINAZIONE
+																	FROM Database.S1_QUAD_ATTIVITA AS T
+																	WHERE T.CODICE = record.ATTIVITA
+																	AND T.SOCIETA = InputRoot.JSON.Data.CodiceAzienda) AS INTEGER) AS CHARACTER);
+				SET idoc.SapZpordcr102Zpordcr1000.ZUT_OWNER = record.UT_OWNER;
+				SET idoc.SapZpordcr102Zpordcr1000.ZSAL_NUM = record.SAL;
+				SET idoc.SapZpordcr102E2bpmepoheader003.COMP_CODE = InputRoot.JSON.Data.SocietaSap;
+				IF InputRoot.JSON.Data.ForzaData = 'S' THEN
+					SET idoc.SapZpordcr102E2bpmepoheader003.DOC_DATE = RIGHT(InputRoot.JSON.Data.DataReg, 4) || SUBSTRING(InputRoot.JSON.Data.DataReg FROM 4 FOR 2)||LEFT(InputRoot.JSON.Data.DataReg, 2);
+				ELSE
+					SET idoc.SapZpordcr102E2bpmepoheader003.DOC_DATE = LEFT(record.DT_SAL, 4) || SUBSTRING(record.DT_SAL FROM 6 FOR 2)||SUBSTRING(record.DT_SAL FROM 9 FOR 2);
+				END IF;
+				SET idoc.SapZpordcr102E2bpmepoitem001.PO_ITEM = '10';
+				SET idoc.SapZpordcr102E2bpmepoitem001.MATERIAL = '';
+				SET idoc.SapZpordcr102E2bpmepoitem001.PLANT = InputRoot.JSON.Data.Divisione;
+				SET idoc.SapZpordcr102E2bpmepoitem001.QUANTITY = '1';
+				SET idoc.SapZpordcr102E2bpmepoitem001.NET_PRICE = ROUND(CAST(record.IMP_CONS AS DECIMAL), 2);
+				CASE record.Tipo
+				WHEN 'W' THEN
+					SET idoc.SapZpordcr102E2bpmepoitem001.ACCTASSCAT = 'P';
+					SET idoc.SapZpordcr102E2bpmepoaccount002.WBS_ELEMENT = record.Oggetto;
+				WHEN 'C' THEN
+					SET idoc.SapZpordcr102E2bpmepoitem001.ACCTASSCAT = 'K';
+					SET idoc.SapZpordcr102E2bpmepoaccount002.COSTCENTER = record.Oggetto;
+				WHEN 'OI' THEN
+					SET idoc.SapZpordcr102E2bpmepoitem001.ACCTASSCAT = 'F';
+					SET idoc.SapZpordcr102E2bpmepoaccount002.ORDERID = record.Oggetto;
+				ELSE
+					SET idoc.SapZpordcr102E2bpmepoitem001.ACCTASSCAT = '';
+				END CASE;
+				SET idoc.SapZpordcr102E2bpmepoitem001.AGREEMENT = record.CONTRATTO;
+				SET idoc.SapZpordcr102E2bpmepoaccount002.PO_ITEM = '10';
+				SET idoc.SapZpordcr102E2bpmepoaccount002.FUNC_AREA_LONG = THE(SELECT ITEM T.AREA_FUNZIONALE
+																	FROM Database.S1_QUAD_ATTIVITA AS T
+																	WHERE T.CODICE = record.ATTIVITA
+																	AND T.SOCIETA = InputRoot.JSON.Data.CodiceAzienda);
+				
+				SET count = count + 1;
+				PROPAGATE TO TERMINAL 'out3';
+
+			END FOR;
+			SET OutputRoot = InputRoot;
+			SET OutputRoot.JSON.Data.RecordElaborati = count;
+			RETURN TRUE;
+		ELSE
+			--NON INVIO E UPDATE FLAG
+			
+			CASE InputRoot.JSON.Data.DB 
+			WHEN 'STR' THEN	
+				SET OutputRoot = InputRoot;
+				PROPAGATE TO TERMINAL 'out1';
+				RETURN FALSE;
+			WHEN 'STR1B' THEN
+				SET OutputRoot = InputRoot;
+				PROPAGATE TO TERMINAL 'out2';
+				RETURN FALSE;
+			END CASE;
+				
+		END IF;
+		
+	END;
+
+END MODULE;

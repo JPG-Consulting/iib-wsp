@@ -1,0 +1,30 @@
+DECLARE ns1 NAMESPACE 'www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE STR_SAP_BuildMail
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE societa CHARACTER;
+		CASE InputRoot.XMLNSC.Result.Info.Societa
+		WHEN '01' THEN
+			SET societa = 'IRETI';
+		WHEN '02' THEN
+			SET societa = 'Mediterranea';
+		WHEN '07' THEN
+			SET societa = 'Idrotigullio';
+		ELSE
+			SET societa = 'ERRORE';
+		END CASE;
+		SET OutputRoot.XMLNSC.ns1:Params.flusso =  'STR';
+		SET OutputRoot.XMLNSC.ns1:Params.obj1   =  societa;
+		SET OutputRoot.XMLNSC.ns1:Params.obj2   =  InputRoot.XMLNSC.Result.Info.IDFlusso;
+		SET OutputRoot.XMLNSC.ns1:Params.body1  =  InputRoot.XMLNSC.Result.Info.DataInizio;
+		SET OutputRoot.XMLNSC.ns1:Params.body2  =  InputRoot.XMLNSC.Result.Info.DataFine;
+		SET OutputRoot.XMLNSC.ns1:Params.body3  =  InputRoot.XMLNSC.Result.Info.Elaborati;
+		SET OutputRoot.XMLNSC.ns1:Params.body4  =  InputRoot.XMLNSC.Result.Info.Inviati;
+		SET OutputRoot.XMLNSC.ns1:Params.body5  =  InputRoot.XMLNSC.Result.Status.Descrizione;
+		SET OutputRoot.XMLNSC.ns1:Params.body6  =  InputRoot.XMLNSC.Result.Info.IDFlusso;
+		RETURN TRUE;
+	END;
+
+END MODULE;

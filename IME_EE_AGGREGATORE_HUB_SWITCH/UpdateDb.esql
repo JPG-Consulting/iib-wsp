@@ -1,0 +1,251 @@
+DECLARE ns1 NAMESPACE 'http://WS_HUB_CRM_Inbound';
+DECLARE ns36 NAMESPACE 'http://schemas.xmlsoap.org/soap/envelope/';
+DECLARE t integer;
+declare codPratica       FLOAT;
+DECLARE codPraticaSii_in    CHARACTER;
+DECLARE cod_pratica_hub_in  CHARACTER;
+DECLARE amm_esito_in       CHARACTER;
+DECLARE amm_causale_in     CHARACTER; 
+DECLARE amm_motivazione_in CHARACTER;
+DECLARE amm_data_in DATE;
+DECLARE codiceAuthorityDL_in CHARACTER;
+DECLARE canaleComunicazione_in CHARACTER;
+DECLARE esito_in CHARACTER;
+DECLARE codice_in CHARACTER;
+DECLARE motivazione_in CHARACTER;
+DECLARE dataesecuzione_in DATE;
+DECLARE note_in	CHARACTER;
+DECLARE cd_fiscale_sii_in CHARACTER;
+DECLARE ptIvaSii_in CHARACTER;
+DECLARE cfStranieroSii_in CHARACTER;
+DECLARE sospeso_in CHARACTER;
+DECLARE cmor_in CHARACTER;
+DECLARE date_sospensione_in CHARACTER;
+DECLARE date_switch_in CHARACTER;
+DECLARE data_salvaguardia_in DATE;
+DECLARE data_ultima_rich_sosp_in DATE;
+DECLARE data_ultima_sosp_in	DATE;
+
+CREATE COMPUTE MODULE UpdateDb
+	CREATE FUNCTION Main(IN InputTree reference) RETURNS BOOLEAN
+	BEGIN	
+	 -- codicePraticaSII
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePraticaDistributore is not null) then
+	 	SET codPraticaSii_in=InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePraticaDistributore;
+	 else
+	 	SET codPraticaSii_in = null;
+	 end if;		 
+	 -- cod_pratica_hub_in
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePratica is not null) then
+	 	SET cod_pratica_hub_in=InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePratica;
+	 else
+	 	SET cod_pratica_hub_in = null;
+	 end if;	
+	 	 
+	 -- ammissibilita.esito	 
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.esito is not null) then
+	 	SET amm_esito_in =  InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.esito;
+	 else
+	 	SET amm_esito_in = NULL;	
+	 end if;	
+	 -- ammissibilita.causale
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.causale is not null) then
+	 	SET amm_causale_in =  InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.causale;
+	 else
+	 	SET amm_causale_in = null;	
+	 end if;	
+	 -- ammissibilita.motivazione
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.motivazione is not null) then
+	 	SET amm_motivazione_in =  InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.motivazione;
+	 else
+	 	SET amm_motivazione_in = null;	
+	 end if;
+	 -- ammissibilita.data
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.dataAmmissibilita is not null) AND (FIELDVALUE(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.dataAmmissibilita) <> '') then	 	
+	 	SET amm_data_in = CAST(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.dataAmmissibilita AS DATE FORMAT patternDate);
+	 else
+	 	SET amm_data_in = null;	
+	 end if;	 
+	 -- MAC070_CODICEAUTHORITYDL
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.codiceAuthorityDL is not null) then
+	 	SET codiceAuthorityDL_in =  InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.codiceAuthorityDL;
+	 else
+	 	SET codiceAuthorityDL_in = null;	
+	 end if;	 
+	 -- MAC070_CANALECOMUNICAZIONE
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.canaleComunicazione is not null) then
+	 	SET canaleComunicazione_in =  InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.canaleComunicazione;
+	 else
+	 	SET canaleComunicazione_in = null;	
+	 end if;		 	 	 		 	
+	 -- esito
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.esito is not null)  then
+	    SET esito_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.esito ;
+	 else
+	 	set esito_in = null;
+	 end if;
+	 -- codice
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.codice is not null)  then
+	    SET codice_in =InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.codice ;
+	 else
+	 	set codice_in = null;
+	 end if;
+	 -- motivazione
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.motivazione is not null)  then
+	    SET motivazione_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.motivazione;
+	 else
+	 	set motivazione_in = null;
+	 end if;	
+	 -- dataesecuzione
+	  if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.dataEsecuzione is not null) AND (FIELDVALUE(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.dataEsecuzione) <> '') then
+	    SET dataesecuzione_in = CAST(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.dataEsecuzione AS DATE FORMAT patternDate);
+	 else
+	 	set dataesecuzione_in = null;
+	 end if;
+	 -- note
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.note is not null)  then
+	    SET note_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.note;	    
+	 else
+	 	set note_in = null;
+	 end if;	 
+	 -- CD_FISCALE_CLIENTE_SII
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.anagraficaCliente.codiceFiscale is not null)  then
+	    SET cd_fiscale_sii_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.anagraficaCliente.codiceFiscale;	    
+	 else
+	 	set cd_fiscale_sii_in = null;
+	 end if;	 
+	 -- PIVA_CLIENTE_SII
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.anagraficaCliente.partitaIva is not null)  then
+	    SET ptIvaSii_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.anagraficaCliente.partitaIva;	    
+	 else
+	 	set ptIvaSii_in = null;
+	 end if;	
+	 -- MAC070_CFSTRANIERO_CLIENTE_SII 
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.anagraficaCliente.cfStraniero is not null)  then
+	    SET cfStranieroSii_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.anagraficaCliente.cfStraniero;	    
+	 else
+	 	set cfStranieroSii_in = null;
+	 end if;	 
+	 -- MAC070_SOSPESO
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.sospeso is not null)  then
+	    SET sospeso_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.sospeso;	    
+	 else
+	 	set sospeso_in = null;
+	 end if;	
+	 -- MAC070_CMOR_IN_CORSO 
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.cmor_in_corso is not null)  then
+	    SET cmor_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.cmor_in_corso;	    
+	 else
+	 	set cmor_in = null;
+	 end if;	 
+	 -- MAC070_DATE_SOSPENSIONE
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.date_sospensione is not null)  then
+	    SET date_sospensione_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.date_sospensione;	    
+	 else
+	 	set date_sospensione_in = null;
+	 end if;	 
+	 -- MAC070_DATE_SWITCH
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.date_switch is not null)  then
+	    SET date_switch_in = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.date_switch;	    
+	 else
+	 	set date_switch_in = null;
+	 end if;	
+	 -- MAC070_DATA_SALVAGUARDIA 
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_salvaguardia is not null) AND (FIELDVALUE(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_salvaguardia) <> '') then
+	    SET data_salvaguardia_in = CAST(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_salvaguardia AS DATE FORMAT patternDate);	    
+	 else
+	 	set data_salvaguardia_in = null;
+	 end if;
+	 -- MAC070_DATA_ULTIMA_RICH_SOSP
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_ultima_rich_sosp is not null) AND (FIELDVALUE(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_ultima_rich_sosp) <> '') then  
+	    SET data_ultima_rich_sosp_in = CAST(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_ultima_rich_sosp AS DATE FORMAT patternDate);		    
+	 else
+	 	set data_ultima_rich_sosp_in = null;
+	 end if;
+	 -- MAC070_DATA_ULTIMA_SOSP
+	 if (InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_ultima_sosp is not null) AND (FIELDVALUE(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_ultima_sosp) <> '') then  
+	    SET data_ultima_sosp_in = CAST(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.timoe.data_ultima_sosp AS DATE FORMAT patternDate);		    
+	 else
+	 	set data_ultima_sosp_in = null;
+	 end if;	 
+	 
+	 
+	   /*set codSiiInbExists = EXISTS(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePraticaDistributore[]);	
+	   if (codSiiInbExists) then
+	 	 SET codPraticaSiiInb=InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePraticaDistributore;
+	   else
+	 	 SET codPraticaSiiInb = null;
+	   end if;
+	   
+	   set codHubInbExists = EXISTS(InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePratica[]);	
+	   if (codHubInbExists) then
+	 	 SET codPraticaHubInb=InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePratica;
+	   else
+	 	 SET codPraticaHubInb = null;
+	   end if;	   
+	   */
+	   
+	   SET t = SELECT COUNT(*) 
+	   		     FROM Database.AAGGREGA.MAC070_SWITCH_SII as sp
+	  		     WHERE sp.MAC070_PKEY_SEQ = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePraticaOrigine;
+	      
+	   if t >0 then  
+	   	-- if  InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso ='CRM-I-AMM' then	   	 	 
+			 UPDATE Database.AAGGREGA.mac070_switch_sii AS sp
+			  SET MAC070_COD_FLUSSO_RES    = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso
+			   , MAC070_COD_PRATICA_HUB	    = cod_pratica_hub_in
+			   , MAC070_AMM_ESITO           = amm_esito_in
+			   , MAC070_AMM_COD_CAUSALE     = amm_causale_in
+			   , MAC070_AMM_MOTIVAZIONE     = amm_motivazione_in
+			   , MAC070_AMM_DATA		    = amm_data_in
+			   , MAC070_CODICEAUTHORITYDL   = codiceAuthorityDL_in
+			   , MAC070_CANALECOMUNICAZIONE = canaleComunicazione_in
+   			   , MAC070_ESITO               = esito_in
+  			   , MAC070_COD_CAUSALE         = codice_in
+  			   , MAC070_MOTIVAZIONE         = motivazione_in
+               , MAC070_DATAESECUZIONE      = dataesecuzione_in		   
+			   , MAC070_COD_PRATICA_SII     = codPraticaSii_in
+			   , MAC070_PIVA_CLIENTE_SII    = ptIvaSii_in
+			   , MAC070_FLG_IN		        = 'X' 
+			   , MAC070_NOTE				= note_in
+			   , MAC070_CD_FISCALE_CLIENTE_SII = cd_fiscale_sii_in
+			   , MAC070_CFSTRANIERO_CLIENTE_SII = cfStranieroSii_in
+			   , MAC070_SOSPESO 			= sospeso_in 
+			   , MAC070_CMOR_IN_CORSO       = cmor_in
+			   , MAC070_DATE_SOSPENSIONE    = date_sospensione_in
+			   , MAC070_DATE_SWITCH			= date_switch_in
+			   , MAC070_DATA_SALVAGUARDIA   = data_salvaguardia_in
+			   , MAC070_DATA_ULTIMA_RICH_SOSP = data_ultima_rich_sosp_in
+			   , MAC070_DATA_ULTIMA_SOSP	  = data_ultima_sosp_in
+			   , MAC070_DATA_IN 	        = CURRENT_TIMESTAMP 	
+			   , MAC070_TMS_UPDATED         = CURRENT_TIMESTAMP		   			   
+			 WHERE sp.MAC070_PKEY_SEQ = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePraticaOrigine;		
+	   	/* ELSE		 	  	   	 
+	   	 	UPDATE Database.AAGGREGA.mac070_switch_sii as sp
+			 SET MAC070_ESITO           = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.esito
+			   , MAC070_COD_CAUSALE     = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.codice
+			   , MAC070_MOTIVAZIONE     = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.esito.motivazione
+	           , MAC070_COD_PRATICA_SII = codPraticaSii_in			   
+			   , MAC070_FLG_IN	= 'X' 
+			   , MAC070_DATA_IN = CURRENT_TIMESTAMP 
+			   , MAC070_COD_FLUSSO		= InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codiceFlusso
+			   , MAC070_COD_PRATICA_HUB	    = codPraticaHubInb
+			 WHERE sp.MAC070_PKEY_SEQ = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePraticaOrigine;
+	   	 end if;	
+	   	 */
+	     set OutputRoot.XMLNSC.ns1:WSHubCrmInboundResponse.inboundResponse.tracking = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking;
+	     set OutputRoot.XMLNSC.ns1:WSHubCrmInboundResponse.inboundResponse.esito.esito ='1';
+	     set OutputRoot.XMLNSC.ns1:WSHubCrmInboundResponse.inboundResponse.esito.codice = 'OK';
+	     set OutputRoot.XMLNSC.ns1:WSHubCrmInboundResponse.inboundResponse.esito.motivazione = 'OK'; 			     
+	   else
+	     set OutputRoot.XMLNSC.ns1:WSHubCrmInboundResponse.inboundResponse.tracking = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking;
+	     set OutputRoot.XMLNSC.ns1:WSHubCrmInboundResponse.inboundResponse.esito.esito ='0';   
+	     set OutputRoot.XMLNSC.ns1:WSHubCrmInboundResponse.inboundResponse.esito.codice = 'KO';
+	   	 set OutputRoot.XMLNSC.ns1:WSHubCrmInboundResponse.inboundResponse.esito.motivazione = 'Codice pratica inesistente'; 
+	   end if;	  
+		
+	    RETURN TRUE;
+	END;
+
+END MODULE;
+

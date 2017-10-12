@@ -1,0 +1,193 @@
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_BlobToSoap
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE documento REFERENCE TO Environment.Variabili.XMLNSC.ns:documenti.ns:documento;
+		SET OutputRoot.SOAP.Body.ns6:Create.ns6:Authorization.username ='ftp_bis';
+		SET OutputRoot.SOAP.Body.ns6:Create.ns6:Authorization.password ='Password1FTP';
+		DECLARE data_protocollo CHARACTER documento.ns:data_protocollo;
+		DECLARE principale BOOLEAN FALSE;
+		SET OutputRoot.SOAP.Body.ns6:Create.metadata.nomeFile  = InputLocalEnvironment.File.Read.Name;
+		SET OutputRoot.SOAP.Body.ns6:Create.metadata.path = 'IrenSpa/protocollo/anno_'||SUBSTRING(data_protocollo FROM 7 FOR 4)||'/mese_'||SUBSTRING(data_protocollo FROM 4 FOR 2)||'/giorno_'||SUBSTRING(data_protocollo FROM 1 FOR 2)||'/registro_'||LEFT(documento.ns:numero_protocollo, 2)||'/numprot_'||documento.ns:numero_protocollo;
+		FOR allegato AS documento.ns:allegati.ns:allegato[] DO
+			IF allegato.ns:file = InputLocalEnvironment.File.Read.Name THEN
+				IF allegato.ns:tipo = 'principale' THEN
+					SET principale = TRUE;
+				END IF;
+				SET OutputRoot.JSON.Data.properties."cm:description" = allegato.ns:descrizione;
+			END IF;
+		END FOR;
+		
+		IF principale THEN 
+		--||MAPPATURA PROPRIETA
+		SET OutputRoot.JSON.Data.properties."gen:prProvenienza" = 'FLUX';
+		SET OutputRoot.JSON.Data.properties."cm:author" = 'websphere';
+		SET OutputRoot.JSON.Data.properties."dado:prAreaTerritoriale" = documento.ns:area_territoriale;
+		SET OutputRoot.JSON.Data.properties."dado:prBusiness" = documento.ns:business;
+		SET OutputRoot.JSON.Data.properties."dado:prDataProtocollo" = LEFT(documento.ns:data_protocollo, 10);
+		SET OutputRoot.JSON.Data.properties."dado:prMezzoTrasmissione" = documento.ns:mezzo_trasmissione;
+		SET OutputRoot.JSON.Data.properties."gen:prIdProvenienza" = documento.ns:numero_protocollo;
+		SET OutputRoot.JSON.Data.properties."cm:title" = documento.ns:oggetto;
+		SET OutputRoot.JSON.Data.properties."dado:prRegistro" = LEFT(documento.ns:numero_protocollo, 2);
+		CASE (documento.ns:riservato)
+        WHEN 'si' THEN
+        	SET OutputRoot.JSON.Data.properties."dado:prRiservato" = 'Si';
+		WHEN 'no' THEN
+			SET OutputRoot.JSON.Data.properties."dado:prRiservato" = 'No';
+		ELSE
+			SET OutputRoot.JSON.Data.properties."dado:prRiservato" = documento.ns:riservato;
+		END CASE;
+		SET OutputRoot.JSON.Data.properties."dado:prRiservato" = documento.ns:riservato;
+		SET OutputRoot.JSON.Data.properties."dado:prSocieta" = documento.ns:societa.ns:codice;
+		SET OutputRoot.JSON.Data.properties."dado:prDescrizioneSocieta" = documento.ns:societa.ns:descrizione;
+		SET OutputRoot.JSON.Data.properties."dado:prStatoDocumentoProtocollo" = TRANSCODIFICA_STATO(documento.ns:stato_documento);
+		SET OutputRoot.JSON.Data.properties."dado:prCodiceStrutturaProtocollante" = documento.ns:struttura_protocollante.ns:codice;
+		SET OutputRoot.JSON.Data.properties."dado:prStrutturaProtocollante" = documento.ns:struttura_protocollante.ns:descrizione;
+		SET OutputRoot.JSON.Data.properties."dado:prTipoDocumento" = documento.ns:tipo_documento;
+		SET OutputRoot.JSON.Data.properties."dado:prTipoProtocollo" = documento.ns:tipo_protocollo;
+		
+		IF documento.ns:tipo_protocollo = 'A' THEN
+			SET OutputRoot.JSON.Data.properties."dado:prMittenteDestinatario" = '';
+			FOR mit AS documento.ns:mittenti.ns:"mittente-esterno"[] DO
+				SET OutputRoot.JSON.Data.properties."dado:prMittenteDestinatario" = OutputRoot.JSON.Data.properties."dado:prMittenteDestinatario" || mit.ns:tipo_soggetto ||' '|| mit.ns:denominazione||' '|| mit.ns:indirizzo||' '|| mit.ns:cap||' '|| mit.ns:citta||' '|| mit.ns:provincia || ';';
+			END FOR;
+		ELSE
+			SET OutputRoot.JSON.Data.properties."dado:prMittenteDestinatario" = documento.ns:destinatari.ns:"destinatario-esterno".ns:tipo_soggetto ||' '|| documento.ns:destinatari.ns:"destinatario-esterno".ns:denominazione||' '|| documento.ns:destinatari.ns:"destinatario-esterno".ns:indirizzo||' '|| documento.ns:destinatari.ns:"destinatario-esterno".ns:cap||' '|| documento.ns:destinatari.ns:"destinatario-esterno".ns:citta||' '|| documento.ns:destinatari.ns:"destinatario-esterno".ns:provincia;
+		END IF;
+		
+		SET OutputRoot.JSON.Data.properties."dado:prDataDocumento" = documento.ns:data_documento;
+		SET OutputRoot.JSON.Data.properties."dado:prAnnoProtocolloIrenRiferimento" = documento.ns:data_riferimento_IREN;
+		SET OutputRoot.JSON.Data.properties."dado:prProtocolloIrenRiferimento" = documento.ns:riferimento_IREN;
+		SET OutputRoot.JSON.Data.properties."dado:prNoteProtocollo" = documento.ns:note.ns:nota.ns:data_inserimento ||' '|| documento.ns:note.ns:nota.ns:attivita ||' '|| documento.ns:note.ns:nota.ns:utente_inserimento ||' '|| documento.ns:note.ns:nota.ns:nota;
+		SET OutputRoot.JSON.Data.properties."dado:prNumeroProtocollo" = SUBSTRING(documento.ns:numero_protocollo FROM 3 FOR 6);
+		SET OutputRoot.JSON.Data.properties."dado:prProtocolloMittente" = documento.ns:riferimento_ESTERNO;
+
+		SET OutputRoot.JSON.Data.associations.(JSON.Array)"dado:prDocumentiAssociati" = Environment.Variabili.DocumentiAssociati;
+		FOR attributo AS documento.ns:attributi.ns:attributo[] DO
+			IF attributo.ns:nome = 'ADM' THEN
+				SET OutputRoot.JSON.Data.properties."com:prAemtdAdm" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'ID CLIENTE' THEN
+				SET OutputRoot.JSON.Data.properties."com:prIdCliente" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'ID CONTRATTO' THEN
+				SET OutputRoot.JSON.Data.properties."com:prIdContratto" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'ID FORNITURA' THEN
+				SET OutputRoot.JSON.Data.properties."com:prIdFornitura" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'POD/PDR' THEN
+				SET OutputRoot.JSON.Data.properties."com:prIdPOD" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'PREVENTIVO' THEN
+				SET OutputRoot.JSON.Data.properties."com:prPreventivo" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'SIC/AMB' THEN
+				SET OutputRoot.JSON.Data.properties."com:prAemtdSicAmb" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'CODICE COMMESSA' THEN
+				SET OutputRoot.JSON.Data.properties."com:prEmiliaCodiceCommessa" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'CODICE GARA' THEN
+				SET OutputRoot.JSON.Data.properties."com:prEmiliaCodiceGara" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'ORDINE ACQUISTO' THEN
+				SET OutputRoot.JSON.Data.properties."com:prEmiliaOrdineAcquisto" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'PERSONA FIRMATARIA' THEN
+				SET OutputRoot.JSON.Data.properties."com:prMercatoFirmataria" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'CONTRATTO ACQUISTO' THEN
+				SET OutputRoot.JSON.Data.properties."com:prEmiliaContrattoAcquisto" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'CODICE COMUNE' THEN
+				SET OutputRoot.JSON.Data.properties."com:prCodiceComune" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'BUSINESS PARTNER' THEN
+				SET OutputRoot.JSON.Data.properties."com:prBusinessPartner" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'COMUNE' THEN
+				SET OutputRoot.JSON.Data.properties."com:prComune" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'ORDINE/CONTRATTO' THEN
+				SET OutputRoot.JSON.Data.properties."com:prOrdineContratto" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'RIF.MITTENTE' THEN
+				SET OutputRoot.JSON.Data.properties."com:prRifMittente" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'RIF.AGS' THEN
+				SET OutputRoot.JSON.Data.properties."com:prRifAGS" = attributo.ns:valore;
+			END IF;
+			IF attributo.ns:nome = 'TIP.AGS' THEN
+				SET OutputRoot.JSON.Data.properties."com:prTipAGS" = attributo.ns:valore;
+			END IF;
+		
+		END FOR;
+		DECLARE i INTEGER 0;
+		FOR cat AS documento.ns:voci_titolario.ns:voce_titolario[] DO
+			SET i = i + 1;
+			SET OutputRoot.JSON.Data.(JSON.Array)categories.Item[i] = cat.ns:codice ||'='|| cat.ns:descrizione;
+		END FOR;
+		END IF;
+		
+		FOR acl AS documento.ns:acls.ns:acl[] DO
+			SET OutputRoot.JSON.Data.permissions.{'GROUP_'||acl.ns:soggetto} = 'SiteConsumer';	
+		END FOR;
+		
+		
+		
+		DECLARE properties CHARACTER CAST(ASBITSTREAM(OutputRoot.JSON.Data CCSID 1208) AS CHARACTER CCSID 1208);
+		CREATE LASTCHILD OF OutputRoot.SOAP.Body.ns6:Create.metadata.proprieta VALUE properties;
+		SET OutputRoot.SOAP.Body.ns6:Create.metadata.tipoDocumento = 'dado:Protocollo';
+		SET OutputRoot.SOAP.Body.ns6:Create.metadata.proprieta = properties;
+		SET OutputRoot.SOAP.Body.ns6:Create.payload.content = BASE64ENCODE(InputRoot.BLOB.BLOB);
+		DELETE FIELD OutputRoot.JSON;
+		
+		SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'FLUX_ALFRESCO' AND T.VARIABILE = 'ENDPOINT_ALFRESCO');
+		
+		SET Environment.Variables.idRichiesta = UUIDASCHAR;
+		--||LOG DELETE REQUEST
+		INSERT INTO Database.IIB_FLUX_DOCUMENTALE 
+		(ID_RICHIESTA, ID_FLUX, NUMERO_PROTOCOLLO, RICHIESTA, DESCRIZIONE_RICHIESTA, TMS_RICHIESTA)
+		VALUES
+		(Environment.Variables.idRichiesta, Environment.Variables.idFlux, Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo, ASBITSTREAM(OutputRoot.SOAP), 'Upload documento '||OutputRoot.SOAP.Body.ns6:Create.metadata.nomeFile, CURRENT_TIMESTAMP);
+		PASSTHRU('COMMIT');
+		
+		RETURN TRUE;
+	END;
+
+	 
+END MODULE;
+
+CREATE FUNCTION TRANSCODIFICA_STATO(IN stato CHARACTER) RETURNS CHARACTER 
+BEGIN
+	DECLARE st CHARACTER;
+	CASE (stato)
+        WHEN 'ATTESA DI EVASIONE' THEN
+        	SET st = 'In Attesa Di Evasione';
+        WHEN 'IN REDAZIONE' THEN
+        	SET st = 'In Redazione';
+        WHEN 'IN APPROVAZIONE' THEN
+        	SET st = 'In Approvazione';
+        WHEN 'IN FIRMA' THEN
+        	SET st = 'In Firma';
+        WHEN 'ATTESA INVIO' THEN
+        	SET st = 'Attesa Invio';
+        WHEN 'ANNULLATO' THEN
+        	SET st = 'Annullato';
+        WHEN 'DUPLICATO' THEN
+        	SET st = 'Duplicato';
+        WHEN 'AGLI ATTI' THEN
+        	SET st = 'Agli Atti';
+		WHEN 'EVASO' THEN
+        	SET st = 'Evaso';
+		WHEN 'EVASO CON RISPOSTA' THEN
+        	SET st = 'Evaso Con Risposta';
+        WHEN 'INVIATO' THEN
+        	SET st = 'Inviato';
+        ELSE
+        	SET st = '';
+        END CASE;
+
+	RETURN st;
+END;

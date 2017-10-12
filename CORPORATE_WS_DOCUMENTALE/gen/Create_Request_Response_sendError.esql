@@ -1,0 +1,15 @@
+BROKER SCHEMA gen
+
+
+CREATE COMPUTE MODULE Create_Request_Response_sendError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIRSTCHILD OF Environment.Variables DOMAIN('JSON') PARSE(InputRoot.BLOB.BLOB);
+		SET OutputRoot.XMLNSC.ns:CreateResponse.status.status = 'KO';
+		SET OutputRoot.XMLNSC.ns:CreateResponse.status.descrizione = Environment.Variables.JSON.Data.message;
+		SET OutputRoot.XMLNSC.ns:CreateResponse.status.ID = CAST(Environment.Variables.JSON.Data.status.code AS CHARACTER) || ' ' || Environment.Variables.JSON.Data.status.name;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

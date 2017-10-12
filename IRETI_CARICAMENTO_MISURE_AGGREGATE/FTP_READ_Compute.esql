@@ -1,0 +1,24 @@
+
+
+CREATE COMPUTE MODULE FTP_READ_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.File.Name = InputLocalEnvironment.File.Read.Name;
+		SET OutputRoot.XMLNSC.File.InputDir = Environment.Variables.inputpathftp;
+		SET OutputRoot.XMLNSC.File.OkFilePath = Environment.Variables.okPathFtp;
+		SET OutputRoot.XMLNSC.File.KoFilePath = Environment.Variables.koPathFtp;
+		SET OutputRoot.XMLNSC.File.CLOB = CAST(InputRoot.BLOB.BLOB AS CHARACTER CCSID 1208);
+		
+		-- ulteriori parametri da inserire nella coda Mq
+		
+		SET OutputRoot.XMLNSC.File.ftppassword = Environment.Variables.ftppassword;
+		SET OutputRoot.XMLNSC.File.ftpusername = Environment.Variables.ftpusername;
+		SET OutputRoot.XMLNSC.File.ftphost     = Environment.Variables.ftphost;
+		
+		
+		
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

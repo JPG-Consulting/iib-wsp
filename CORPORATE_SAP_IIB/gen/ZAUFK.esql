@@ -1,0 +1,56 @@
+BROKER SCHEMA gen
+DECLARE ns56 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzaufk';
+
+
+CREATE COMPUTE MODULE ZAUFK
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE societa CHARACTER;
+		DECLARE upd INTEGER 0;
+		DECLARE ins INTEGER 0;
+		DECLARE idoc REFERENCE TO InputRoot.DataObject.ns56:SapZaufk.SapZaufkIDocBO.SapZaufkDataRecord.SapZaufkZaufk000[1];
+		SET societa = idoc.BUKRS;
+		
+		SET OutputLocalEnvironment.Variables.idocNum = InputRoot.DataObject.ns56:SapZaufk.SapZaufkIDocBO.SapIDocControlRecord.DOCNUM;
+		
+		DELETE FROM Database.S1_QUAD_ORDINI
+		WHERE S1_QUAD_ORDINI.SOCIETA = societa;
+		
+		WHILE LASTMOVE(idoc) = TRUE DO
+			 INSERT INTO Database.S1_QUAD_ORDINI 
+			 (SOCIETA, ORDINE, CDC_EFF, 
+			 AMBITO, SUBAMBITO, OGGETTO_PREC, 
+			 ATTIVITA, DESCRIZIONE, DESTINAZIONE, 
+			 UNBUNDLING) 
+			 VALUES (idoc.BUKRS, idoc.AUFNR,idoc.CYCLE,
+			 		idoc.ZZ1AMBITO1,idoc.ZZ1SUBAMB1,idoc.ZZ1OGGPREC,
+			 		'"','"',idoc.KSTEMPF, idoc.ZZ1UNB_1);
+			 SET ins = ins + 1;
+			 
+			 MOVE idoc NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+		
+		SET OutputRoot.XMLNSC.ns5:Params.body1 = ins;
+		SET OutputRoot.XMLNSC.ns5:Params.body2 = upd;
+		SET OutputRoot.XMLNSC.ns5:Params.body3 = societa;
+		SET OutputRoot.XMLNSC.ns5:Params.flusso = 'ZAUFK';
+		
+		SET OutputLocalEnvironment.Variables.dbString = 'Processato IDOC di tipo ZAUKF - Inseriti '||CAST(ins AS CHARACTER)||' record - Aggiornati '|| CAST(upd AS CHARACTER) ||' record';
+
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

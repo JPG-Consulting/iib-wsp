@@ -1,0 +1,47 @@
+
+DECLARE motivazione    CHARACTER;
+DECLARE esito       CHARACTER;
+DECLARE cdPraticaWF	   CHARACTER;	
+DECLARE cdEsito       CHARACTER;
+CREATE DATABASE MODULE insertEsito
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	 -- esito
+	 if (Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:esito.ns25:esito is not null) then
+	 	SET esito= Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:esito.ns25:esito;
+	 else
+	 	SET esito = null;
+	 end if;
+	 
+	 -- cdEsito
+	 if (Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:esito.ns25:codice is not null) then
+	 	SET cdEsito= Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:esito.ns25:codice;
+	 else
+	 	SET cdEsito = null;
+	 end if;
+	 
+	 -- motivazione
+	 if (Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:esito.ns25:motivazione is not null) then
+	 	SET motivazione= Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:esito.ns25:motivazione;
+	 else
+	 	SET motivazione = null;
+	 end if;
+	 	 
+	 --cdPraticaWF
+	 if (Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:tracking.ns25:codicePraticaOrigine is not null) then
+	 	SET cdPraticaWF= Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:tracking.ns25:codicePraticaOrigine;
+	 else
+	 	SET cdPraticaWF = null;
+	 end if;
+	 
+		UPDATE Database.HUB_EAI.EE_DATI_PRESTAZIONI_EVENT AS T
+		 SET  SF_OE_ESITO		   = esito
+		    , SF_OE_CD_ESITO		   = cdEsito
+		    , SF_OE_MOTIVAZIONE    = motivazione		    
+		    , SF_COD_PRATICA_WF    = cdPraticaWF
+		    , STATO					   = 'INVIATO'    	 		   
+		WHERE T.ID_EE_PRESTAZIONE_TRACKING = Root.XMLNSC.ns25:OEWebFormResponse.ns25:result.ns25:tracking.ns25:codicePratica;				
+		RETURN FALSE;
+	END;
+
+END MODULE;

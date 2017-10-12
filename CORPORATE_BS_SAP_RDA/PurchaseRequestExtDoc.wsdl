@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="PurchaseRequest" targetNamespace="http://host.bs.com/common/webservice/prextbf/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://host.bs.com/common/webservice/prextbf/" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:documentation>
+    <wsdl:appinfo source="WMQI_APPINFO">
+      <MRWSDLAppInfo imported="true">
+        <binding hasEncoding="false" imported="true" name="PurchaseRequestDocBinding" originalBindingStyle="document"/>
+      </MRWSDLAppInfo>
+    </wsdl:appinfo>
+  </wsdl:documentation>
+
+  <wsdl:types>
+    
+        <xsd:schema targetNamespace="http://host.bs.com/common/webservice/prextbf/" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+
+<xsd:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="xsd_xmlmime.xsd"/>
+
+<!-- export object--><xsd:include schemaLocation="PurchaseRequestExtDoc_InlineSchema1.xsd"/>
+</xsd:schema>
+    </wsdl:types>
+  <wsdl:message name="ImportRequestDoc">
+    <wsdl:part element="tns:importInput" name="importInput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteRequest">
+    <wsdl:part element="tns:deletePRReq" name="deletePRReq">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="exportPRResponse">
+    <wsdl:part element="tns:exportPRRes" name="exportPRRes">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ImportResponseDoc">
+    <wsdl:part element="tns:importOutput" name="importOutput">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteResponse">
+    <wsdl:part element="tns:deletePRRes" name="deletePRRes">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="exportPRRequest">
+    <wsdl:part element="tns:exportPRReq" name="exportPRReq">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="PurchaseRequestDocPortType">
+    <wsdl:operation name="Import">
+      <wsdl:input message="tns:ImportRequestDoc">
+    </wsdl:input>
+      <wsdl:output message="tns:ImportResponseDoc">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="export">
+      <wsdl:input message="tns:exportPRRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:exportPRResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete">
+      <wsdl:input message="tns:deleteRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:deleteResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PurchaseRequestDocBinding" type="tns:PurchaseRequestDocPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Import">
+      <soap:operation soapAction="capeconnect:PurchaseRequestDoc:PurchaseRequestPortTypeDoc#Import"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="export">
+      <soap:operation soapAction="http://host.bs.com/common/webservice/prextbf/export"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete">
+      <soap:operation soapAction="http://host.bs.com/common/webservice/prextbf/delete"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PurchaseRequestExtDoc">
+<wsdl:documentation>v 12.2.0</wsdl:documentation>
+    <wsdl:port binding="tns:PurchaseRequestDocBinding" name="PurchaseRequestExtDoc">
+      <soap:address location="https://irenprocurement-ws02-prep.bravosolution.com:443/esop/common-host/services/PurchaseRequestExtDoc/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

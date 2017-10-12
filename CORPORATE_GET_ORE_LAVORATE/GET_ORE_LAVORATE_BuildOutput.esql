@@ -1,0 +1,23 @@
+DECLARE ns2 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/saptimetypevalues1165121286';
+
+CREATE COMPUTE MODULE GET_ORE_LAVORATE_BuildOutput
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		CREATE FIELD OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SapBapiPtimeoverviewGet.SapTimetypevalues;
+		DECLARE tv REFERENCE TO OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SapBapiPtimeoverviewGet.SapTimetypevalues;
+		DELETE FIELD OutputRoot.DataObject.ns:SapBapiPtimeoverviewGet.SapEmployees;
+		DELETE FIELD OutputRoot.DataObject.ns:SapBapiPtimeoverviewGet.SapTimetypes;
+		FOR inTv AS InputRoot.DataObject.ns:SapBapiPtimeoverviewGet.SapTimetypevalues[] DO
+			SET tv = inTv;
+			CREATE NEXTSIBLING OF tv REPEAT;
+			MOVE tv NEXTSIBLING REPEAT TYPE NAME;
+		END FOR;
+		DELETE FIELD tv;
+		/*CREATE FIELD OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SapBapiPtimeoverviewGet;
+		SET OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SAPTransactionID = InputLocalEnvironment.TransactionID;
+		SET OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SapBapiPtimeoverviewGet = InputRoot.DataObject.ns:SapBapiPtimeoverviewGet;*/
+		RETURN TRUE;
+	END;
+
+END MODULE;

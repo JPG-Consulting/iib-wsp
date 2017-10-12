@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_VTG1/v1" xmlns:dat="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_VTG1/v1" xmlns:sg="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.6" xmlns:sgas="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGAS/v1.4">
+	
+	<xsd:import namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.6" schemaLocation="StruttureGenerali_v1_6.xsd"/>
+	<xsd:import namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGAS/v1.4" schemaLocation="StruttureGas_v1_4.xsd"/>
+	
+	<!-- ************** FLUSSI **************** -->
+	
+	<!-- *************** 0050 ***************** -->
+	
+	<xsd:complexType name="FlussoVTG1.0050Type">
+		<xsd:complexContent>
+			<xsd:extension base="sg:FlussoTypeAbstract">
+				<xsd:sequence>
+					<xsd:element name="IdentificativiRichiesta" type="sg:IdentificativiRichiestaUtenteCPGestoreType"/>
+					<xsd:element name="DatiTecnici" type="sgas:DatiTecniciConPrelievoType"/>
+					<xsd:element name="ClienteFinale" type="sg:ClienteFinaleAnagraficaIndirizziEx1Type"/>            
+					<xsd:element name="IvaImposte" type="sg:IvaImposteType"/>            
+					<xsd:element minOccurs="0" name="ServizioEnergetico">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="Beneficiario" type="sg:BeneficiarioType"/>
+							</xsd:sequence>
+						</xsd:complexType>	
+					</xsd:element>            
+					<xsd:element minOccurs="0" name="Autolettura" type="sg:AutoletturaType"/>
+					<xsd:element name="InformazioniFUI" type="sg:InformazioniFuiType"/>
+					<xsd:element name="DatiAttivazione" type="sgas:DatiRichiestaAttivazioneVolturaGasType"/>
+				</xsd:sequence>
+				<xsd:attribute fixed="VTG1" name="COD_SERVIZIO" use="required"/>
+				<xsd:attribute fixed="0050" name="COD_FLUSSO" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!-- *************** 0100 ***************** -->
+	
+	<xsd:complexType name="FlussoVTG1.0100Type">
+		<xsd:complexContent>
+			<xsd:extension base="sg:FlussoTypeAbstract">
+				<xsd:sequence>
+					<xsd:element name="IdentificativiRichiesta" type="sg:IdentificativiRichiestaUtenteCPGestoreCPOpzType"/>
+					<xsd:element name="DatiTecnici" type="sgas:DatiTecniciBaseType"/>
+					<xsd:element name="Ammissibilita" type="sg:AmmissibilitaBaseType"/>
+				</xsd:sequence>
+				<xsd:attribute fixed="VTG1" name="COD_SERVIZIO" use="required"/>
+				<xsd:attribute fixed="0100" name="COD_FLUSSO" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!-- *************** 0150 ***************** -->
+	
+	<xsd:complexType name="FlussoVTG1.0150Type">
+		<xsd:complexContent>
+			<xsd:extension base="sg:FlussoTypeAbstract">
+				<xsd:sequence>
+					<xsd:element name="IdentificativiRichiesta" type="sg:IdentificativiRichiestaUtenteCPGestoreCPType"/>
+					<xsd:element name="DatiTecnici" type="sgas:DatiTecniciBaseType"/>
+					<xsd:element name="Esito" type="sg:EsitoBaseType"/>
+					<xsd:element minOccurs="0" name="ClienteFinale" type="sg:ClienteFinaleConDenomType"/>
+					<xsd:element minOccurs="0" name="DatiAttivazione" type="sg:DatiAttivazioneBaseType"/>
+				</xsd:sequence>
+				<xsd:attribute fixed="VTG1" name="COD_SERVIZIO" use="required"/>
+				<xsd:attribute fixed="0150" name="COD_FLUSSO" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+</xsd:schema>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--xtools2_universal_type_manager-->
+<xmi:XMI xmlns:datamodelversion="http://www.ibm.com/com.ibm.datatools.core/model/data/1.8.0.0" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:OracleModel="http:///com/ibm/db/models/oracle/oracle.ecore" xmlns:SQLDataTypes="http:///org/eclipse/datatools/modelbase/sql/datatypes.ecore" xmlns:SQLSchema="http:///org/eclipse/datatools/modelbase/sql/schema.ecore">
+  <OracleModel:OracleDatabase xmi:id="_79jZQMjpEeadFNb2XsDHWw" name="INTENG" vendor="Oracle" version="11" schemas="_7_ddwMjpEeadFNb2XsDHWw"/>
+  <SQLSchema:Schema xmi:id="_7_ddwMjpEeadFNb2XsDHWw" name="INT_ENGINE" tables="_COGxUMjqEeadFNb2XsDHWw" database="_79jZQMjpEeadFNb2XsDHWw"/>
+  <OracleModel:OracleTable xmi:id="_COGxUMjqEeadFNb2XsDHWw" name="S1_DEC_SOCIETA" schema="_7_ddwMjpEeadFNb2XsDHWw">
+    <columns xmi:id="_Z3MigMjqEeadFNb2XsDHWw" name="SOCIETA_SAP">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_ySLqsMjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="20"/>
+    </columns>
+    <columns xmi:id="_brIlUMjqEeadFNb2XsDHWw" name="SOCIETA_DIAPASON">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_yvhuAMjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="20"/>
+    </columns>
+    <columns xmi:id="_d5MYUMjqEeadFNb2XsDHWw" name="DESCRIZIONE">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_00DxkMjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="50"/>
+    </columns>
+    <columns xmi:id="_egY7MMjqEeadFNb2XsDHWw" name="DIVISIONE">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_1TaAAMjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="20"/>
+    </columns>
+    <columns xmi:id="_ldqPUMjqEeadFNb2XsDHWw" name="DATA_AGGIORNAMENTO">
+      <containedType xsi:type="SQLDataTypes:DateDataType" xmi:id="_0D5f8MjqEeadFNb2XsDHWw" name="DATE" primitiveType="DATE"/>
+    </columns>
+    <columns xmi:id="_m0kX4MjqEeadFNb2XsDHWw" name="DB_NAME">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_1uBfcMjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="20"/>
+    </columns>
+    <columns xmi:id="_qdHy8MjqEeadFNb2XsDHWw" name="CODICE_AZIENDA">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_2LF18MjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="20"/>
+    </columns>
+    <columns xmi:id="_sMgs8MjqEeadFNb2XsDHWw" name="SOCIETA_HR">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_2lBY4MjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="20"/>
+    </columns>
+    <columns xmi:id="_tghSgMjqEeadFNb2XsDHWw" name="CONTROLLING_AREA">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_3GXycMjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="4"/>
+    </columns>
+    <columns xmi:id="_u15KAMjqEeadFNb2XsDHWw" name="CDC_DFLT">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_3oUo8MjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="20"/>
+    </columns>
+    <columns xmi:id="_v6fakMjqEeadFNb2XsDHWw" name="PROFIT_DFLT">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_4J5sAMjqEeadFNb2XsDHWw" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="20"/>
+    </columns>
+  </OracleModel:OracleTable>
+</xmi:XMI>

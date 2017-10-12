@@ -1,0 +1,23 @@
+
+
+Importing file: /home/daniele/IBM/IIBT10/workspace/CORPORATE_WS_DOCUMENTALE/CORPORATE_WS_DOCUMENTALE.wsdl
+
+The WSDL import will proceed with bindings CORPORATE_WS_DOCUMENTALEHttpBinding.
+Creating wsdl schema document for platform:/resource/CORPORATE_WS_DOCUMENTALE/CORPORATE_WS_DOCUMENTALE.wsdl.
+Parsing wsdl binding {http://CORPORATE_WS_DOCUMENTALE}CORPORATE_WS_DOCUMENTALEHttpBinding.
+Parsing wsdl binding input Create.
+Parsing wsdl binding output Create.
+Parsing wsdl binding input Retrieve.
+Parsing wsdl binding output Retrieve.
+Parsing wsdl binding input Update.
+Parsing wsdl binding output Update.
+Parsing wsdl binding input Delete.
+Parsing wsdl binding output Delete.
+Processing doc style for operation Create.
+Processing doc style for operation Retrieve.
+Processing doc style for operation Update.
+Processing doc style for operation Delete.
+Populating WSDL schema CORPORATE_WS_DOCUMENTALE.xsd.
+Creating file CORPORATE_WS_DOCUMENTALE.xsd in the workspace.
+Creating file CORPORATE_WS_DOCUMENTALE_InlineSchema1.xsd in the workspace.
+Copying source WSDL CORPORATE_WS_DOCUMENTALE.wsdl to CORPORATE_WS_DOCUMENTALE.wsdl.

@@ -1,0 +1,25 @@
+
+
+CREATE COMPUTE MODULE ALEAUD_UpdateTraceZMRESCR01
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		FOR aleaud AS InputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001.SapAleaud01E2state002[] DO
+			INSERT INTO Database.S1_TIB11_TRACE 
+			(DATA,ESITO,DESCRIZIONE_ESITO,
+			LISTA, FILE_XML, IDOC,DOCUMENTO_SAP) 
+			VALUES(CURRENT_TIMESTAMP, aleaud.STATUS, aleaud.STAPA2_LNG, 
+					SUBSTRING(aleaud.STAPA1_LNG BEFORE '_'), SUBSTRING(aleaud.STAPA1_LNG AFTER '_'),
+					aleaud.SapAleaud01E2prtob.DOCNUM, aleaud.SapAleaud01E2prtob.OBJKEY);
+					
+			IF aleaud.STATUS <> '53' THEN
+				CREATE FIELD OutputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001.SapAleaud01E2state002;
+				SET OutputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001.SapAleaud01E2state002 = aleaud; 
+				PROPAGATE TO TERMINAL 'out';
+			END IF;
+		END FOR;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;

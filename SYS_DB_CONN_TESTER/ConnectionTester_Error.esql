@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE ConnectionTester_Error
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.Error;
+		SET OutputRoot.XMLNSC = InputExceptionList.RecoverableException;
+		RETURN TRUE;
+	END;
+
+END MODULE;

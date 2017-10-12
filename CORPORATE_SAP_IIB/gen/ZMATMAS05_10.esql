@@ -1,0 +1,172 @@
+BROKER SCHEMA gen
+DECLARE ns17 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510';
+
+
+CREATE COMPUTE MODULE ZMATMAS05_10
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE idocData REFERENCE TO InputRoot.XMLNSC.ns17:FlatArray.ns17:FlatElem[1];
+		DECLARE c INTEGER;
+		DECLARE updated_mat INTEGER;
+		DECLARE inserted_mat INTEGER;
+		DECLARE updated_dim INTEGER;
+		DECLARE inserted_dim INTEGER;
+		DECLARE inserted_soc INTEGER;
+		SET updated_mat = 0;
+		SET inserted_mat = 0;
+		SET updated_dim = 0;
+		SET inserted_dim = 0;
+		SET inserted_soc = 0;
+		
+		WHILE LASTMOVE(idocData)=TRUE DO
+			
+			
+		--|| Controllo la presenza in anagrafica di ciascun materiale presente nell'idoc ||--
+			
+			SET c = SELECT COUNT(*)
+					FROM Database.S1_TIB010_ANAMAT
+					WHERE S1_TIB010_ANAMAT.MATNR = idocData.MATNR;
+					
+		--|| Se presente aggiorno in base al MATNR ||--
+		
+			IF c > 0 THEN
+			
+				UPDATE  Database.S1_TIB010_ANAMAT 
+				SET MTART  = idocData.MTART, MBRSH  = idocData.MBRSH, 
+				WERKS = idocData.WERKS, LGORT = idocData.LGORT, VKORG = idocData.VKORG, 
+				VTWEG = idocData.VTWEG, MAKTX = idocData.MAKTX, MEINS = idocData.MEINS, 
+				MATKL = idocData.MATKL, SPART = idocData.SPART, 
+				PRDHA = idocData.PRDHA, MSTAE = idocData.MSTAE,
+				MTPOS_MARA = idocData.MTPOS_MARA, BRGEW = idocData.BRGEW, NTGEW = idocData.NTGEW,
+				GROES = idocData.GROES, GEWEI = idocData.GEWEI, ZEINR = idocData.ZEINR, 
+				BLATT = idocData.BLATT, DWERK = idocData.DWERK, TAXKM = idocData.TAXKM, 
+				SKTOF = idocData.SKTOF, MTPOS_MVKE = idocData.MTPOS_MVKE, KTGRM = idocData.KTGRM, 
+				KONDM = idocData.KONDM, MVGR2 = idocData.MVGR2, MVGR3 = idocData.MVGR3, 
+				MVGR4 = idocData.MVGR4, MTVFP = idocData.MTVFP, TRAGR = idocData.TRAGR, 
+				LADGR = idocData.LADGR, EKGRP = idocData.EKGRP, MMSTA = idocData.MMSTA, 
+				MFRGR = idocData.MFRGR, XCHPF = idocData.XCHPF, 
+				EKWSL = idocData.EKWSL, DISMM = idocData.DISMM, DISPO = idocData.DISPO, 
+				DISLS = idocData.DISLS, LAGPR = idocData.LAGPR, BESKZ = idocData.BESKZ, 
+				WEBAZ = idocData.WEBAZ, FHORI = idocData.FHORI, PLIFZ = idocData.PLIFZ, 
+				EISBE = idocData.EISBE, PERKZ = idocData.PERKZ, LMINB = idocData.LMINB, 
+				IPRKZ = idocData.IPRKZ, LGPBE = idocData.LGPBE, PRCTR = idocData.PRCTR, 
+				SERNP = idocData.SERNP, VPRSV = idocData.VPRSV, LBKUM = idocData.LBKUM, 
+				PEINH = idocData.PEINH, VERPR = idocData.VERPR, STPRS = idocData.STPRS, 
+				ZSONEANAMAT_TXT = idocData.ZSONEANAMAT_TXT, ORIGINE = idocData.ORIGINE, TAXK1 = idocData.TAXK1, 
+				BKLAS = idocData.BKLAS, BUKRS = idocData.BUKRS, DATA_LOAD = CURRENT_DATE
+				WHERE S1_TIB010_ANAMAT.MATNR = idocData.MATNR;
+				
+				SET updated_mat = updated_mat + c;
+				
+			--|| Se non è presente inserisco una nuova riga in tabella ||--	 
+			ELSE
+				INSERT INTO Database.S1_TIB010_ANAMAT (
+				MATNR, MTART, MBRSH, 
+				WERKS, LGORT, VKORG, 
+				VTWEG, MAKTX, MEINS, 
+				MATKL, SPART, 
+				PRDHA, MSTAE, MSTDE, 
+				MTPOS_MARA, BRGEW, NTGEW, 
+				GROES, GEWEI, ZEINR, 
+				BLATT, DWERK, TAXKM, 
+				SKTOF, MTPOS_MVKE, KTGRM, 
+				KONDM, MVGR2, MVGR3, 
+				MVGR4, MTVFP, TRAGR, 
+				LADGR, EKGRP, MMSTA, 
+				MMSTD, MFRGR, XCHPF, 
+				EKWSL, DISMM, DISPO, 
+				DISLS, LAGPR, BESKZ, 
+				WEBAZ, FHORI, PLIFZ, 
+				EISBE, PERKZ, LMINB, 
+				IPRKZ, LGPBE, PRCTR, 
+				SERNP, VPRSV, LBKUM, 
+				PEINH, VERPR, STPRS, 
+				ZSONEANAMAT_TXT, ORIGINE, TAXK1, 
+				BKLAS, BUKRS, DATA_LOAD) 
+				VALUES ( idocData.MATNR, idocData.MTART, idocData.MBRSH,
+				 idocData.WERKS, idocData.LGORT, idocData.VKORG, 
+				 idocData.VTWEG, idocData.MAKTX, idocData.MEINS, 
+				 idocData.MATKL, idocData.SPART, idocData.PRDHA, 
+				 idocData.MSTAE, 
+				 
+				 NULLIF(idocData.MSTDE, '1'),
+				 
+				 idocData.MTPOS_MARA, 
+				 idocData.BRGEW, idocData.NTGEW, idocData.GROES, 
+				 idocData.GEWEI, idocData.ZEINR, idocData.BLATT, 
+				 idocData.DWERK, idocData.TAXKM, idocData.SKTOF, 
+				 idocData.MTPOS_MVKE, idocData.KTGRM, idocData.KONDM, 
+				 idocData.MVGR2, idocData.MVGR3, idocData.MVGR4, 
+				 idocData.MTVFP, idocData.TRAGR, idocData.LADGR, 
+				 idocData.EKGRP, idocData.MMSTA, 
+				 
+				 NULLIF(idocData.MMSTD, '1'),
+				 
+				 idocData.MFRGR, idocData.XCHPF, idocData.EKWSL, 
+				 idocData.DISMM, idocData.DISPO, idocData.DISLS, 
+				 idocData.LAGPR, idocData.BESKZ, idocData.WEBAZ, 
+				 idocData.FHORI, idocData.PLIFZ, idocData.EISBE, 
+				 idocData.PERKZ, idocData.LMINB, idocData.IPRKZ, 
+				 idocData.LGPBE, idocData.PRCTR, idocData.SERNP, 
+				 idocData.VPRSV, idocData.LBKUM, idocData.PEINH, 
+				 idocData.VERPR, idocData.STPRS, 
+				 idocData.ZSONEANAMAT_TXT, idocData.ORIGINE, idocData.TAXK1, idocData.BKLAS, idocData.BUKRS, CURRENT_TIMESTAMP);
+				 
+				 SET inserted_mat = inserted_mat + 1;
+				 
+			END IF;
+			
+			--|| Controllo la presenza nella tabella DIMENSONI di ciascun materiale presente nell'idoc ||--
+			
+			SET c = SELECT COUNT(*)
+					FROM Database.S1_TIB010_MAT_DIMENSIONI 
+					WHERE S1_TIB010_MAT_DIMENSIONI.S_MATNR = idocData.MATNR
+					AND S1_TIB010_MAT_DIMENSIONI.E1CUVAL_VALUE = idocData.VALUE;
+			
+			--|| Se presente aggiorno i valori correnti ||--
+			
+			IF c > 0 THEN
+				UPDATE  Database.S1_TIB010_MAT_DIMENSIONI
+				SET E1CUVAL_VALUE_TO = idocData.VALUE_TO
+				WHERE S1_TIB010_MAT_DIMENSIONI.S_MATNR = idocData.MATNR
+				AND  S1_TIB010_MAT_DIMENSIONI.E1CUVAL_VALUE = idocData.VALUE;
+			
+			SET updated_dim = updated_dim + c;
+			
+			--|| Se non è presente inserisco una nuova riga ||--
+			ELSE
+				INSERT INTO Database.S1_TIB010_MAT_DIMENSIONI
+				(S_MATNR, E1CUVAL_VALUE, DATA_INS, E1CUVAL_VALUE_TO) 
+				VALUES (idocData.MATNR ,idocData.VALUE, CURRENT_TIMESTAMP, idocData.VALUE_TO);
+			
+			SET inserted_dim = inserted_dim + 1;
+			END IF;
+		
+		
+		--|| Verifico la presenza del record nella tabella società ||--
+		SET c = SELECT COUNT(*)
+				FROM Database.S1_TIB010_MATSOC
+				WHERE S1_TIB010_MATSOC.MATNR = idocData.MATNR
+				AND   S1_TIB010_MATSOC.SOCIETA = idocData.BUKRS;
+				
+		--|| Se non è presente inserisco il record ||--
+				
+		IF c = 0 THEN
+			INSERT INTO Database.S1_TIB010_MATSOC 
+			(MATNR, SOCIETA, DATA_INS) 
+			VALUES (idocData.MATNR , idocData.BUKRS , CURRENT_TIMESTAMP);
+			
+			SET inserted_soc = inserted_soc + 1;
+		END IF;
+		
+		
+		MOVE idocData NEXTSIBLING NAME 'FlatElem';
+		END WHILE;
+		
+		SET OutputRoot = InputRoot;
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		
+		RETURN TRUE;
+	END;
+	
+END MODULE;

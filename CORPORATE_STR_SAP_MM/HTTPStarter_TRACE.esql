@@ -1,0 +1,94 @@
+
+
+CREATE COMPUTE MODULE HTTPStarter_Trace
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF InputRoot.JSON.Data.Record.result[1].AZIENDA IS NULL THEN
+			CREATE FIELD OutputRoot.XMLNSC.Error.Testo;
+			SET OutputRoot.XMLNSC.Error.Testo = 'Nessun dato da inviare per i parametri inseriti';
+			PROPAGATE TO TERMINAL 'out1';
+			RETURN FALSE;
+		END IF;
+		
+		SET OutputRoot = InputRoot;
+		SET Environment.seq[] = PASSTHRU('SELECT IIB_CORPORATE_STR_SAP_MM_SEQ.NEXTVAL FROM DUAL' TO Database.INT_ENGINE);
+		SET OutputRoot.JSON.Data.IDFlusso = CAST(CAST(Environment.seq.NEXTVAL AS INTEGER) AS CHARACTER);
+		DECLARE idFlusso CHARACTER OutputRoot.JSON.Data.IDFlusso;
+		DECLARE lancioSocieta CHARACTER InputRoot.JSON.Data.Societa;
+		DECLARE dataDa CHARACTER CAST(InputRoot.JSON.Data.DataInizio AS DATE FORMAT 'dd/MM/yyyy');
+		DECLARE dataA CHARACTER CAST(InputRoot.JSON.Data.DataFine AS DATE FORMAT 'dd/MM/yyyy');
+		DECLARE check CHARACTER InputRoot.JSON.Data.Check;
+		DECLARE invio CHARACTER InputRoot.JSON.Data.Invio;
+		DECLARE idEsterno CHARACTER;
+		DECLARE record REFERENCE TO OutputRoot.JSON.Data.Record.result[>];
+		WHILE LASTMOVE(record) = TRUE DO
+			SET idEsterno = 'STR#'||record.AZIENDA||'#'||record.CONTRATTO||'#'||record.COD_LAV||'#'||CAST(record.SAL AS CHARACTER)||'#'||record.CDC||'#'||record.ATTIVITA||'#'||record.COMMESSA||'#'||record.FAMIGLIA||'#'||idFlusso;
+			INSERT INTO Database.IIB_CORPORATE_STR_SAP_MM_TRACE
+			(ID_FLUSSO
+			,AZIENDA
+			,COD_LAV
+			,SAL
+			,CDC_ORIGINE
+			,CDC
+			,ATTIVITA
+			,COMMESSA
+			,FAMIGLIA
+			,CONTRATTO
+			,IMP_CONS
+			,DATA_INVIO_SAP
+			,LANCIO_SOCIETA
+			,LANCIO_DATA_DA
+			,LANCIO_DATA_A
+			,LANCIO_CHECK
+			,LANCIO_INVIO_SAP
+			,ID_ESTERNO
+			 )
+			VALUES 
+			(idFlusso
+			,record.AZIENDA
+			,record.COD_LAV
+			,record.SAL
+			,record.CDC_ORIGINE
+			,record.CDC
+			,record.ATTIVITA
+			,record.COMMESSA
+			,record.FAMIGLIA
+			,record.CONTRATTO
+			,record.IMP_CONS
+			,NULL
+			,lancioSocieta
+			,dataDa
+			,dataA
+			,check
+			,invio
+			,idEsterno
+			);
+			
+			SET record.ID = idEsterno;
+			MOVE record NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+			
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+
+
+CREATE COMPUTE MODULE HTTPStarter_UpdateTrace
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE inCCSID INT InputProperties.CodedCharSetId; 
+		DECLARE inEncoding INT InputProperties.Encoding; 
+		DECLARE inBitStream BLOB ASBITSTREAM(InputRoot.BLOB, inEncoding, inCCSID); 
+		CREATE LASTCHILD OF OutputRoot DOMAIN('XMLNSC') PARSE(inBitStream, inEncoding, inCCSID,'BLOB', 'XMLNSC');
+		FOR record AS OutputRoot.XMLNSC.Result.Info.Oggetti.Record[] DO
+			UPDATE Database.IIB_CORPORATE_STR_SAP_MM_TRACE AS T
+			SET OGGETTO_CONTABILE = record.Oggetto,
+				TIPO_OGGETTO_CONTABILE = record.Tipo
+			WHERE T.ID_ESTERNO = record.ID;
+		END FOR;
+		
+		RETURN FALSE;
+	END;
+END MODULE;

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="ProfileManagement" targetNamespace="http://host.bs.com/common/webservice/ProfileManagement/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://host.bs.com/common/webservice/ProfileManagement/" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:documentation>
+    <wsdl:appinfo source="WMQI_APPINFO">
+      <MRWSDLAppInfo imported="true">
+        <binding hasEncoding="false" imported="true" name="ProfileManagementSOAP" originalBindingStyle="document"/>
+      </MRWSDLAppInfo>
+    </wsdl:appinfo>
+  </wsdl:documentation>
+  
+
+  <wsdl:types>
+    
+          <xsd:schema targetNamespace="http://host.bs.com/common/webservice/ProfileManagement/" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+<!--xsd:complexType name="DataElement"> <xsd:sequence> <xsd:element name="name" 
+				type="xsd:string" minOccurs="1" maxOccurs="1"/> <xsd:element name="type" 
+				maxOccurs="1" minOccurs="0" type="xsd:string" /> <xsd:element name="values" 
+				maxOccurs="1" minOccurs="1"> <xsd:complexType> <xsd:sequence> <xsd:element 
+				name="value" type="xsd:string" minOccurs="0" maxOccurs="unbounded" > </xsd:element> 
+				</xsd:sequence> </xsd:complexType> </xsd:element> </xsd:sequence> </xsd:complexType> 
+				<xsd:complexType name="DataElementList"> <xsd:sequence> <xsd:element name="de" 
+				type="tns:DataElement" minOccurs="0" maxOccurs="unbounded"/> </xsd:sequence> 
+				</xsd:complexType --><xsd:include schemaLocation="ProfileManagement_InlineSchema1.xsd"/>
+    </xsd:schema>
+    </wsdl:types>
+  <wsdl:message name="ExportProfilesResponse">
+    <wsdl:part element="tns:ExportProfilesResponse" name="exportresponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ImportProfilesResponse">
+    <wsdl:part element="tns:ImportProfilesResponse" name="importresponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ExportProfilesPagedResponse">
+    <wsdl:part element="tns:ExportProfilesPagedResponse" name="exportPagedResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ImportProfilesRequest">
+    <wsdl:part element="tns:ImportProfilesRequest" name="importRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ExportProfilesPagedRequest">
+    <wsdl:part element="tns:ExportProfilesPagedRequest" name="exportPagedRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ExportProfilesRequest">
+    <wsdl:part element="tns:ExportProfilesRequest" name="exportRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="ProfileManagement">
+    <wsdl:operation name="ImportProfiles">
+      <wsdl:input message="tns:ImportProfilesRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ImportProfilesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExportProfiles">
+      <wsdl:input message="tns:ExportProfilesRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ExportProfilesResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExportProfilesPaged">
+      <wsdl:input message="tns:ExportProfilesPagedRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:ExportProfilesPagedResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ProfileManagementSOAP" type="tns:ProfileManagement">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="ImportProfiles">
+      <soap:operation soapAction="http://host.bs.com/common/webservice/ProfileManagement/ImportProfiles"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExportProfiles">
+      <soap:operation soapAction="http://host.bs.com/common/webservice/ProfileManagement/ExportProfiles"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExportProfilesPaged">
+      <soap:operation soapAction="http://host.bs.com/common/webservice/ProfileManagement/ExportProfilesPaged"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ProfileManagement">
+    <wsdl:port binding="tns:ProfileManagementSOAP" name="ProfileManagementSOAP">
+      <soap:address location="https://irenprocurement-ws02-prep.bravosolution.com:443/esop/common-host/services/ProfileManagement/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

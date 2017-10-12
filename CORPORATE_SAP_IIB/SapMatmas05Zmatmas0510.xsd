@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata" xmlns:sapmatmas05zmatmas0510="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510" xmlns:sapmatmas05zmatmas0510idocbo="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510idocbo" xmlns:Q1="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2maram008">
+    <xsd:import schemaLocation="SapMatmas05Zmatmas0510E2maram008.xsd" namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2maram008"></xsd:import>
+    <xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510idocbo" schemaLocation="SapMatmas05Zmatmas0510IDocBO.xsd"/>
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata"/>
+
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability">
+<info:resourceAdapter xmlns:info="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability" version="7.5.0.5_IF02"/>
+</xsd:appinfo>
+</xsd:annotation>
+
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="commonj.connector.asi">
+<asi:annotationSet xmlns:asi="commonj.connector.asi" asiNSURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata"/>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:complexType name="SapMatmas05Zmatmas0510">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapALEBusinessObjectTypeMetadata>
+<sapasi:IDocVersion> </sapasi:IDocVersion>
+<sapasi:SplitIDocPacket>true</sapasi:SplitIDocPacket>
+<sapasi:Type>IDOC</sapasi:Type>
+<sapasi:Operation>
+<sapasi:Name>Create</sapasi:Name>
+<sapasi:sapALEOperationMetadata>
+<sapasi:MsgType>ZMATMAS05_01</sapasi:MsgType>
+<sapasi:MsgCode/>
+<sapasi:MsgFunction/>
+</sapasi:sapALEOperationMetadata>
+</sapasi:Operation>
+</sapasi:sapALEBusinessObjectTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+<xsd:sequence maxOccurs="1" minOccurs="1">
+<xsd:element maxOccurs="1" minOccurs="1" name="SAPTransactionID" nillable="true">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:FieldName>SAPTransactionID</sapasi:FieldName>
+<sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
+<sapasi:OffSet>0</sapasi:OffSet>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>25</sapasi:MaxLength>
+<sapasi:ForeignBOKeyRef/>
+</sapasi:sapALEPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+
+<xsd:simpleType>
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="25"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element maxOccurs="1" minOccurs="0" name="qRFCQueueName" nillable="true">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:FieldName>qRFCQueueName</sapasi:FieldName>
+<sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
+<sapasi:OffSet>0</sapasi:OffSet>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>25</sapasi:MaxLength>
+<sapasi:ForeignBOKeyRef/>
+</sapasi:sapALEPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+
+<xsd:simpleType>
+<xsd:restriction base="xsd:string">
+<xsd:maxLength value="25"/>
+</xsd:restriction>
+</xsd:simpleType>
+</xsd:element>
+<xsd:element maxOccurs="unbounded" minOccurs="1" name="SapMatmas05Zmatmas0510IDocBO" nillable="true" type="sapmatmas05zmatmas0510idocbo:SapMatmas05Zmatmas0510IDocBO">
+<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:FieldName>SapMatmas05Zmatmas0510IDocBO</sapasi:FieldName>
+<sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
+<sapasi:OffSet>0</sapasi:OffSet>
+<sapasi:PrimaryKey>false</sapasi:PrimaryKey>
+<sapasi:MaxLength>0</sapasi:MaxLength>
+<sapasi:ForeignBOKeyRef/>
+</sapasi:sapALEPropertyTypeMetadata>
+</xsd:appinfo>
+</xsd:annotation>
+</xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+    <xsd:element ibmSchExtn:docRoot="true" name="SapMatmas05Zmatmas0510" type="sapmatmas05zmatmas0510:SapMatmas05Zmatmas0510"/>
+
+    
+
+
+
+</xsd:schema>

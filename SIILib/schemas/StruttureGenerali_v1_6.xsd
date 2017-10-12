@@ -1,0 +1,1566 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.6" xmlns:sg="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.6">
+  
+  
+  <xsd:element name="Flusso" type="sg:FlussoTypeAbstract"/>
+  <xsd:complexType abstract="true" name="FlussoTypeAbstract"/>
+
+  <xsd:element name="SETTORE" type="sg:SettoreType"/>
+  <xsd:element name="PIVA_VENDITORE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_DISTRIBUTORE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_CONTROPARTE_COMMERCIALE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_GESTORE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_UTENTE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_UTENTE_ENTRANTE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_UTENTE_USCENTE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_UDD" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_RESP_BIL" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="CP_GESTORE" type="sg:ProtocolloSIIType"/>
+  <xsd:element name="CP_DISTRIBUTORE" type="sg:ProtocolloSIIType"/>
+  <xsd:element name="CP_VENDITORE" type="sg:ProtocolloSIIType"/>
+  <xsd:element name="CP_UTENTE" type="sg:ProtocolloSIIType"/>
+  
+  <xsd:element name="DATA_INVIO_RICHIESTA" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_DEC_CONTR" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_RICHIESTA" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_DECORRENZA" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_REVOCA" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_TRASMISSIONE" type="xsd:dateTime"/>
+
+  <xsd:element name="COD_CAUSALE_REVOCA" type="sg:CodCausaleType"/>
+  <xsd:element name="MOTIVAZIONE_REVOCA" type="sg:String255obb"/>
+  <xsd:element name="TIPOLOGIA_RISOLUZIONE" type="sg:TipologiaRisoluzioneType"/>
+
+  <xsd:element name="VERIFICA_AMM" type="sg:EsitoBoolType"/>
+  <xsd:element name="COD_CAUSALE" type="sg:CodCausaleType"/>
+  <xsd:element name="MOTIVAZIONE" type="sg:String255"/>
+
+  <xsd:element name="ESITO" type="sg:EsitoBoolType"/>
+  <xsd:element name="COD_ESITO" type="sg:CodCausaleType"/>
+  <xsd:element name="DETTAGLIO_ESITO" type="sg:String255"/>
+
+  <xsd:element name="CP_GESTORE_ANN" type="sg:ProtocolloSIIType"/>
+  <xsd:element name="CP_UTENTE_ANN" type="sg:ProtocolloSIIType"/>
+  <xsd:element name="NOTE" type="sg:String255obb"/>
+
+  <xsd:element name="CONTRATTO_CONNESSIONE" type="sg:ContrattoConnessioneType"/>
+  
+  <xsd:element name="Fornitura" type="sg:IndirizzoType"/>
+  <xsd:element name="Esazione" type="sg:IndirizzoType"/>
+  <xsd:element name="Indirizzo" type="sg:IndirizzoType"/>
+  <xsd:element name="SedeLegale" type="sg:IndirizzoType"/>
+  <xsd:element name="Residenza" type="sg:DatiResidenzaBaseType"/>
+  <xsd:element name="InformazioneTributi" type="sg:InformazioneTributiType"/>
+  <xsd:element name="AnagraficaFatturazione" type="sg:AnagraficaClienteFinaleSoloDenomType"/>
+  
+  <xsd:element name="TOPONIMO" type="sg:ToponimoType"/>
+  <xsd:element name="VIA" type="sg:ViaType"/>
+  <xsd:element name="CIV" type="sg:CivicoType"/>
+  <xsd:element name="CAP" type="sg:CapType"/>
+  <xsd:element name="ISTAT" type="sg:CodiceComuneIstatType"/>
+  <xsd:element name="COMUNE" type="sg:ComuneType"/>
+  <xsd:element name="LOCALITA" type="sg:LocalitaType"/>
+  <xsd:element name="PROV" type="sg:CodProvinciaType"/>
+  <xsd:element name="NAZIONE" type="sg:NazioneType"/>
+  <xsd:element name="ALTRO" type="sg:String255"/>
+  
+  <xsd:element name="CF" type="sg:CodiceFiscaleType"/>
+  <xsd:element name="PIVA" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="CF_STRANIERO" type="sg:EsitoBoolType"/>
+  <xsd:element name="NOME" type="sg:String255obb"/>
+  <xsd:element name="COGNOME" type="sg:String255obb"/>
+  <xsd:element name="RAGIONE_SOCIALE" type="sg:String255obb"/>
+  <xsd:element name="RAGIONE_SOCIALE_DENOMINAZIONE" type="sg:String255obb"/>
+  <xsd:element name="EMAIL" type="sg:String100obb"/>
+  <xsd:element name="TELEFONO" type="sg:String50obb"/>
+
+  <xsd:element name="ALIQUOTA_IVA" type="sg:String50obb"/>
+  <xsd:element name="ALIQUOTA_ACCISE" type="sg:String50obb"/>
+  <xsd:element name="ADDIZ_PROVINCIALE" type="sg:String50obb"/>
+  <xsd:element name="ADDIZ_COMUNALE" type="sg:String50obb"/>
+  <xsd:element name="ALTRE_INFORMAZIONI" type="sg:String255"/>
+  <xsd:element name="COD_POD" type="sg:CodicePodType"/>
+  <xsd:element name="COD_PDR" type="sg:CodicePdrType"/>
+  <xsd:element name="RESIDENZA" type="sg:String2ObbType"/>
+  <xsd:element name="DATA_VAL_RES" type="sg:GGMMAAAAType"/>
+  <xsd:element name="MERCATO_PROVENIENZA" type="sg:AlfaNum1ObbType"/>
+  <xsd:element name="SETT_MERCEOLOGICO" type="sg:SettMerceolType"/>
+  <xsd:element name="SERVIZIO_TUTELA" type="sg:String2ObbType"/>
+  <xsd:element name="CODICE_UFFICIO" type="sg:String6obb"/>
+  <xsd:element name="PAGAMENTO_IVA" type="sg:String2ObbType"/>
+  
+  <xsd:element name="IvaImposte" type="sg:IvaImposteType"/>
+  <xsd:element name="IVA" type="sg:Decimal_2_2_Type"/>
+  <xsd:element name="IMPOSTE" type="sg:String255obb"/>
+  <xsd:element name="Anagrafica" type="sg:AnagraficaClienteFinaleConDenomTelType"/>
+
+  <xsd:element name="Autolettura" type="sg:AutoletturaType"/>
+  <xsd:element name="DATA_ACQUISIZIONE" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATO_AUTOLETTURA" type="sg:Numeric9"/>
+  <xsd:element name="ACCESSO_FUI" type="sg:String2ObbType"/>
+  <xsd:element name="AGEVOLAZIONI_IVA" type="sg:String2ObbType"/>
+  <xsd:element name="AGEVOLAZIONI_ALTRO" type="sg:String2ObbType"/>
+  <xsd:element name="ALTRE_IMP" type="sg:String255obb"/>
+  <xsd:element name="AGEVOLAZIONE_IVA" type="sg:String255obb"/>
+  <xsd:element name="AGEVOLAZIONE_ALTRE_IMP" type="sg:String255obb"/>
+  
+  <xsd:element name="IDENTIFICATORE_FILE" type="sg:String255obb"/>
+  <xsd:element name="IDENTIFICATORE_FILE_RISPOSTA" type="sg:String255obb"/>
+  <xsd:element name="DIMENSIONE_FILE" type="sg:DimFileKBType"/>
+  <xsd:element name="TIPO_FILE" type="sg:FormatoFileType"/>
+  <xsd:element name="TIPO_DATO" type="sg:TipoDatoType"/>
+  <xsd:element name="DIGEST" type="sg:String100obb"/>
+
+  <xsd:simpleType name="MercatoEnumType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="L"/>
+      <xsd:enumeration value="T"/>
+      <xsd:enumeration value="S"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="AlfaNum1ObbType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Za-z0-9]"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="CodicePodType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{13}.?"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="CodicePdrType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[\da-zA-Z]{14}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="SettoreType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="G"/>
+      <xsd:enumeration value="E"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CodiceComuneIstatType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d{6}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="ToponimoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,29}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="ViaType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,99}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="CivicoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,9}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="ComuneType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,99}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="LocalitaType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,99}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CapType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,9}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="CodProvinciaType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Z]{2}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="NazioneType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{0,99}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="ContrattoConnessioneType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S{2}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="TipologiaRisoluzioneEnumType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CAE1"/>
+      <xsd:enumeration value="CAE2"/>
+      <xsd:enumeration value="CAE3"/>
+      <xsd:enumeration value="CAE4"/>
+      <xsd:enumeration value="CAE5"/>
+      <xsd:enumeration value="CAE6"/>
+      <xsd:enumeration value="CAE7"/>
+      <xsd:enumeration value="CAE8"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="TipologiaRisoluzioneType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S{1,4}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="ResidenzaEnumType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="01"/>
+      <xsd:enumeration value="02"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="String2ObbType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S{1,2}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String3ObbType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S{1,3}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="EsitoBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:ESITO"/>
+      <xsd:element minOccurs="0" ref="sg:COD_ESITO"/>
+      <xsd:element minOccurs="0" ref="sg:DETTAGLIO_ESITO"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AmmissibilitaBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:VERIFICA_AMM"/>
+      <xsd:element minOccurs="0" ref="sg:COD_CAUSALE"/>
+      <xsd:element minOccurs="0" ref="sg:MOTIVAZIONE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Tipo Variazione: N: Nuovo - C: Cessato -->
+  <xsd:simpleType name="TipoVariazioneNCType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="N"/>
+      <xsd:enumeration value="C"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="TipoVariazioneAddDelType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ADD"/>
+      <xsd:enumeration value="DEL"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="PartitaIVAUEType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,15}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CodiceFiscaleType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,15}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="SettMerceolType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,7}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="AAAAMMType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(19|20)\d{2}(0[1-9]|1[012])"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="AAMMType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d{2}(0[1-9]|1[012])"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="MMType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(0[1-9]|1[012])"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="GGType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(0[1-9]|[12][0-9]|3[01])"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="GGMMAAAAType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d{2}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="DateGGMMAAAAType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d{2}(-(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\d{2})*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="ProtocolloSIIType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,15}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="EsitoBoolType">
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+      <xsd:maxInclusive value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CodCausaleType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S{3}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="CodCausaleAnnullamentoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S{1,4}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="DimFileKBType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[1-9]\d{0,8}"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric2">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d?)|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric3">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,2})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric4">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,3})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric5">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,4})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric6">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,5})|0)"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric7">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,6})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric8">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,7})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric9">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,8})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric10">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,9})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric11">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,10})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Numeric12">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,11})|0)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Decimal_2_2_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,1})|0)(\.\d{1,2})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Decimal_6_3_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,5})|0)(\.\d{1,3})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Decimal_7_3_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,6})|0)(\.\d{1,3})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Decimal_8_3_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,7})|0)(\.\d{1,3})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Decimal_9_3_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,8})|0)(\.\d{1,3})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Decimal_10_3_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,9})|0)(\.\d{1,3})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Decimal_11_3_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,10})|0)(\.\d{1,3})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Decimal_12_3_Type">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="(([1-9]\d{0,11})|0)(\.\d{1,3})?"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="FormatoFileType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\w{1,4}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TipoDatoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\w{1,6}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String1">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\w"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String10">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="10"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String10obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,10}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String20">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="20"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String17obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,17}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String20obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,20}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String30">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="30"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String30obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,30}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String50">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="50"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String50obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,50}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String100">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="100"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String100obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,100}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String200">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="200"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String200obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,200}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String255">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="255"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String255obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,255}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String4obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,4}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="String6obb">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value=".{1,6}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <!-- VENDITORE - GESTORE -->
+
+  <xsd:complexType name="IdentificativiRichiestaVenditoreGestoreBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:PIVA_VENDITORE"/>
+      <xsd:element ref="sg:PIVA_GESTORE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaVenditoreCPOpzGestoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaVenditoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_VENDITORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaVenditoreCPOpzGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaVenditoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_VENDITORE"/>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaVenditoreCPGestoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaVenditoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_VENDITORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaVenditoreCPGestoreType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaVenditoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_VENDITORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaVenditoreGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaVenditoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaVenditoreCPGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaVenditoreCPGestoreType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <!-- GESTORE - VENDITORE -->
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreVenditoreBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:PIVA_VENDITORE"/>
+      <xsd:element ref="sg:PIVA_GESTORE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPOpzVenditoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreVenditoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_VENDITORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPOpzVenditoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreVenditoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+          <xsd:element ref="sg:CP_VENDITORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPVenditoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreVenditoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_VENDITORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPVenditoreType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreVenditoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreVenditoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreVenditoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_VENDITORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPVenditoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreCPVenditoreType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_VENDITORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <!-- DISTRIBUTORE - GESTORE -->
+
+  <xsd:complexType name="IdentificativiRichiestaDistributoreGestoreBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:PIVA_DISTRIBUTORE"/>
+      <xsd:element ref="sg:PIVA_GESTORE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaDistributoreCPOpzGestoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaDistributoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_DISTRIBUTORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaDistributoreGestoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaDistributoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaDistributoreCPOpzGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaDistributoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_DISTRIBUTORE"/>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaDistributoreCPGestoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaDistributoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_DISTRIBUTORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaDistributoreCPGestoreType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaDistributoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_DISTRIBUTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaDistributoreGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaDistributoreGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaDistributoreCPGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaDistributoreCPGestoreType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <!-- GESTORE - DISTRIBUTORE -->
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreDistributoreBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:PIVA_DISTRIBUTORE"/>
+      <xsd:element ref="sg:PIVA_GESTORE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPOpzDistributoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreDistributoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_DISTRIBUTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPOpzDistributoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreDistributoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+          <xsd:element ref="sg:CP_DISTRIBUTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPDistributoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreDistributoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_DISTRIBUTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPDistributoreType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreDistributoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreDistributoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreDistributoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_DISTRIBUTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPDistributoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreCPDistributoreType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_DISTRIBUTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <!-- UTENTE - GESTORE -->
+
+  <xsd:complexType name="IdentificativiRichiestaUtenteGestoreBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:PIVA_UTENTE"/>
+      <xsd:element ref="sg:PIVA_GESTORE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaUtenteCPOpzGestoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaUtenteGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_UTENTE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaUtenteCPOpzGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaUtenteGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_UTENTE"/>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaUtenteCPGestoreCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaUtenteGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_UTENTE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaUtenteCPGestoreType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaUtenteGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_UTENTE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaUtenteGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaUtenteGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaUtenteCPGestoreCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaUtenteCPGestoreType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <!-- GESTORE - UTENTE -->
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreUtenteBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:PIVA_GESTORE"/>
+      <xsd:element ref="sg:PIVA_UTENTE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPOpzUtenteCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreUtenteBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_UTENTE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPOpzUtenteCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreUtenteBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_GESTORE"/>
+          <xsd:element ref="sg:CP_UTENTE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPUtenteCPOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreUtenteBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+          <xsd:element minOccurs="0" ref="sg:CP_UTENTE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPUtenteType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreUtenteBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreUtenteCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreUtenteBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_UTENTE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaGestoreCPUtenteCPType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaGestoreCPUtenteType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_UTENTE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- RESP. BIL. -->
+
+  <xsd:complexType name="IdentificativiRichiestaRespBilGestoreBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:PIVA_RESP_BIL"/>
+      <xsd:element ref="sg:PIVA_GESTORE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="IdentificativiRichiestaRespBilGestoreCPBaseType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:IdentificativiRichiestaRespBilGestoreBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:CP_GESTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- CLIENTE FINALE -->
+
+  <xsd:complexType name="ClienteFinaleBaseType">
+    <xsd:sequence>
+      <xsd:element name="Anagrafica" type="sg:AnagraficaClienteFinaleBaseType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleSoloDenomType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Anagrafica" type="sg:AnagraficaClienteFinaleSoloDenomType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleSoloDenomTelType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="Anagrafica" type="sg:AnagraficaClienteFinaleSoloDenomTelType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomType">
+    <xsd:sequence>
+      <xsd:element name="Anagrafica" type="sg:AnagraficaClienteFinaleConDenomType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomTelType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sg:Anagrafica"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomEIndirizziType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:Esazione"/>
+          <xsd:element minOccurs="0" ref="sg:SedeLegale"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomEIndirizziTelType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomTelType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:Esazione"/>
+          <xsd:element minOccurs="0" ref="sg:Indirizzo"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomEIndirizziObbType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomType">
+        <xsd:sequence>
+          <xsd:element ref="sg:Esazione"/>
+          <xsd:element minOccurs="0" ref="sg:Indirizzo"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomEIndirizziObbTelType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomTelType">
+        <xsd:sequence>
+          <xsd:element ref="sg:Esazione"/>
+          <xsd:element minOccurs="0" ref="sg:Indirizzo"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleAnagraficaIndirizziEx1Type">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomEIndirizziObbTelType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:Residenza"/>
+          <xsd:element minOccurs="0" ref="sg:AnagraficaFatturazione"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleFornituraType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomTelType">
+        <xsd:sequence>
+          <xsd:element ref="sg:Fornitura"/>
+          <xsd:element minOccurs="0" ref="sg:Esazione"/>
+          <xsd:element minOccurs="0" ref="sg:Residenza"/>
+          <xsd:element ref="sg:InformazioneTributi"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleTributiType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:InformazioneTributi"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleCompletoType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomTelType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:Residenza"/>
+          <xsd:element minOccurs="0" name="Esazione" type="sg:IndirizzoType"/>
+          <xsd:element minOccurs="0" ref="sg:InformazioneTributi"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleCompletoObbType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomTelType">
+        <xsd:sequence>
+          <xsd:element ref="sg:Residenza"/>
+          <xsd:element name="Esazione" type="sg:IndirizzoType"/>
+          <xsd:element ref="sg:InformazioneTributi"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="BeneficiarioType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleSoloDenomTelType">
+        <xsd:sequence>
+          <xsd:element ref="sg:Indirizzo"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnagraficaClienteFinaleBaseType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sg:CF"/>
+      <xsd:element minOccurs="0" ref="sg:PIVA"/>
+      <xsd:element minOccurs="0" ref="sg:CF_STRANIERO"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnagraficaClienteFinaleSoloDenomType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sg:NOME"/>
+      <xsd:element minOccurs="0" ref="sg:COGNOME"/>
+      <xsd:element minOccurs="0" ref="sg:RAGIONE_SOCIALE_DENOMINAZIONE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnagraficaClienteFinaleSoloDenomTelType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:AnagraficaClienteFinaleSoloDenomType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:TELEFONO"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnagraficaClienteFinaleConDenomType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:AnagraficaClienteFinaleBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:NOME"/>
+          <xsd:element minOccurs="0" ref="sg:COGNOME"/>
+          <xsd:element minOccurs="0" ref="sg:RAGIONE_SOCIALE_DENOMINAZIONE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnagraficaClienteFinaleConDenomTelType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:AnagraficaClienteFinaleConDenomType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:TELEFONO"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="AnagraficaClienteFinaleConRagSocType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:AnagraficaClienteFinaleBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:NOME"/>
+          <xsd:element minOccurs="0" ref="sg:COGNOME"/>
+          <xsd:element minOccurs="0" ref="sg:RAGIONE_SOCIALE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="IndirizzoType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sg:TOPONIMO"/>
+      <xsd:element ref="sg:VIA"/>
+      <xsd:element ref="sg:CIV"/>
+      <xsd:element minOccurs="0" ref="sg:CAP"/>
+      <xsd:element minOccurs="0" ref="sg:ISTAT"/>
+      <xsd:element ref="sg:LOCALITA"/>
+      <xsd:element minOccurs="0" ref="sg:PROV"/>
+      <xsd:element ref="sg:NAZIONE"/>
+      <xsd:element minOccurs="0" ref="sg:ALTRO"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ReferenteClienteFinaleBaseType">
+    <xsd:sequence>
+      <xsd:element name="Anagrafica" type="sg:AnagraficaReferenteClienteFinaleBaseType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnagraficaReferenteClienteFinaleType">
+    <xsd:sequence>
+      <xsd:element name="Anagrafica" type="sg:AnagraficaReferenteClienteFinaleBaseType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnagraficaReferenteClienteFinaleBaseType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sg:NOME"/>
+      <xsd:element minOccurs="0" ref="sg:COGNOME"/>
+      <xsd:element minOccurs="0" ref="sg:EMAIL"/>
+      <xsd:element minOccurs="0" ref="sg:TELEFONO"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomIndirizziTributiType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomEIndirizziType">
+        <xsd:sequence>
+          <xsd:element ref="sg:InformazioneTributi"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomIndirizziTelTributiType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomEIndirizziTelType">
+        <xsd:sequence>
+          <xsd:element ref="sg:InformazioneTributi"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomIndirizziTelTributiOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomEIndirizziTelType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:InformazioneTributi"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ClienteFinaleConDenomIndirizziObbTelTributiType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:ClienteFinaleConDenomEIndirizziObbTelType">
+        <xsd:sequence>
+          <xsd:element ref="sg:InformazioneTributi"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="InformazioneTributiType">
+    <xsd:sequence>
+      <xsd:element ref="sg:ALIQUOTA_IVA"/>
+      <xsd:element ref="sg:ALIQUOTA_ACCISE"/>
+      <xsd:element ref="sg:ADDIZ_PROVINCIALE"/>
+      <xsd:element ref="sg:ADDIZ_COMUNALE"/>
+      <xsd:element minOccurs="0" ref="sg:ALTRE_INFORMAZIONI"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiAttivazioneBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:DATA_DECORRENZA"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiAttivazioneBaseUtenteType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:DatiAttivazioneBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:PIVA_UTENTE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiRichiestaBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:DATA_RICHIESTA"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiResidenzaBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:RESIDENZA"/>
+      <xsd:element minOccurs="0" ref="sg:DATA_VAL_RES"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiRisoluzioneContrattualeBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:DATA_DECORRENZA"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiRisoluzioneContrattualeTipologiaType">
+    <xsd:sequence>
+      <xsd:element ref="sg:TIPOLOGIA_RISOLUZIONE"/>
+      <xsd:element minOccurs="0" ref="sg:DATA_DECORRENZA"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AutocertificazioniBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:CONTRATTO_CONNESSIONE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiCommercialiType">
+    <xsd:sequence>
+      <xsd:element ref="sg:SERVIZIO_TUTELA"/>
+      <xsd:element minOccurs="0" ref="sg:CODICE_UFFICIO"/>
+      <xsd:element minOccurs="0" ref="sg:PAGAMENTO_IVA"/>
+      <xsd:element minOccurs="0" ref="sg:SETT_MERCEOLOGICO"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+
+  <xsd:complexType name="DefaultEsitoType">
+    <xsd:sequence>
+      <xsd:element name="Esito" type="sg:EsitoBoolType"/>
+      <xsd:element minOccurs="0" name="CodCausale" type="sg:CodCausaleType"/>
+      <xsd:element minOccurs="0" name="Motivazione" type="sg:String255"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnnullamentoDatiPraticaBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:CP_GESTORE_ANN"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnnullamentoDatiPraticaType">
+    <xsd:complexContent>
+      <xsd:extension base="sg:AnnullamentoDatiPraticaBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:CP_UTENTE_ANN"/>
+          <xsd:element ref="sg:SETTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiAnnullamentoPraticaType">
+    <xsd:sequence>
+      <xsd:element name="COD_CAUSALE" type="sg:CodCausaleAnnullamentoType"/>
+      <xsd:element name="MOTIVAZIONE" type="sg:String255obb"/>
+      <xsd:element minOccurs="0" ref="sg:NOTE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiTecniciMinimaliType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sg:COD_POD"/>
+      <xsd:element minOccurs="0" ref="sg:COD_PDR"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiTecniciBaseType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sg:SETTORE"/>
+      <xsd:element minOccurs="0" ref="sg:COD_POD"/>
+      <xsd:element minOccurs="0" ref="sg:COD_PDR"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiTecniciBaseEl">
+    <xsd:sequence>
+      <xsd:element fixed="E" name="SETTORE" type="sg:SettoreType"/>
+      <xsd:element ref="sg:COD_POD"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiTecniciBaseGas">
+    <xsd:sequence>
+      <xsd:element fixed="G" name="SETTORE" type="sg:SettoreType"/>
+      <xsd:element ref="sg:COD_PDR"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="IvaImposteType">
+    <xsd:sequence>
+      <xsd:element ref="sg:IVA"/>
+      <xsd:element minOccurs="0" ref="sg:IMPOSTE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AutoletturaType">
+    <xsd:sequence>
+      <xsd:element ref="sg:DATA_ACQUISIZIONE"/>
+      <xsd:element ref="sg:DATO_AUTOLETTURA"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="InformazioniFuiType">
+    <xsd:sequence>
+      <xsd:element ref="sg:ACCESSO_FUI"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AgevolazioniFiscaliBaseType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sg:AGEVOLAZIONE_IVA"/>
+      <xsd:element minOccurs="0" ref="sg:AGEVOLAZIONE_ALTRE_IMP"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AgevolazioniFiscaliType">
+    <xsd:sequence>
+      <xsd:element ref="sg:AGEVOLAZIONI_IVA"/>
+      <xsd:element minOccurs="0" name="IVA" type="sg:String255obb"/>
+      <xsd:element ref="sg:AGEVOLAZIONI_ALTRO"/>
+      <xsd:element minOccurs="0" ref="sg:ALTRE_IMP"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiFileBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:IDENTIFICATORE_FILE"/>
+      <xsd:element ref="sg:DIMENSIONE_FILE"/>
+      <xsd:element ref="sg:TIPO_FILE"/>
+      <xsd:element ref="sg:DIGEST"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="EsitoFileBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:IDENTIFICATORE_FILE"/>
+      <xsd:element ref="sg:TIPO_DATO"/>
+      <xsd:element minOccurs="0" ref="sg:DATA_TRASMISSIONE"/>
+      <xsd:element ref="sg:DIGEST"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiTipoFileBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:TIPO_DATO"/>
+      <xsd:element ref="sg:IDENTIFICATORE_FILE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiTipoFileRespBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:TIPO_DATO"/>
+      <xsd:element ref="sg:IDENTIFICATORE_FILE_RISPOSTA"/>
+      <xsd:element ref="sg:IDENTIFICATORE_FILE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiTrasmissionePortaleBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sg:DATA_TRASMISSIONE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ******************** INFRASTRUTTURA SII ******************** -->
+
+  <xsd:complexType name="DatiPraticaType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="IdOperatore" type="xsd:integer"/>
+      <xsd:element minOccurs="0" name="DataRicezioneRichiesta" type="xsd:dateTime"/>
+      <xsd:element name="IdPratica" type="xsd:integer"/>
+      <xsd:element minOccurs="0" name="IdProtocollo" type="sg:ProtocolloSIIType"/>
+      <xsd:element minOccurs="0" name="EsitoAmm" type="sg:EsitoBoolType"/>
+      <xsd:element minOccurs="0" name="CodicePod" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="UrlAnnull" type="sg:String255"/>
+      <xsd:element minOccurs="0" name="CanaleWeb" type="sg:EsitoBoolType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiWorkflowType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" name="UriPdc" type="xsd:string"/>
+      <xsd:element minOccurs="0" name="IdPdc" type="xsd:integer"/>
+      <xsd:element name="Versione" type="xsd:integer"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

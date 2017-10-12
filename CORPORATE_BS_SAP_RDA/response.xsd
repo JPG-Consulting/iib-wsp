@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="www.gruppoiren.it/schemas" xmlns:NS1="www.gruppoiren.it/schemas">
+    <xsd:element name="Response">
+   
+     <xsd:complexType>
+       
+       <xsd:sequence>
+        <xsd:element ref="NS1:return"/>
+       </xsd:sequence>
+     </xsd:complexType>
+    </xsd:element>
+
+
+    <xsd:element name="return">
+    	<xsd:complexType>
+       			<xsd:sequence>
+       				<xsd:element maxOccurs="1" minOccurs="0" ref="NS1:codice"/>
+       				<xsd:element maxOccurs="1" minOccurs="0" ref="NS1:descrizione"/>
+       			</xsd:sequence>
+    	</xsd:complexType>
+       	</xsd:element>
+
+
+    <xsd:element name="codice" type="xsd:string"/>
+
+    <xsd:element name="descrizione" type="xsd:string"/>
+</xsd:schema>

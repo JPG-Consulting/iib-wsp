@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/BlobMessage.xsd" var="var"/>
+    <input path="db:database(/IGE.dbm,I1,db:schema-tables(GLCAE,EXT_SAP_FLUSSO))" var="I14"/>
+    <input path="db:database(/IGE.dbm,I1,db:schema-tables(GLCAE,EXT_SAP_TESTATA))" var="I1"/>
+    <input path="db:database(/IGE.dbm,I1,db:schema-tables(GLCAE,EXT_SAP_RIGHE_IVA))" var="I12"/>
+    <input path="db:database(/IGE.dbm,I1,db:schema-tables(GLCAE,EXT_SAP_RIGHE_COGE))" var="I13"/>
+    <output path="/lancio.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/schemas"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="Contabilita_getLanci_I1">
+        <input path="$var/mb:msg(BLOB,assembly,BLOB,LocalEnvironment,Properties)" var="MessageAssembly"/>
+        <input path="$I14/db:select(fn:false(),ResultSet(GLCAE/EXT_SAP_FLUSSO/SOC,GLCAE/EXT_SAP_FLUSSO/SOC_SAP,GLCAE/EXT_SAP_FLUSSO/DATA_FLUSSO,GLCAE/EXT_SAP_FLUSSO/ID_LANCIO,GLCAE/EXT_SAP_FLUSSO/TIPO_FLUSSO,GLCAE/EXT_SAP_FLUSSO/ELABORATO,GLCAE/EXT_SAP_FLUSSO/COD_ELAB,GLCAE/EXT_SAP_FLUSSO/DESCR_ELAB,GLCAE/EXT_SAP_FLUSSO/DATA_ELAB,GLCAE/EXT_SAP_FLUSSO/ID_ESTERNO),db:where('ELABORATO IS NULL ORDER BY ID_LANCIO'))" var="dbselect"/>
+        <output namespace="http://www.gruppoiren.it/schemas" path="mb:msg(lanci,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly1/Properties"/>
+        </move>
+        <select ref="dbselect">
+            <input path="$dbselect/ResultSet"/>
+            <output path="$MessageAssembly1/lanci"/>
+            <foreach>
+                <input path="." var="ResultSet2"/>
+                <input path="$I1/db:select(fn:false(),ResultSet(GLCAE/EXT_SAP_TESTATA/ID_LANCIO,GLCAE/EXT_SAP_TESTATA/TIPO_FLUSSO,GLCAE/EXT_SAP_TESTATA/PROGR,GLCAE/EXT_SAP_TESTATA/ANNO,GLCAE/EXT_SAP_TESTATA/TIPO_DOC,GLCAE/EXT_SAP_TESTATA/DATA_EMISS,GLCAE/EXT_SAP_TESTATA/DATA_REG,GLCAE/EXT_SAP_TESTATA/PROVENIENZA,GLCAE/EXT_SAP_TESTATA/INTERCOMPANY,GLCAE/EXT_SAP_TESTATA/NUM_DOC,GLCAE/EXT_SAP_TESTATA/DATA_DOC,GLCAE/EXT_SAP_TESTATA/TIPO_PAG,GLCAE/EXT_SAP_TESTATA/DATA_SCAD,GLCAE/EXT_SAP_TESTATA/COD_CLIENTE,GLCAE/EXT_SAP_TESTATA/TOTALE_FATTURA,GLCAE/EXT_SAP_TESTATA/DESCR_TESTATA,GLCAE/EXT_SAP_TESTATA/COD_ELAB,GLCAE/EXT_SAP_TESTATA/DESCR_ELAB,GLCAE/EXT_SAP_TESTATA/DATA_ELAB,GLCAE/EXT_SAP_TESTATA/ID_ESTERNO,GLCAE/EXT_SAP_TESTATA/ELAB,GLCAE/EXT_SAP_TESTATA/RA_TIPO,GLCAE/EXT_SAP_TESTATA/RA_CODICE,GLCAE/EXT_SAP_TESTATA/RA_IMPORTO,GLCAE/EXT_SAP_TESTATA/RA_IMPONIBILE),db:where('GLCAE.EXT_SAP_TESTATA.ID_LANCIO =  ? AND GLCAE.EXT_SAP_TESTATA.TIPO_FLUSSO =  ?1 ORDER BY GLCAE.EXT_SAP_TESTATA.PROGR','?1'=$ResultSet2/GLCAE/EXT_SAP_FLUSSO/TIPO_FLUSSO,'?'=$ResultSet2/GLCAE/EXT_SAP_FLUSSO/ID_LANCIO))" var="dbselect1"/>
+                <output path="lancio"/>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/SOC"/>
+                    <output path="soc"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/SOC_SAP"/>
+                    <output path="soc_sap"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/DATA_FLUSSO"/>
+                    <output path="data_flusso"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/ID_LANCIO"/>
+                    <output path="id_lancio"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/TIPO_FLUSSO"/>
+                    <output path="tipo_flusso"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/ELABORATO"/>
+                    <output path="elaborato"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/COD_ELAB"/>
+                    <output path="cod_elab"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/DESCR_ELAB"/>
+                    <output path="descr_elab"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/DATA_ELAB"/>
+                    <output path="data_elab"/>
+                </move>
+                <move>
+                    <input path="$ResultSet2/GLCAE/EXT_SAP_FLUSSO/ID_ESTERNO"/>
+                    <output path="id_esterno"/>
+                </move>
+                <select ref="dbselect1">
+                    <input path="$dbselect1/ResultSet"/>
+                    <output path="testata"/>
+                    <foreach>
+                        <input path="." var="ResultSet"/>
+                        <input path="$I12/db:select(fn:false(),ResultSet(GLCAE/EXT_SAP_RIGHE_IVA/ID_LANCIO,GLCAE/EXT_SAP_RIGHE_IVA/TIPO_FLUSSO,GLCAE/EXT_SAP_RIGHE_IVA/PROGR,GLCAE/EXT_SAP_RIGHE_IVA/CHIAVE_CONT,GLCAE/EXT_SAP_RIGHE_IVA/CODICE_IVA,GLCAE/EXT_SAP_RIGHE_IVA/IMPONIBILE,GLCAE/EXT_SAP_RIGHE_IVA/IMPOSTA,GLCAE/EXT_SAP_RIGHE_IVA/PROGR_RIGA),db:where('GLCAE.EXT_SAP_RIGHE_IVA.ID_LANCIO =  ? AND GLCAE.EXT_SAP_RIGHE_IVA.TIPO_FLUSSO =  ?1 AND GLCAE.EXT_SAP_RIGHE_IVA.PROGR =  ?2 ORDER BY GLCAE.EXT_SAP_RIGHE_IVA.PROGR_RIGA','?1'=$ResultSet/GLCAE/EXT_SAP_TESTATA/TIPO_FLUSSO,'?2'=$ResultSet/GLCAE/EXT_SAP_TESTATA/PROGR,'?'=$ResultSet/GLCAE/EXT_SAP_TESTATA/ID_LANCIO))" var="dbselect3"/>
+                        <input path="$I13/db:select(fn:false(),ResultSet(GLCAE/EXT_SAP_RIGHE_COGE/ID_LANCIO,GLCAE/EXT_SAP_RIGHE_COGE/TIPO_FLUSSO,GLCAE/EXT_SAP_RIGHE_COGE/PROGR,GLCAE/EXT_SAP_RIGHE_COGE/CHIAVE_CONT,GLCAE/EXT_SAP_RIGHE_COGE/CONTO_COGE,GLCAE/EXT_SAP_RIGHE_COGE/CENTRO_COSTO,GLCAE/EXT_SAP_RIGHE_COGE/ORDINE_INTERNO,GLCAE/EXT_SAP_RIGHE_COGE/WBS,GLCAE/EXT_SAP_RIGHE_COGE/PROFIT_CENTER,GLCAE/EXT_SAP_RIGHE_COGE/SETTORE_CONT,GLCAE/EXT_SAP_RIGHE_COGE/IMPORTO,GLCAE/EXT_SAP_RIGHE_COGE/CODICE_IVA,GLCAE/EXT_SAP_RIGHE_COGE/DETT_RIGA,GLCAE/EXT_SAP_RIGHE_COGE/INTERCOMPANY,GLCAE/EXT_SAP_RIGHE_COGE/ATTRIBUZIONE,GLCAE/EXT_SAP_RIGHE_COGE/DATA_SCAD,GLCAE/EXT_SAP_RIGHE_COGE/DATA_VALUTA,GLCAE/EXT_SAP_RIGHE_COGE/ELAB,GLCAE/EXT_SAP_RIGHE_COGE/PROGR_RIGA),db:where('GLCAE.EXT_SAP_RIGHE_COGE.ID_LANCIO =  ? AND GLCAE.EXT_SAP_RIGHE_COGE.TIPO_FLUSSO =  ?1 AND GLCAE.EXT_SAP_RIGHE_COGE.PROGR =  ?2 ORDER BY GLCAE.EXT_SAP_RIGHE_COGE.PROGR_RIGA','?1'=$ResultSet/GLCAE/EXT_SAP_TESTATA/TIPO_FLUSSO,'?2'=$ResultSet/GLCAE/EXT_SAP_TESTATA/PROGR,'?'=$ResultSet/GLCAE/EXT_SAP_TESTATA/ID_LANCIO))" var="dbselect2"/>
+                        <output path="."/>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/ID_LANCIO"/>
+                            <output path="id_lancio"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/TIPO_FLUSSO"/>
+                            <output path="tipo_flusso"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/PROGR"/>
+                            <output path="progr"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/ANNO"/>
+                            <output path="anno"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/TIPO_DOC"/>
+                            <output path="tipo_doc"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/DATA_EMISS"/>
+                            <output path="data_emiss"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/DATA_REG"/>
+                            <output path="data_reg"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/PROVENIENZA"/>
+                            <output path="provenienza"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/INTERCOMPANY"/>
+                            <output path="intercompany"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/NUM_DOC"/>
+                            <output path="num_doc"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/DATA_DOC"/>
+                            <output path="data_doc"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/TIPO_PAG"/>
+                            <output path="tipo_pag"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/DATA_SCAD"/>
+                            <output path="data_scad"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/COD_CLIENTE"/>
+                            <output path="cod_cliente"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/TOTALE_FATTURA"/>
+                            <output path="tot_fattura"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/DESCR_TESTATA"/>
+                            <output path="descr_testata"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/COD_ELAB"/>
+                            <output path="cod_elab"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/DESCR_ELAB"/>
+                            <output path="descr_elab"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/DATA_ELAB"/>
+                            <output path="data_elab"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/ID_ESTERNO"/>
+                            <output path="id_esterno"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/ELAB"/>
+                            <output path="elab"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/RA_TIPO"/>
+                            <output path="ra_tipo"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/RA_CODICE"/>
+                            <output path="ra_codice"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/RA_IMPORTO"/>
+                            <output path="ra_importo"/>
+                        </move>
+                        <move>
+                            <input path="$ResultSet/GLCAE/EXT_SAP_TESTATA/RA_IMPONIBILE"/>
+                            <output path="ra_imponibile"/>
+                        </move>
+                        <select ref="dbselect3">
+                            <input path="$dbselect3/ResultSet"/>
+                            <output path="rigaIva"/>
+                            <foreach>
+                                <input path="."/>
+                                <output path="."/>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_IVA/ID_LANCIO"/>
+                                    <output path="id_lancio"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_IVA/TIPO_FLUSSO"/>
+                                    <output path="tipo_flusso"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_IVA/PROGR"/>
+                                    <output path="progr"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_IVA/CHIAVE_CONT"/>
+                                    <output path="chiave_cont"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_IVA/CODICE_IVA"/>
+                                    <output path="codice_iva"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_IVA/IMPONIBILE"/>
+                                    <output path="imponibile"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_IVA/IMPOSTA"/>
+                                    <output path="imposta"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_IVA/PROGR_RIGA"/>
+                                    <output path="progr_riga"/>
+                                </move>
+                            </foreach>
+                        </select>
+                        <select ref="dbselect2">
+                            <input path="$dbselect2/ResultSet"/>
+                            <output path="rigaCoge"/>
+                            <foreach>
+                                <input path="."/>
+                                <output path="."/>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/ID_LANCIO"/>
+                                    <output path="id_lancio"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/TIPO_FLUSSO"/>
+                                    <output path="tipo_flusso"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/PROGR"/>
+                                    <output path="progr"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/CHIAVE_CONT"/>
+                                    <output path="chiave_cont"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/CONTO_COGE"/>
+                                    <output path="conto_coge"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/CENTRO_COSTO"/>
+                                    <output path="centro_costo"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/ORDINE_INTERNO"/>
+                                    <output path="ordine_interno"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/WBS"/>
+                                    <output path="wbs"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/PROFIT_CENTER"/>
+                                    <output path="profit_center"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/SETTORE_CONT"/>
+                                    <output path="settore_cont"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/IMPORTO"/>
+                                    <output path="importo"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/CODICE_IVA"/>
+                                    <output path="codice_iva"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/DETT_RIGA"/>
+                                    <output path="dett_riga"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/INTERCOMPANY"/>
+                                    <output path="intercompany"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/ATTRIBUZIONE"/>
+                                    <output path="attribuzione"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/DATA_SCAD"/>
+                                    <output path="data_scad"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/DATA_VALUTA"/>
+                                    <output path="data_valuta"/>
+                                </move>
+                                <move>
+                                    <input path="GLCAE/EXT_SAP_RIGHE_COGE/PROGR_RIGA"/>
+                                    <output path="progr_riga"/>
+                                </move>
+                            </foreach>
+                        </select>
+                    </foreach>
+                </select>
+            </foreach>
+        </select>
+    </mappingDeclaration>
+</mappingRoot>

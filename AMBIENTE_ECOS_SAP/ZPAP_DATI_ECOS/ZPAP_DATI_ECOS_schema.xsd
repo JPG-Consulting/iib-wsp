@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/ZPAP_DATI_ECOS_schema" xmlns:tns="http://www.example.org/ZPAP_DATI_ECOS_schema" elementFormDefault="qualified">
+
+    <element name="zpap_dati_ecos">
+    	<complexType>
+    		<sequence>
+    			<element name="MANDT" type="string"></element>
+    			<element name="TIPO_RECORD" type="string"></element>
+    			<element name="CITY_CODE" type="string"></element>
+    			<element name="PARTNER" type="string"></element>
+    			<element name="VERTRAG" type="string"></element>
+    			<element name="ANLAGE" type="string"></element>
+    			<element name="CONTENITORE" type="string"></element>
+    			<element name="DATA_INIZIO_IRF" type="string"></element>
+    			<element name="DATA_FINE_IRF" type="string"></element>
+    			<element name="TIPO_CONTENITORE" type="string"></element>
+    			<element name="CAPACITA_CONTENITORE" type="string"></element>
+    			<element name="CODICE_RIFIUTO" type="string"></element>
+    			<element name="DATA_CONSEGNA" type="string"></element>
+    			<element name="DATA_RITIRO" type="string"></element>
+    			<element name="INDICE_RIP" type="string"></element>
+    			<element name="NUMERO_SVUOTAMENTI" type="string"></element>
+    			<element name="DATA_IMPORTAZIONE" type="string"></element>
+    			<element name="UTENTE_IMPORTAZIONE" type="string"></element>
+    			<element name="NOME_FILE_IMPORTAZIONE" type="string"></element>
+    			<element name="ANOMALIA_CARICAMENTO" type="string"></element>
+    			<element name="DATA_CARICAMENTO" type="string"></element>
+    			<element name="UTENTE_CARICAMENTO" type="string"></element>
+    			<element name="BELNR_WU" type="string"></element>
+    			<element name="DTWU" type="string"></element>
+    			<element name="HHWU" type="string"></element>
+    			<element name="ANOMALIA_WU" type="string"></element>
+    		</sequence>
+    	</complexType></element>
+</schema>

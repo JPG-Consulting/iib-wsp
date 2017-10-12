@@ -1,0 +1,84 @@
+
+
+CREATE COMPUTE MODULE mappingRC10100
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE esito CHARACTER;
+		DECLARE fileName CHARACTER;
+		DECLARE seq CHARACTER;
+				
+		
+		--SET OutputRoot.SOAP.Body.ns12:SendRequestEEResponse.outboundResponse.ammissibilita.esito = esito;
+		IF (InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.esito = 0 OR InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.esito = 2) THEN
+			SET esito = 0;
+		ELSE 
+			IF (InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.esito = 1) THEN
+			SET esito = 1;
+			END IF;
+		END IF;
+
+		
+		SET Environment.SQLBox[] = PASSTHRU('SELECT THOR_APP.SEQ_FILENETA.NEXTVAL FROM DUAL');
+		SET seq = CAST ( CAST (Environment.SQLBox.NEXTVAL AS INTEGER) AS CHARACTER);
+		SET Environment.codicePraticaHub =  InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePratica;
+		
+		SET fileName = InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.servizio || '_0100_' || InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePratica || '_' || seq || '_EE.xml';
+		
+		IF InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePratica IS NULL THEN
+			SET fileName = InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.servizio || '_0100_' || Environment.codicePratica || '_' || seq || '_EE.xml';
+		END IF;
+		
+		SET OutputLocalEnvironment.Destination.File.Name = fileName;
+		SET OutputLocalEnvironment.Destination.File.Directory = '/ibmdata/WINSHARE/NETA/SII/INBOUND/SCHEDULER_RX';
+		
+		DECLARE cp_utente CHARACTER InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePraticaOrigine;
+		DECLARE cp_gestore CHARACTER InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.codicePratica;
+		DECLARE pod CHARACTER InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.pod;		
+		
+		CREATE FIELD OutputRoot.XMLNS.decl TYPE XML.XmlDecl;
+        SET OutputRoot.XMLNS.decl.(XML.Version)version = '1.0';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".(XML.NamespaceDecl)xmlns:"xsi" = 'http://www.w3.org/2001/XMLSchema-instance';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".(XML.NamespaceDecl)xmlns:"xsd" = 'http://www.w3.org/2001/XMLSchema';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".(XML.Attribute)COD_FLUSSO = '0100';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".(XML.Attribute)COD_SERVIZIO = InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.tracking.servizio;
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/Flussi_RC1/v1';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".(XML.NamespaceDecl)xmlns:"n1" = 'http://www.acquirenteunico.it/schemas/SII_AU/Flussi_RC1/v1';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".(XML.Attribute)xsi:"type" = 'n1:FlussoRC1.0100Type';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:PIVA_UTENTE.(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:PIVA_UTENTE = '01178580997';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:PIVA_GESTORE.(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:PIVA_GESTORE = '05877611003';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:CP_UTENTE.(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:CP_UTENTE = cp_utente;
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:CP_GESTORE.(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:CP_GESTORE = cp_gestore;
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:DatiTecnici.ns23:COD_POD.(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:DatiTecnici.ns23:COD_POD = pod;
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:VERIFICA_AMM.(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5';
+		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:VERIFICA_AMM = esito;			
+		IF esito <> 1 THEN
+		    DECLARE causale CHARACTER InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.causale;
+		    DECLARE motivazione CHARACTER InputRoot.SOAP.Body.ns1:WSHubCrmInbound.inboundRequest.ammissibilita.motivazione;	
+			SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:COD_CAUSALE.(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5';
+			SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:COD_CAUSALE = causale;
+			IF causale = 'T102' THEN
+				SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:COD_CAUSALE = '994';
+			ELSE
+			 IF causale = 'T109' THEN
+				SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:COD_CAUSALE = '004';
+			  ELSE					
+			  	IF STARTSWITH(causale,'T') then
+			  		SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:COD_CAUSALE = '004';
+			  	ELSE	
+			  	    SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:COD_CAUSALE = causale;
+			  	END IF;		 
+			 END IF;	
+			END IF;
+			SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:MOTIVAZIONE.(XML.NamespaceDecl)xmlns = 'http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5';
+			SET OutputRoot.XMLNS.ns3:"FlussoRC1.0100Type".ns3:Ammissibilita.ns20:MOTIVAZIONE = motivazione;
+		END IF;
+				
+		RETURN TRUE;
+	END;
+
+END MODULE;

@@ -1,0 +1,12 @@
+
+
+Importing file: /home/daniele/IBM/IIBT10-config/10.0.0.8/configuration/org.eclipse.osgi/bundles/379/1/.cp/ibm/broker/mime/mime_multipart.xsd
+
+
+Elapsed time processing this message definition file: 0.065 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

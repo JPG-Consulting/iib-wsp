@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="mbsharedlib://SIILib/APR.xsd" var="var1"/>
+    <input path="mbsharedlib://OutboundLib/HUB_CRM_EE_WSHubCrmEE_InlineSchema1.xsd" var="var"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+        <namespace kind="supplement" prefix="io2" uri="http://HUB_CRM_EE/IHubCrmEE"/>
+        <namespace kind="supplement" prefix="io" uri="http://HUB_CRM_EE/crm_dati"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="apr0050_sendRequestEE">
+        <input namespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1" path="$var1/mb:msg(FlussoAPR.0050Type,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_FlussoAPR0050Type"/>
+        <output path="mb:msg(SOAP_Domain_Msg,assembly,SOAP,Properties)" var="ComIbmMessageAssembly_SOAP_Domain_Msg">
+            <cast path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/any" qualifier="{http://HUB_CRM_EE/IHubCrmEE}SendRequestEE" ref="var"/>
+        </output>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0050Type/Properties"/>
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/Properties"/>
+        </move>
+        <assign value="IREN">
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/tracking/societaVendita"/>
+        </assign>
+        <assign value="NETA">
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/tracking/sistemaFatturazione"/>
+        </assign>
+        <assign value="NETA">
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/tracking/sistemaOrigine"/>
+        </assign>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0050Type/FlussoAPR.0050Type/IdentificativiRichiesta/CP_UTENTE"/>
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/tracking/codicePraticaOrigine"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0050Type/FlussoAPR.0050Type/DatiTecnici/COD_POD"/>
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/pod"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0050Type/FlussoAPR.0050Type/DatiAnnullamento/NOTE"/>
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/note"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0050Type/FlussoAPR.0050Type/DatiAnnullamento/COD_CAUSALE"/>
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/annullamento/causale"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0050Type/FlussoAPR.0050Type/DatiAnnullamento/MOTIVAZIONE"/>
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/annullamento/motivazione"/>
+        </move>
+        <assign value="CRM-O-ANL">
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/tracking/codiceFlusso"/>
+        </assign>
+        <assign value="APR">
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/tracking/servizio"/>
+        </assign>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0050Type/FlussoAPR.0050Type/DatiPratica/CP_GESTORE_ANN"/>
+            <output path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEE/outboundRequest/tracking/codicePratica"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

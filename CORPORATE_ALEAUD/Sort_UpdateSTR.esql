@@ -1,0 +1,55 @@
+
+CREATE COMPUTE MODULE Sort_UpdateSTR
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE chiave CHARACTER InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIdocControl.ARCKEY;
+		DECLARE esito CHARACTER;
+		DECLARE flag CHARACTER;
+		DECLARE azienda CHARACTER;
+		DECLARE codLav CHARACTER;
+		DECLARE sal CHARACTER;
+		DECLARE cdc CHARACTER;
+		DECLARE attivita CHARACTER;
+		DECLARE contratto CHARACTER;
+		DECLARE commessa CHARACTER;
+		DECLARE famiglia CHARACTER;
+		SET azienda = SUBSTRING(chiave AFTER 'STR#' FOR 2);
+		--SET azienda = SUBSTRING(chiave BEFORE '#');
+		SET chiave = SUBSTRING(chiave FROM 8);
+		--SET chiave = SUBSTRING(chiave FROM 4);
+		SET contratto = SUBSTRING(chiave BEFORE '#');
+		SET chiave = SUBSTRING(chiave AFTER '#');
+		SET codLav = SUBSTRING(chiave BEFORE '#');
+		SET chiave = SUBSTRING(chiave AFTER '#');
+		SET sal = SUBSTRING(chiave BEFORE '#');
+		SET chiave = SUBSTRING(chiave AFTER '#');
+		SET cdc = SUBSTRING(chiave BEFORE '#');
+		SET chiave = SUBSTRING(chiave AFTER '#');
+		SET attivita = SUBSTRING(chiave BEFORE '#');
+		SET chiave = SUBSTRING(chiave AFTER '#');
+		SET commessa = SUBSTRING(chiave BEFORE '#');
+		SET chiave = SUBSTRING(chiave AFTER '#');
+		SET famiglia = SUBSTRING(chiave BEFORE '#');
+		IF InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIdocControl.STATUS = '53' THEN
+			SET esito = 'OK';
+			SET flag = '1';
+		ELSE
+			SET esito = 'KO';
+			SET flag = '2';
+		END IF;
+		
+		UPDATE Database.STR_CONTAB_CONS_FORM AS T
+		SET FL_ACQ = flag
+		WHERE T.AZIENDA = azienda
+		AND   T.CONTRATTO = contratto
+		AND   T.COD_LAV = codLav
+		AND   T.SAL = sal
+		AND   T.CDC = cdc
+		AND   T.ATTIVITA = attivita
+		AND   T.COMMESSA = commessa
+		AND   T.FAMIGLIA = famiglia;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;

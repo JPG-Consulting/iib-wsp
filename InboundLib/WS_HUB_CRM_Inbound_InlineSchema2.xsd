@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:Q1="http://HUB_CRM_EE/crm_dati" xmlns:bons1="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://WS_HUB_CRM_Inbound" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema7.xsd"/>
+    <xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema5.xsd"/>
+    <xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema6.xsd"/>
+    <xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema3.xsd"/>
+    <xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema4.xsd"/>
+    <xsd:complexType name="InboundRequest">
+        <xsd:sequence>
+          <xsd:element name="tracking" type="Q1:Tracking"/>
+          <xsd:element name="ammissibilita" type="Q1:Ammissibilita"/>
+          <xsd:element name="esito" type="Q1:Esito"/>
+          <xsd:element name="dataEsecuzione" type="xsd:string"/>
+          <xsd:element name="note" type="xsd:string"/>
+          <xsd:element name="dataDecorrenza" type="xsd:string"/>
+          <xsd:element name="pod" type="xsd:string"/>
+          <xsd:element name="codiceAuthorityDL" type="xsd:string"/>
+          <xsd:element name="canaleComunicazione" type="xsd:string"/>
+          <xsd:element name="anagraficaCliente" type="Q1:Cliente"/>
+          <xsd:element name="timoe" type="Q1:Timoe"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>

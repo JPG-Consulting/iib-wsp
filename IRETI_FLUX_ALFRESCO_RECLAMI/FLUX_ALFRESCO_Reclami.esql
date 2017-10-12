@@ -1,0 +1,131 @@
+
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_Reclami
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE var CHARACTER;
+		DECLARE nota REFERENCE TO Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:note.ns:nota;
+		
+		SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.SOCIETA = 'AEMD';
+		
+
+		SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NOMINATIVO = COALESCE(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:mittenti.ns:"mittente-esterno".ns:denominazione, 'X');
+		SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.INDIRIZZO = COALESCE(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:mittenti.ns:"mittente-esterno".ns:indirizzo, 'X');
+		SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.MITTENTE_INTERMEDIO = COALESCE(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:mittenti.ns:"mittente-esterno".ns:intermedio, 'X');
+		
+		IF Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:tipo_protocollo = 'P' THEN
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NUMERO = SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN FROM 3 FOR 6);
+	     	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NUMERO_RISPOSTA = SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo FROM 3 FOR 6);
+	     	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DATA_PROTOCOLLO = LEFT(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo, 10);
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DATA_DOCUMENTO = '';
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.OGGETTO = Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:oggetto;
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DATA_RISPOSTA = Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_spedizione;
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.LINK_DOCUMENTO.DOCUMENTO = 'X';
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.LINK_RISPOSTA.DOCUMENTO = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'DOCUMENTALE' AND T.VARIABILE = 'ENDPOINT_ALFRESCO')||'alfresco/webdav/Sites/IrenSpa/documentLibrary/protocollo/anno_'||SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo FROM 7 FOR 4)||'/mese_'||SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo FROM 4 FOR 2)||'/giorno_'||SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo FROM 1 FOR 2)||'/registro_'||LEFT(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo, 2)||'/numprot_'||Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo;
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.RISPOSTA_PROTOCOLLO = Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo;
+			IF	LENGTH(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN) = 15 THEN
+				SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DOCNUMBER = Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_riferimento_IREN || SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN FROM 3 FOR 6);
+			ELSE
+				SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DOCNUMBER = Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_riferimento_IREN || SUBSTRING('000000' FROM 1 FOR 6-LENGTH(TRIM(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN))) || TRIM(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN);
+			END IF;
+			
+			IF Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:voci_titolario.ns:voce_titolario.ns:codice = '1' THEN
+				SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.R11_CLASSIFICAZIONE = '2';
+			ELSE
+				SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.R11_CLASSIFICAZIONE = '3';
+			END IF;
+			CASE (Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:stato_documento)
+	        WHEN 'ATTESA DI EVASIONE' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'IN REDAZIONE' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'IN APPROVAZIONE' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'IN FIRMA' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'ATTESA INVIO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '1';
+	        WHEN 'ANNULLATO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '5530';
+	        WHEN 'DUPLICATO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7560';
+	        WHEN 'AGLI ATTI' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '12651';
+			WHEN 'EVASO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '1';
+	        WHEN 'INVIATO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '1';
+	        ELSE
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        END CASE;
+	        
+		ELSE
+			
+	     	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NUMERO = SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo FROM 3 FOR 6);
+	     	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DATA_PROTOCOLLO = LEFT(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo, 10);
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DATA_DOCUMENTO = LEFT(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_documento, 10);
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.OGGETTO = Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:oggetto;
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.LINK_DOCUMENTO.DOCUMENTO = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'DOCUMENTALE' AND T.VARIABILE = 'ENDPOINT_ALFRESCO')||'alfresco/webdav/Sites/IrenSpa/documentLibrary/protocollo/anno_'||SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo FROM 7 FOR 4)||'/mese_'||SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo FROM 4 FOR 2)||'/giorno_'||SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo FROM 1 FOR 2)||'/registro_'||LEFT(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo, 2)||'/numprot_'||Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo;
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DOCNUMBER = SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo FROM 10 FOR 4) || SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo FROM 3 FOR 6);
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DATA_RISPOSTA = '';
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NUMERO_RISPOSTA = '';
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.LINK_RISPOSTA = '';
+			IF Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:voci_titolario.ns:voce_titolario.ns:codice = '1' THEN
+				SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.R11_CLASSIFICAZIONE = '2';
+			ELSE
+				SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.R11_CLASSIFICAZIONE = '3';
+			END IF;
+			
+			CASE (Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:stato_documento)
+	        WHEN 'ATTESA DI EVASIONE' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'IN REDAZIONE' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'IN APPROVAZIONE' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'IN FIRMA' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'ATTESA INVIO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        WHEN 'ANNULLATO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '5530';
+	        WHEN 'DUPLICATO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7560';
+	        WHEN 'AGLI ATTI' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '12651';
+			WHEN 'EVASO' THEN
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '1';
+	        ELSE
+	        	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.STATO = '7562';
+	        END CASE;
+
+		END IF;
+		
+        SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NOTE = '';
+		WHILE LASTMOVE(nota)=TRUE DO
+			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NOTE = OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NOTE || nota.ns:nota;
+			MOVE nota NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+        
+        DECLARE xmldata CHARACTER CAST(ASBITSTREAM(OutputRoot.XMLNSC CCSID 1208) AS CHARACTER CCSID 1208);
+ 		SET OutputLocalEnvironment.Destination.HTTP.QueryString.XML_DATA = xmldata;
+ 		DELETE FIELD OutputRoot.XMLNSC;
+ 		IF Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:tipo_protocollo = 'P' THEN
+ 			SET var = 'AGRIS_PARTENZA';
+ 		ELSE
+ 			SET var = 'AGRIS_ARRIVO';
+ 		END IF;
+ 		
+ 		SET OutputLocalEnvironment.Destination.HTTP.RequestURL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'FLUX_ALFRESCO' AND T.VARIABILE = var);
+ 		
+ 		--||LOG TABELLA PROTOCOLLI FLUX
+	    UPDATE Database.IIB_FLUX_PROTOCOLLO AS T
+	    SET RICHIESTA_AGRIS = OutputLocalEnvironment.Destination.HTTP.QueryString.XML_DATA,
+	    RECLAMO = 'SI',
+	    TMS_RICHIESTA_AGRIS = CURRENT_TIMESTAMP
+	    WHERE T.ID_FLUX = Environment.Variables.idFlux;
+		PASSTHRU('COMMIT');
+			
+		RETURN TRUE;
+	END;
+END MODULE;

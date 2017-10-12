@@ -1,0 +1,337 @@
+DECLARE ns1 NAMESPACE 'http://db/hub_eai';
+DECLARE ns12 NAMESPACE 'urn:enterprise.soap.sforce.com';
+DECLARE ns NAMESPACE 'http://imestpi0/hub_eai';
+
+
+/*
+ * This DatabaseEvent module implements the ESQL code invoked from a DatabaseInput node to handle
+ * events as they move through the states of New->Ready->Dispatched->Complete.
+ *
+ * NOTE: Events that result in unhandled exceptions in the message flow are moved to the Failed
+ * state. "Unhandled" means either that the catch terminal was not wired, or that the catch
+ * terminal threw an exception.  If an exception is unhandled, the transaction is rolled back.
+ * If the exception is handled, even if it is handled on the catch terminal, the transaction is
+ * committed.
+ *
+ * Events are moved to the Failed state after rollback (or after a number of retries, depending 
+ * on the settings on the Retry panel).  Events in the Failed state are propagated to the Failure
+ * terminal.  If they are not handled on the failure terminal, they are discarded.  They are
+ * still in the EventTable, and so are not lost.
+ *
+ * If you are using a database table as your event store, you can convert this template to deployable
+ * code by replacing the substitution strings. Substitution strings in this module are enclosed by
+ * < and > characters.
+ * The following substitution strings are used:
+ *   <MySchemaName>                 - the database schema name.
+ *   <MyEventTableName>             - the database table used as your event store.
+ *   <MyEventTablePrimaryKey>       - the primary key of the database table used as the event store.
+ *   <MyStatusColumnName>           - the name of a column, if you update a column in the event table
+ *                                    to indicate that the event has been processed.
+ *                                    If you delete events from the event table after processing, you
+ *                                    do not need <MyStatusColumnName>.
+ *   <MyNewEventStatusValue>        - the value written to the status column when the event is first
+ *                                    added. You need this only if you use <MyStatusColumnName>.
+ *   <MyProcessedEventStatusValue>  - the value written to the status column after the event has been
+ *                                    processed. You need this only if you use <MyStatusColumnName>.
+ *   <MyApplicationTableName>       - the name of the table that includes the changed data to be processed
+ *                                    by the DatabaseInput node.
+ *   <MyEventTableForeignKey>       - the column in the event table that references the row in the application
+ *                                    table containing the changed data to be processed by the DatabaseInput
+ *                                    node. This is typically the primary key of the application table.
+ *   <MyApplicationTablePrimaryKey> - the primary key of the database table used as the application table.
+ * When you have finished editing the ESQL, set the data source and ESQL module properties on the basic tab
+ * of this node.
+ */
+CREATE DATABASEEVENT MODULE OEWebForm_Database_Input
+
+	/*
+	 * ReadEvents populates the NewEvents structure with event data read from the event table.
+	 * ReadEvents is called after all current events have been dispatched.
+	 * ReadEvents is called on a new transaction that is a separate transaction from the message
+	 * flow, and that runs before the message flow transaction.
+	 *
+	 * After ReadEvents completes:
+	 * - the current transaction is committed to ensure that any database locks obtained during
+	 *   ReadEvents are released.
+	 * - All events in NewEvents are moved to Ready state.  This means that they are ready to be
+	 *   dispatched. 
+	 * 
+	 * Parameters:
+	 * IN NewEvents REFERENCE.  This is a reference to a ROW. ReadEvents must create children of
+	 *                          this ROW for each event that is being processed.
+	 *                          Each child must include a Usr field and a Key field.
+	 */
+	 CREATE PROCEDURE ReadEvents( IN NewEvents REFERENCE )
+	 BEGIN
+		DECLARE EXIT HANDLER FOR SQLSTATE LIKE 'D%'
+		BEGIN
+			RESIGNAL; /* pass the error back to the node */
+
+			/* To choose to handle Database errors yourself, delete the RESIGNAL statement above
+			 * and uncomment the following procedure call */
+--			CALL HandleDatabaseError('ReadEvents');
+		END;
+
+		/*
+		 * Here you select all unprocessed events from the event store.
+		 * You only read the events here; you delete them in EndEvent.
+		 * In general, it is not good practice to delete or update the events here because this
+		 * transaction will be committed even before the BuildMessage procedure is called.
+		 * Under certain circumstances, for example, if you do not need assured delivery of the
+		 * events, it is acceptable to update or delete the events here. This means that
+		 * the deletion or update is committed before the message flow processes the in-memory
+		 * copies of these events. If the broker, execution group, or message flow is stopped
+		 * or redeployed in the meantime, the in-memory copy is lost, and the events are never
+		 * processed by the flow.
+		 *
+		 * NOTE: You do not need to filter out events that are currently dispatched here.
+		 *       The framework ensures that events are not duplicated by comparing the Key field
+		 *       to the Key field of dispatched events.
+		 */
+
+		--@!{ ******************** "ReadEvents" autogenerated code (1) ********************
+		-- Please do not delete the start and end annotation comments if you want the tool to generate code
+		-- for you. Any code that you add or change inside the start and end annotation comments will be lost
+		-- in your next code generation.
+		SET NewEvents.Event[] = SELECT EE_DATI_PRESTAZIONI_EVENT.ID_EE_PRESTAZIONE_TRACKING AS Key,
+		                        EE_DATI_PRESTAZIONI_EVENT.SF_DATA_OUT AS Usr.SF_DATA_OUT,
+		                        EE_DATI_PRESTAZIONI_EVENT.SF_OE_MOTIVAZIONE AS Usr.SF_OE_MOTIVAZIONE,
+		                        EE_DATI_PRESTAZIONI_EVENT.SF_OE_ESITO AS Usr.SF_OE_ESITO,
+		                        EE_DATI_PRESTAZIONI_EVENT.TMS_CREATED AS Usr.TMS_CREATED,
+		                        EE_DATI_PRESTAZIONI_EVENT.SF_OE AS Usr.SF_OE,
+		                        EE_DATI_PRESTAZIONI_EVENT.ID_EE_PRESTAZIONE_TRACKING AS Usr.ID_EE_PRESTAZIONE_TRACKING
+		                        FROM Database.HUB_EAI.EE_DATI_PRESTAZIONI_EVENT
+		                        WHERE EE_DATI_PRESTAZIONI_EVENT.SF_OE = 'I';
+		--@!} ******************** "ReadEvents" autogenerated code (1) ********************
+	END;
+
+
+	/*
+	 * BuildMessage builds the message to be propagated to the flow.
+	 * Typically, you use the event data for the current dispatched event to look up data in
+	 * the application table, and copy that data into the message.
+	 * BuildMessage is called while some events are in the Ready state.
+	 * BuildMessage is called as part of the message flow transaction. This transaction also
+	 * involves EndEvent.
+	 *
+	 * After BuildMessage returns, the message is propagated to the message flow.
+	 *
+	 * Parameters:
+	 * IN DispatchedEvent REFERENCE.  A Reference to a ROW containing the event data for the
+	 *                                current dispatched event. This is a copy of one of the 
+	 *                                events added to NewEvents by ReadEvents procedure.
+	 */
+	CREATE PROCEDURE BuildMessage(IN DispatchedEvent REFERENCE)
+	BEGIN
+		DECLARE EXIT HANDLER FOR SQLSTATE LIKE 'D%'
+		BEGIN
+			RESIGNAL; /* pass the error back to the node */
+
+			/* To choose to handle Database errors yourself, delete the RESIGNAL statement above
+			 * and uncomment the following procedure call */
+--			CALL HandleDatabaseError('BuildMessage');
+		END;
+		/* Here you use the event data in the local environment to retrieve the application data. */
+
+		--@!{ ******************** "BuildMessage" autogenerated code (1) ********************
+		-- Please do not delete the start and end annotation comments if you want the tool to generate code
+		-- for you. Any code that you add or change inside the start and end annotation comments will be lost
+		-- in your next code generation.
+		SET Root.DataObject.ns:V_EE_DATI_PRESTAZIONI[] =
+				SELECT V_EE_DATI_PRESTAZIONI.CODICE_SERVIZIO__C,
+					V_EE_DATI_PRESTAZIONI.COMMODITY__C,
+					V_EE_DATI_PRESTAZIONI.GESTIONALE__C,
+					V_EE_DATI_PRESTAZIONI.CODICE_CONTRATTO_DISP__C,
+					V_EE_DATI_PRESTAZIONI.AGENTE__C,
+					V_EE_DATI_PRESTAZIONI.OPERATORE__C,
+					V_EE_DATI_PRESTAZIONI.CANALE_ACQUISIZIONE__C,
+					V_EE_DATI_PRESTAZIONI.ACQUISTO_CREDITO__C,
+					V_EE_DATI_PRESTAZIONI.CF_STRANIERO__C,
+					V_EE_DATI_PRESTAZIONI.REVOCA_TIMOE__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_SOGGETTO__C,
+					V_EE_DATI_PRESTAZIONI.CLIENTE_FIN_SEGMENTAZIONE__C,
+					V_EE_DATI_PRESTAZIONI.COGNOME__C,
+					V_EE_DATI_PRESTAZIONI.NOME__C,
+					V_EE_DATI_PRESTAZIONI.RAGIONE_SOCIALE__C,
+					V_EE_DATI_PRESTAZIONI.CLIENTE_FINALE_CONSORZIO__C,
+					V_EE_DATI_PRESTAZIONI.CODICE_FISCALE__C,
+					V_EE_DATI_PRESTAZIONI.PARTITA_IVA__C,
+					V_EE_DATI_PRESTAZIONI.DATA_DI_NASCITA__C,
+					V_EE_DATI_PRESTAZIONI.LUOGO_DI_NASCITA__C,
+					V_EE_DATI_PRESTAZIONI.CODICE_TIPO_TELEFONO_1__C,
+					V_EE_DATI_PRESTAZIONI.COD_ATTR_TIPO_TELEFONO_1__C,
+					V_EE_DATI_PRESTAZIONI.PHONE,
+					V_EE_DATI_PRESTAZIONI.CODICE_TIPO_TELEFONO_2__C,
+					V_EE_DATI_PRESTAZIONI.COD_ATTR_TIPO_TELEFONO_2__C,
+					V_EE_DATI_PRESTAZIONI.TELEFONO_2__C,
+					V_EE_DATI_PRESTAZIONI.CODICE_TIPO_MAIL__C,
+					V_EE_DATI_PRESTAZIONI.COD_ATTR_TIPO_MAIL__C,
+					V_EE_DATI_PRESTAZIONI.EMAIL__C,
+					V_EE_DATI_PRESTAZIONI.RESIDENTE_DA_CLIENTE__C,
+					V_EE_DATI_PRESTAZIONI.TITOLO_IMMOBILE_CLIENTE__C,
+					V_EE_DATI_PRESTAZIONI.INTESTATARIO_TOPONIMO__C,
+					V_EE_DATI_PRESTAZIONI.INTESTATARIO_INDIRIZZO__C,
+					V_EE_DATI_PRESTAZIONI.INTESTATARIO_CIVICO__C,
+					V_EE_DATI_PRESTAZIONI.INTESTATARIO_CAP__C,
+					V_EE_DATI_PRESTAZIONI.INTESTATARIO_COMUNE__C,
+					V_EE_DATI_PRESTAZIONI.INTESTATARIO_ISTAT__C,
+					V_EE_DATI_PRESTAZIONI.INTESTATARIO_PROVINCIA__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_NOME__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_COGNOME__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_RAGIONE_SOCIALE__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_TOPONIMO__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_INDIRIZZO__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_TIPO_CIVICO__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_CIVICO__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_CAP__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_COMUNE__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_ISTAT__C,
+					V_EE_DATI_PRESTAZIONI.RECAPITO_PROVINCIA__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_TIPO_SOGGETTO__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_QUALIFICA__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_COGNOME__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_NOME__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_RAGIONE_SOCIALE__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_CODICE_FISCALE__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_PIVA__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_DATA_NASCITA__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_LUOGO_NASCITA__C,
+					V_EE_DATI_PRESTAZIONI.CANALE_COMUNICAZIONE_TELEF__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_TEL_DELEG__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_CELL_DELEG__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_CELLULARE__C,
+					V_EE_DATI_PRESTAZIONI.CODICE_TP_MAIL_DELEGATO__C,
+					V_EE_DATI_PRESTAZIONI.CD_ATTR_TP_MAIL_DELEG__C,
+					V_EE_DATI_PRESTAZIONI.DELEGATO_MAIL__C,
+					V_EE_DATI_PRESTAZIONI.RUOLO_AMMINISTRATORE__C,
+					V_EE_DATI_PRESTAZIONI.AMM_DENOMINAZIONE__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_NOME__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_COGNOME__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_CF__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_PIVA__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_TOPONIMO__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_INDIRIZZO__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_CIVICO__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_CAP__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_COMUNE__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_ISTAT__C,
+					V_EE_DATI_PRESTAZIONI.AMMINISTRATORE_PROVINCIA__C,
+					V_EE_DATI_PRESTAZIONI.DATA_BOLLETTA_ON_LINE__C,
+					V_EE_DATI_PRESTAZIONI.NOTIFICA_BOLLETTA_ON_LINE__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_STAMPA__C,
+					V_EE_DATI_PRESTAZIONI.DOMICILIAZIONE_IBAN__C,
+					V_EE_DATI_PRESTAZIONI.DOMICILIAZIONE_INTESTATARIO__C,
+					V_EE_DATI_PRESTAZIONI.DOMICILIAZIONE_INTESTAT_CF__C,
+					V_EE_DATI_PRESTAZIONI.DOMICILIAZIONE_COGNOME__C,
+					V_EE_DATI_PRESTAZIONI.DOMICILIAZIONE_NOME__C,
+					V_EE_DATI_PRESTAZIONI.DOMICILIAZIONE_CF__C,
+					V_EE_DATI_PRESTAZIONI.DOMICILIAZIONE_DATA_STIPULA__C,
+					V_EE_DATI_PRESTAZIONI.SPLIT_PAYMENT__C,
+					V_EE_DATI_PRESTAZIONI.REGIME_IVA__C,
+					V_EE_DATI_PRESTAZIONI.GARANZIA__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_PAGAMENTO__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_TOLLERANZA_MORA__C,
+					V_EE_DATI_PRESTAZIONI.CODICE_UFFICIO__C,
+					V_EE_DATI_PRESTAZIONI.PROGRESSIVO_CODICE_UFFICIO__C,
+					V_EE_DATI_PRESTAZIONI.CUP__C,
+					V_EE_DATI_PRESTAZIONI.CIG__C,
+					V_EE_DATI_PRESTAZIONI.POD__C,
+					V_EE_DATI_PRESTAZIONI.FATTURATO_MONO__C,
+					V_EE_DATI_PRESTAZIONI.FATTURATO_MULTI__C,
+					V_EE_DATI_PRESTAZIONI.PERIODICITA_FATTURAZIONE__C,
+					V_EE_DATI_PRESTAZIONI.CONSUMO_ANNUO_EE__C,
+					V_EE_DATI_PRESTAZIONI.DISTRIBUTORE__C,
+					V_EE_DATI_PRESTAZIONI.DATA_INIZIO_FORNITURA__C,
+					V_EE_DATI_PRESTAZIONI.DATA_FINEFORNITURA__C,
+					V_EE_DATI_PRESTAZIONI.DURATA_FORNITURA__C,
+					V_EE_DATI_PRESTAZIONI.POTENZA_EE__C,
+					V_EE_DATI_PRESTAZIONI.LIVELLO_TENSIONE_DA_CLIENTE__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_USO__C,
+					V_EE_DATI_PRESTAZIONI.TENSIONE_DA_CLIENTE__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_FEEL__C,
+					V_EE_DATI_PRESTAZIONI.FORNITURA_TOPONIMO__C,
+					V_EE_DATI_PRESTAZIONI.FORNITURA_INDIRIZZO__C,
+					V_EE_DATI_PRESTAZIONI.FORNITURA_CIVICO__C,
+					V_EE_DATI_PRESTAZIONI.FORNITURA_CAP__C,
+					V_EE_DATI_PRESTAZIONI.FORNITURA_COMUNE__C,
+					V_EE_DATI_PRESTAZIONI.FORNITURA_ISTAT__C,
+					V_EE_DATI_PRESTAZIONI.FORNITURA_PROVINCIA__C,
+					V_EE_DATI_PRESTAZIONI.VENDITORE_USCENTE__C,
+					V_EE_DATI_PRESTAZIONI.PRODOTTO__C,
+					V_EE_DATI_PRESTAZIONI.PRICING_EE__C,
+					V_EE_DATI_PRESTAZIONI.DATA_RIFERIMENTO_PREZZI__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_TARIFFA__C,
+					V_EE_DATI_PRESTAZIONI.INDICE_I0__C,
+					V_EE_DATI_PRESTAZIONI.PREZZO_MONO__C,
+					V_EE_DATI_PRESTAZIONI.PREZZO_FUORI_PICCO__C,
+					V_EE_DATI_PRESTAZIONI.PREZZO_DI_PICCO__C,
+					V_EE_DATI_PRESTAZIONI.PREZZO_FASCIA_F1__C,
+					V_EE_DATI_PRESTAZIONI.PREZZO_FASCIA_F2__C,
+					V_EE_DATI_PRESTAZIONI.PREZZO_FASCIA_F3__C,
+					V_EE_DATI_PRESTAZIONI.CERTIFICAZIONE_RINNOVABILE__C,
+					V_EE_DATI_PRESTAZIONI.CONDIZIONI_IN_DEROGA__C,
+					V_EE_DATI_PRESTAZIONI.RINNOVO_TACITO__C,
+					V_EE_DATI_PRESTAZIONI.RIFERIMENTO_IN_FATTURA__C,
+					V_EE_DATI_PRESTAZIONI.PRIVACY__C,
+					V_EE_DATI_PRESTAZIONI.TIPO_ATTIVITA_ECONOMICA__C,
+					V_EE_DATI_PRESTAZIONI.DATA_FIRMA_CONTRATTO__C,
+					V_EE_DATI_PRESTAZIONI.MERCATO_DI_PROVENIENZA__C,
+					V_EE_DATI_PRESTAZIONI.SISTEMA_ORIGINE__C,
+					V_EE_DATI_PRESTAZIONI.ID_EE_PRESTAZIONE_TRACKING,
+					V_EE_DATI_PRESTAZIONI.SEGMENTAZIONE__C,
+					V_EE_DATI_PRESTAZIONI.SF_COD_PRATICA_WF,
+					V_EE_DATI_PRESTAZIONI.ID_EE_COMMERCIALE_TRACKING,
+					V_EE_DATI_PRESTAZIONI.BOLLETTA_ON_LINE__C
+					FROM Database.HUB_EAI.V_EE_DATI_PRESTAZIONI
+					WHERE V_EE_DATI_PRESTAZIONI.ID_EE_PRESTAZIONE_TRACKING = DispatchedEvent.Usr.ID_EE_PRESTAZIONE_TRACKING;
+		--@!} ******************** "BuildMessage" autogenerated code (1) ********************
+		RETURN;
+	END;
+
+
+	/*
+	 * EndEvent updates the event table to record the event as processed.
+	 * EndEvent is called after the message flow has processed the event.
+	 * EndEvent is called as part of the message flow transaction.  This transaction also involves
+	 * BuildMessage. The transaction will be committed when this procedure ends.
+	 *
+	 * Parameters:
+	 * IN DispatchedEvent REFERENCE.  A Reference to a ROW containing the event data for the current
+	 *                                dispatched event. This is a copy of one of the events added to
+	 *                                NewEvents by ReadEvents procedure.
+	 */
+	CREATE PROCEDURE EndEvent(IN DispatchedEvent REFERENCE)
+	BEGIN
+		DECLARE EXIT HANDLER FOR SQLSTATE LIKE 'D%'
+		BEGIN
+			RESIGNAL; /* pass the error back to the node */
+
+			/* To choose to handle Database errors yourself, delete the RESIGNAL statement above
+			 * and uncomment the following procedure call */
+--			CALL HandleDatabaseError('EndEvent');
+
+		END;
+		/* Here you update the event table to ensure that this event is not processed again. */
+
+		--@!{ ******************** "EndEvent" autogenerated code (1) ********************
+		-- Please do not delete the start and end annotation comments if you want the tool to generate code
+		-- for you. Any code that you add or change inside the start and end annotation comments will be lost
+		-- in your next code generation.
+		UPDATE Database.HUB_EAI.EE_DATI_PRESTAZIONI_EVENT
+				SET SF_OE = 'P'
+				  , SF_DATA_OUT = CURRENT_TIMESTAMP
+				WHERE EE_DATI_PRESTAZIONI_EVENT.ID_EE_PRESTAZIONE_TRACKING = DispatchedEvent.Usr.ID_EE_PRESTAZIONE_TRACKING;
+		
+		--@!} ******************** "EndEvent" autogenerated code (1) ********************
+		RETURN;
+	END;
+
+
+	CREATE PROCEDURE HandleDatabaseError( IN FunctionName CHARACTER )
+	BEGIN
+		/* Throw a different exception; this could be changed. */
+		DECLARE message CHARACTER 'Exception occured calling Database Input Node function: ' || FunctionName;
+		THROW USER EXCEPTION VALUES( SQLCODE, SQLSTATE, SQLNATIVEERROR, SQLERRORTEXT, message );
+	END;
+
+END MODULE;

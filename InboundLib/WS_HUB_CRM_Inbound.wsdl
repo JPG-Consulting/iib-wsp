@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="WS_HUB_CRM_Inbound" targetNamespace="http://WS_HUB_CRM_Inbound" xmlns:bons1="http://HUB_CRM_EE/crm_dati" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://WS_HUB_CRM_Inbound" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:documentation>
+    <wsdl:appinfo source="WMQI_APPINFO">
+      <MRWSDLAppInfo imported="true">
+        <binding hasEncoding="false" imported="true" name="WS_HUB_CRM_InboundHttpBinding" originalBindingStyle="document"/>
+      </MRWSDLAppInfo>
+    </wsdl:appinfo>
+  </wsdl:documentation>
+  
+  
+  
+  
+  <wsdl:types>
+    
+    
+    
+    
+    
+    
+    
+    
+          <xsd:schema targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound">
+<xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema7.xsd"/>
+    </xsd:schema>
+        <xsd:schema targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound">
+<xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema5.xsd"/>
+    </xsd:schema>
+        <xsd:schema targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound">
+<xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema6.xsd"/>
+    </xsd:schema>
+        <xsd:schema targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound">
+<xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema4.xsd"/>
+    </xsd:schema>
+        <xsd:schema targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound" xmlns:pref="http://HUB_CRM_EE/crm_dati">
+<xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema8.xsd"/>
+    </xsd:schema>
+        <xsd:schema targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound">
+<xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema3.xsd"/>
+    </xsd:schema>
+        <xsd:schema targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:Q1="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound">
+<xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema2.xsd"/>
+    </xsd:schema>
+        <xsd:schema targetNamespace="http://WS_HUB_CRM_Inbound" xmlns:Q1="http://HUB_CRM_EE/crm_dati" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:mrm="http://WS_HUB_CRM_Inbound">
+<xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema1.xsd"/>
+    </xsd:schema>
+    </wsdl:types>
+  <wsdl:message name="WSHubCrmInboundRequestMsg">
+    <wsdl:part element="tns:WSHubCrmInbound" name="WSHubCrmInboundParameters"/>
+  </wsdl:message>
+  <wsdl:message name="WSHubCrmInboundResponseMsg">
+    <wsdl:part element="tns:WSHubCrmInboundResponse" name="WSHubCrmInboundResult"/>
+  </wsdl:message>
+  <wsdl:portType name="WS_HUB_CRM_Inbound">
+    <wsdl:operation name="WSHubCrmInbound">
+      <wsdl:input message="tns:WSHubCrmInboundRequestMsg" name="WSHubCrmInboundRequest"/>
+      <wsdl:output message="tns:WSHubCrmInboundResponseMsg" name="WSHubCrmInboundResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WS_HUB_CRM_InboundHttpBinding" type="tns:WS_HUB_CRM_Inbound">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="WSHubCrmInbound">
+      <soap:operation soapAction="http://WS_HUB_CRM_Inbound/WSHubCrmInbound"/>
+      <wsdl:input name="WSHubCrmInboundRequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="WSHubCrmInboundResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    </wsdl:binding>
+  <wsdl:service name="WS_HUB_CRM_InboundHttpService">
+    <wsdl:port binding="tns:WS_HUB_CRM_InboundHttpBinding" name="WS_HUB_CRM_InboundHttpPort">
+      <soap:address location="http://localhost:7800/WS_HUB_CRM_Inbound"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

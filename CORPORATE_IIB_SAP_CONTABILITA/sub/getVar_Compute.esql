@@ -1,0 +1,154 @@
+BROKER SCHEMA sub
+
+
+CREATE COMPUTE MODULE getVar_Compute_EDI
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN				
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET OutputLocalEnvironment.XMLNSC.Variables.ftphost = THE (SELECT ITEM T.VALORE
+																     FROM Database.IIB_VAR_CFG AS T
+																    WHERE T.FLUSSO    ='CONTABILE' 
+																      AND T.VARIABILE ='FTP_HOST');
+														       
+        SET OutputLocalEnvironment.XMLNSC.Variables.ftpusername = THE (SELECT ITEM T.VALORE
+															             FROM Database.IIB_VAR_CFG AS T
+															            WHERE T.FLUSSO    ='CONTABILE' 
+															              AND T.VARIABILE ='FTP_USERNAME');   
+
+        SET OutputLocalEnvironment.XMLNSC.Variables.ftppassword = THE (SELECT ITEM T.VALORE
+															             FROM Database.IIB_VAR_CFG AS T
+															            WHERE T.FLUSSO    ='CONTABILE' 
+															              AND T.VARIABILE ='FTP_PASSWORD');   
+
+        SET OutputLocalEnvironment.XMLNSC.Variables.inputpathftp_edi = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='CONTABILE' 
+															                   AND T.VARIABILE ='INPUTPATHFTP_EDI'); 
+        SET OutputLocalEnvironment.XMLNSC.Variables.localFolder_edi = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='CONTABILE' 
+															                   AND T.VARIABILE ='LOCALFOLDEREDI'); 
+        SET OutputLocalEnvironment.XMLNSC.Variables.okPathFtp_edi = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='CONTABILE' 
+															                   AND T.VARIABILE ='OKPATHFTP_EDI'); 															                   															             
+															                
+		SET OutputLocalEnvironment.XMLNSC.Variables.errorPathFtp_edi = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='CONTABILE' 
+															                   AND T.VARIABILE ='ERRORPATHFTP_EDI'); 													        
+		SET OutputRoot = InputRoot;		
+												        
+		RETURN TRUE;
+	END;
+END MODULE;
+	
+CREATE COMPUTE MODULE getVar_Compute_XML
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN				
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET OutputLocalEnvironment.XMLNSC.Variables.ftphost = THE (SELECT ITEM T.VALORE
+														      		 FROM Database.IIB_VAR_CFG AS T
+ 															        WHERE T.FLUSSO    ='CONTABILE' 
+																      AND T.VARIABILE ='FTP_HOST');
+														       
+        SET OutputLocalEnvironment.XMLNSC.Variables.ftpusername = THE (SELECT ITEM T.VALORE
+															             FROM Database.IIB_VAR_CFG AS T
+															            WHERE T.FLUSSO    ='CONTABILE' 
+															              AND T.VARIABILE ='FTP_USERNAME');   
+
+        SET OutputLocalEnvironment.XMLNSC.Variables.ftppassword = THE (SELECT ITEM T.VALORE
+															             FROM Database.IIB_VAR_CFG AS T
+															            WHERE T.FLUSSO    ='CONTABILE' 
+															              AND T.VARIABILE ='FTP_PASSWORD');   
+
+        SET OutputLocalEnvironment.XMLNSC.Variables.inputpathftp_xml = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='CONTABILE' 
+															                   AND T.VARIABILE ='INPUTPATHFTP_XML'); 
+        SET OutputLocalEnvironment.XMLNSC.Variables.localFolder_xml = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='CONTABILE' 
+															                   AND T.VARIABILE ='LOCALFOLDERXML'); 
+        SET OutputLocalEnvironment.XMLNSC.Variables.okPathFtp_xml = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='CONTABILE' 
+															                   AND T.VARIABILE ='OKPATHFTP_XML'); 															                   															             
+															                
+		SET OutputLocalEnvironment.XMLNSC.Variables.errorPathFtp_xml = THE (SELECT ITEM T.VALORE
+															                  FROM Database.IIB_VAR_CFG AS T
+															                 WHERE T.FLUSSO    ='CONTABILE' 
+															                   AND T.VARIABILE ='ERRORPATHFTP_XML'); 													        
+		SET OutputRoot = InputRoot;		
+												        
+		RETURN TRUE;
+	END;	
+	
+END MODULE;
+
+CREATE COMPUTE MODULE getVar_Compute_ZUORA
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN				
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+                
+        CREATE LASTCHILD OF OutputLocalEnvironment.XMLNSC.Variables
+        NAME 'localFolder_'||LOWER(InputLocalEnvironment.HTTP.Input.QueryString.tipo) 
+        VALUE THE (SELECT ITEM T.VALORE
+                  FROM Database.IIB_VAR_CFG AS T
+                  WHERE T.FLUSSO    ='CONTABILE_ZUORA' 
+                  AND T.VARIABILE ='LOCALFOLDER_'||UPPER(InputLocalEnvironment.HTTP.Input.QueryString.tipo)); 
+        
+        CREATE LASTCHILD OF OutputLocalEnvironment.XMLNSC.Variables
+        NAME 'archivePath_'||LOWER(InputLocalEnvironment.HTTP.Input.QueryString.tipo) 
+        VALUE THE (SELECT ITEM T.VALORE
+                  FROM Database.IIB_VAR_CFG AS T
+                  WHERE T.FLUSSO    ='CONTABILE_ZUORA' 
+                  AND T.VARIABILE ='ARCHIVEPATH_'||UPPER(InputLocalEnvironment.HTTP.Input.QueryString.tipo)); 															                   															             
+															                
+		CREATE LASTCHILD OF OutputLocalEnvironment.XMLNSC.Variables
+		NAME 'errorPath_'||LOWER(InputLocalEnvironment.HTTP.Input.QueryString.tipo) 
+		VALUE THE (SELECT ITEM T.VALORE
+                  FROM Database.IIB_VAR_CFG AS T
+                  WHERE T.FLUSSO    ='CONTABILE_ZUORA' 
+                  AND T.VARIABILE ='ERRORPATH_'||UPPER(InputLocalEnvironment.HTTP.Input.QueryString.tipo)); 													        
+		
+		SET OutputRoot = InputRoot;		
+												        
+		RETURN TRUE;
+	END;	
+	
+END MODULE;
+
+
+CREATE COMPUTE MODULE getVar_Compute_TCR
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN				
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+                
+        CREATE LASTCHILD OF OutputLocalEnvironment.XMLNSC.Variables
+        NAME 'localFolder'
+        VALUE THE (SELECT ITEM T.VALORE
+                  FROM Database.IIB_VAR_CFG AS T
+                  WHERE T.FLUSSO    ='CONTABILE_TCR' 
+                  AND T.VARIABILE ='LOCALFOLDER'); 
+        
+        CREATE LASTCHILD OF OutputLocalEnvironment.XMLNSC.Variables
+        NAME 'archivePath'
+        VALUE THE (SELECT ITEM T.VALORE
+                  FROM Database.IIB_VAR_CFG AS T
+                  WHERE T.FLUSSO    ='CONTABILE_TCR' 
+                  AND T.VARIABILE ='ARCHIVEFOLDER');															                   															             
+															                
+		CREATE LASTCHILD OF OutputLocalEnvironment.XMLNSC.Variables
+		NAME 'errorPath'
+		VALUE THE (SELECT ITEM T.VALORE
+                  FROM Database.IIB_VAR_CFG AS T
+                  WHERE T.FLUSSO    ='CONTABILE_TCR' 
+                  AND T.VARIABILE ='ERRORFOLDER'); 													        
+		
+		SET OutputRoot.XMLNSC.Result = 'PROCESSO PER ELABORAZIONE FILE CONTABILITA TCR AVVIATO';		
+												        
+		RETURN TRUE;
+	END;	
+	
+END MODULE;

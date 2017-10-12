@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/STAMPA_BOLLETTA.xsd"/>
+    <output path="/addebiti.xsd"/>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="XML_Receiver_MapAddebiti">
+        <input path="mb:msg(GENERAZIONE_MASSIVA,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_GENERAZIONE_MASSIVA"/>
+        <output namespace="http://www.gruppoiren.it/schemas" path="mb:msg(addebiti,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_GENERAZIONE_MASSIVA/Properties"/>
+            <output path="$MessageAssembly/Properties"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

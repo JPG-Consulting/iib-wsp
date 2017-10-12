@@ -1,0 +1,20 @@
+
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_LogError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--||LOG TABELLA RICHIESTE ALFRESCO
+	    UPDATE Database.IIB_FLUX_DOCUMENTALE AS T
+	    SET RISPOSTA = ASBITSTREAM(InputRoot.SOAP),
+	    ESITO = InputRoot.SOAP.Body.ns6:CreateResponse.status.status,
+	    DESCRIZIONE_ESITO = InputRoot.SOAP.Body.ns6:CreateResponse.status.ID || ' - ' || InputRoot.SOAP.Body.ns6:CreateResponse.status.descrizione,
+	    TMS_RISPOSTA = CURRENT_TIMESTAMP
+	    WHERE
+	    T.ID_RICHIESTA = Environment.Variables.idRichiesta 
+	    AND T.ID_FLUX = Environment.Variables.idFlux;
+		PASSTHRU('COMMIT');
+			
+		RETURN TRUE;
+	END;
+
+END MODULE;

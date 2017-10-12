@@ -1,0 +1,122 @@
+DECLARE ns1 NAMESPACE 'www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE PreparaEmail_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		/****************************************************************************
+		* A procedure that will get the details of the last exception from a message
+		* IN InputTree: The incoming exception list
+		* IN messageNumber: The last message numberr.
+		* IN messageText: The last message text.
+		*****************************************************************************/
+		DECLARE messageNumber integer;
+		DECLARE messageText CHARACTER;
+		DECLARE idunico INTEGER;
+		SET idunico= CAST(Environment.Variables.idunico AS INTEGER) ;
+		------------------------------------------------------
+		DECLARE crlf CHAR CAST(X'0D0A' AS CHAR CCSID 1208);
+		DECLARE numDoc CHARACTER;
+		DECLARE nomeProfilo CHARACTER;			
+		set numDoc = CAST(Environment.Variables.Count AS CHARACTER); --numero records elaborati o rolled-back
+
+		SET messageText = 'ok';
+		-- Declare a reference for the ExceptionList
+		-- (in a Compute node use InputExceptionList)
+		-- Create a reference to the first child of the exception list
+		DECLARE ptrException reference to InputExceptionList.*[1];
+		DECLARE descrizione CHARACTER 'Inserts: ' || CAST(Environment.Variables.Ins AS CHARACTER) || ', Updates: ' || CAST(Environment.Variables.Upd AS CHARACTER);
+		-- DECLARE lungo INTEGER 0;
+		-- -- keep looping while the moves to the child of exception list work
+		WHILE lastmove(ptrException) DO
+			-- SET messageText = 'ERRORE'; --per capire che abbiamo errori
+			-- store the current values for the error number and text
+			IF ptrException.Number is not null THEN
+				-- IF (lungo< LENGTH(ptrException.Text)) THEN
+				-- SET lungo = LENGTH(ptrException.Text);
+				SET messageNumber = ptrException.Number;
+				SET messageText = messageText || crlf || ptrException.Text;
+				-- END IF;
+
+			END IF;
+			-- now move to the last child which should be the next exceptionlist
+			move ptrException lastchild;
+		END WHILE;
+			
+		IF (messageText <> 'ok' ) THEN
+			-- passare l'errore all'output --
+			--preparare INVIO EMAIL ASINCRONO
+			SET OutputRoot.XMLNSC.ns1:Params.flusso = MessageFlowLabel;
+			SET OutputRoot.XMLNSC.ns1:Params.obj1 = MessageFlowLabel|| ' Flusso KO: ' ||  CAST(idunico AS CHARACTER);--fissiamolo per il LOG e mail dopo;
+			SET OutputRoot.XMLNSC.ns1:Params.body1 = 'Id: '|| CAST(idunico AS CHARACTER)|| ': n° record inizialmente  da elaborare: ' || numDoc;
+			SET OutputRoot.XMLNSC.ns1:Params.body2 = SUBSTRING(messageText AFTER 'ok'); -- InputExceptionList.*[1].Text;
+			SET OutputRoot.XMLNSC.ns1:Params.body3 = '';
+			-- SET OutputRoot.XMLNSC.ns1:Params.body2 = 'Inserts: ' || CAST(Environment.Variables.Ins AS CHARACTER) || ', Updates: ' || CAST(Environment.Variables.Upd AS CHARACTER);
+			-- SET OutputRoot.XMLNSC.ns1:Params.body3 = 0;
+			--2, update della tabella di LOG = Database.usersapbuslog
+
+			UPDATE Database.usersapbuslog as t
+			SET usersapbuslog_dataora_ini = CAST(Environment.Variables.DataInizio AS TIMESTAMP),
+			usersapbuslog_dataora_fin = CURRENT_TIMESTAMP,
+			usersapbuslog_num_rec = CAST(Environment.Variables.Count AS INTEGER),
+			usersapbuslog_esito = 'KO',
+			usersapbuslog_descrizione_esito = REPLACE(messageText, crlf, ' - '),
+			usersapbuslog_inserted = CAST(Environment.Variables.Ins AS INTEGER),
+			usersapbuslog_updated = CAST(Environment.Variables.Upd AS INTEGER),
+			sapexpsv_cod = TRIM(COALESCE(Environment.Variables.Profilo, ''))
+			WHERE t.usersapbuslog_id = idunico;
+			--*/
+		ELSE --esito OK....
+			IF ((numDoc IS NOT NULL) AND (numDoc <> '0')) THEN
+				-- Controllo valorizzazione Profilo, paramentro in input query string
+				IF (Environment.Variables.Profilo  <> '' AND Environment.Variables.Profilo IS NOT NULL)	THEN
+					SET nomeProfilo = Environment.Variables.Profilo  ;	
+				ELSE
+					SET nomeProfilo ='TUTTI I PROFILI ATTIVI';			
+				END IF;
+				
+				--preparare INVIO EMAIL ASINCRONO
+				SET OutputRoot.XMLNSC.ns1:Params.flusso = MessageFlowLabel;
+		--			SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'AMBIENTE_ECOS_SAP_SVUOTAMENTI - OK: '||  CAST(idunico AS CHARACTER);
+					SET OutputRoot.XMLNSC.ns1:Params.obj1 = MessageFlowLabel|| ' - OK: '|| nomeProfilo || ' - ID_FLUSSO: ' ||  CAST(idunico AS CHARACTER);			--  MODIFICA (1) 27marzo2017 , richiesta da mail 23.marzo.2017 + modifica del 30.marzo.2017 (Dario Rizzo)
+				SET OutputRoot.XMLNSC.ns1:Params.body1 =  'Id: '|| CAST(idunico AS CHARACTER)||': Record elaborati: ' || numDoc;
+				SET OutputRoot.XMLNSC.ns1:Params.body2 = descrizione; -- 'Inserts: ' || CAST(Environment.Variables.Ins AS CHARACTER) || ', Updates: ' || CAST(Environment.Variables.Upd AS CHARACTER);
+				SET OutputRoot.XMLNSC.ns1:Params.body3 = '';
+				
+				UPDATE Database.usersapbuslog as t
+				SET usersapbuslog_dataora_ini = Environment.Variables.DataInizio,
+				usersapbuslog_dataora_fin = CURRENT_TIMESTAMP,
+				usersapbuslog_num_rec = CAST(Environment.Variables.Count AS INTEGER),
+				usersapbuslog_esito = 'OK',
+				usersapbuslog_descrizione_esito = descrizione,
+				usersapbuslog_inserted = CAST(Environment.Variables.Ins AS INTEGER),
+				usersapbuslog_updated = CAST(Environment.Variables.Upd AS INTEGER),
+				sapexpsv_cod = TRIM(COALESCE(Environment.Variables.Profilo, ''))
+				WHERE t.usersapbuslog_id = idunico; 
+				--*/
+			ELSE
+				RETURN FALSE;
+			END IF;
+		
+		END IF;
+
+		RETURN TRUE;
+
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;
+

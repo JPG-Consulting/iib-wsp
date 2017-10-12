@@ -1,0 +1,17 @@
+
+
+CREATE COMPUTE MODULE CM_SEDI_TECNICHE_ResponseError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.Return.Esito = 'KO';
+		DECLARE exc REFERENCE TO InputExceptionList.RecoverableException;
+		
+		WHILE LASTMOVE(exc)=TRUE DO
+			MOVE exc LASTCHILD NAME 'RecoverableException';
+		END WHILE;
+		
+		SET OutputRoot.XMLNSC.Return.Error = exc;
+		RETURN TRUE;
+	END;
+
+END MODULE;

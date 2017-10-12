@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="mbsharedlib://SIILib/APR_flusso.xsd"/>
+    <output path="mbsharedlib://InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+        <namespace kind="supplement" prefix="out2" uri="http://HUB_CRM_EE/crm_dati"/>
+        <namespace kind="supplement" prefix="out" uri="http://WS_HUB_CRM_Inbound"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="apr0100_inboundResp">
+        <input path="mb:msg(FlussoAPR.0100Type,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_FlussoAPR0100Type"/>
+        <output namespace="http://WS_HUB_CRM_Inbound" path="mb:msg(WSHubCrmInboundResponse,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_WSHubCrmInboundResponse"/>
+        <assign value="1">
+            <output path="$ComIbmMessageAssembly_WSHubCrmInboundResponse/WSHubCrmInboundResponse/inboundResponse/esito/esito"/>
+        </assign>
+        <assign value="000">
+            <output path="$ComIbmMessageAssembly_WSHubCrmInboundResponse/WSHubCrmInboundResponse/inboundResponse/esito/codice"/>
+        </assign>
+        <assign value="0100">
+            <output path="$ComIbmMessageAssembly_WSHubCrmInboundResponse/WSHubCrmInboundResponse/inboundResponse/tracking/codiceFlusso"/>
+        </assign>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0100Type/FlussoAPR.0100Type/IdentificativiRichiesta/CP_UTENTE"/>
+            <output path="$ComIbmMessageAssembly_WSHubCrmInboundResponse/WSHubCrmInboundResponse/inboundResponse/tracking/codicePraticaOrigine"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0100Type/FlussoAPR.0100Type/IdentificativiRichiesta/CP_GESTORE"/>
+            <output path="$ComIbmMessageAssembly_WSHubCrmInboundResponse/WSHubCrmInboundResponse/inboundResponse/tracking/codicePraticaDistributore"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_FlussoAPR0100Type/FlussoAPR.0100Type/IdentificativiRichiesta/CP_GESTORE"/>
+            <output path="$ComIbmMessageAssembly_WSHubCrmInboundResponse/WSHubCrmInboundResponse/inboundResponse/tracking/codicePratica"/>
+        </move>
+        <assign value="APR">
+            <output path="$ComIbmMessageAssembly_WSHubCrmInboundResponse/WSHubCrmInboundResponse/inboundResponse/tracking/servizio"/>
+        </assign>
+    </mappingDeclaration>
+</mappingRoot>

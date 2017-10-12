@@ -1,0 +1,13 @@
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapaleaud01';
+
+
+CREATE COMPUTE MODULE Sort_SetLabel
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		DECLARE idocData REFERENCE TO InputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord;
+		SET OutputLocalEnvironment.Destination.RouterList.DestinationData.labelName = TRIM(idocData.SapAleaud01E2adhdr001.MESTYP_LNG);
+		SET Environment.msgID = InputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapIDocControlRecord.DOCNUM;
+		RETURN TRUE;
+	END;
+END MODULE;

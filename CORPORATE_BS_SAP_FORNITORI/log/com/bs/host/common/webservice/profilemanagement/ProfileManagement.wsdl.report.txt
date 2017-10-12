@@ -1,0 +1,29 @@
+
+
+Importing file: C:\Users\Mara\IBM\IIBT10\BS\CORPORATE_BS_SAP_FORNITORI\ProfileManagement.wsdl
+
+The WSDL import will proceed with bindings ProfileManagementSOAP.
+Creating wsdl schema document for file:///C:/Users/Mara/IBM/IIBT10/BS/CORPORATE_BS_SAP_FORNITORI/ProfileManagement.wsdl.
+Parsing wsdl binding {http://host.bs.com/common/webservice/ProfileManagement/}ProfileManagementSOAP.
+Parsing wsdl binding input ImportProfiles.
+Parsing wsdl binding output ImportProfiles.
+Parsing wsdl binding input ExportProfiles.
+Parsing wsdl binding output ExportProfiles.
+Parsing wsdl binding input ExportProfilesPaged.
+Parsing wsdl binding output ExportProfilesPaged.
+Processing doc style for operation ImportProfiles.
+Processing doc style for operation ExportProfiles.
+Processing doc style for operation ExportProfilesPaged.
+Populating WSDL schema ProfileManagement.xsd.
+Creating file ProfileManagement.xsd in the workspace.
+Creating file /CORPORATE_BS_SAP_FORNITORI_2/ProfileManagement_InlineSchema1.xsd in the workspace.
+Creating file /CORPORATE_BS_SAP_FORNITORI_2/xmlmime.xsd in the workspace.
+Copying source WSDL ProfileManagement.wsdl to ProfileManagement.wsdl.
+
+Elapsed time processing this message definition file: 0.263 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

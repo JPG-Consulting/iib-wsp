@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	targetNamespace="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII"
+	xmlns:dat="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_VTG1/v1"
+	xmlns:msgSII="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII">
+
+
+	<xsd:import
+		namespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_VTG1/v1"
+		schemaLocation="VTG1.xsd" />
+
+	<!-- ************** VTG1:0050 ************** -->
+
+	<xsd:include schemaLocation="../SII_PdC-MessaggioSII.xsd"></xsd:include>
+	<xsd:complexType
+		name="RichiestaAttivazioneContrattualeMessaggioSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:MessaggioSIIType">
+				<xsd:sequence>
+					<xsd:element name="RichiestaSII"
+						type="msgSII:RichiestaAttivazioneContrattualeRichiestaSIIType" />
+					<xsd:element name="DatiSII"
+						type="msgSII:RichiestaAttivazioneContrattualeDatiSIIType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="RichiestaAttivazioneContrattualeRichiestaSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:RichiestaSIIType">
+				<xsd:sequence>
+					<xsd:element name="AzioneRichiesta"
+						type="msgSII:RichiestaAttivazioneContrattualeAzioneRichiestaType" />
+					<xsd:element name="Erogatore"
+						type="msgSII:UtenteType" />
+					<xsd:element name="Fruitore"
+						type="msgSII:UtenteType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="RichiestaAttivazioneContrattualeAzioneRichiestaType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:AzioneRichiestaType">
+				<xsd:sequence>
+					<xsd:element fixed="VTG1" name="Servizio"
+						type="xsd:string" />
+					<xsd:element fixed="VTG1.0050" name="Operazione"
+						type="xsd:string" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="RichiestaAttivazioneContrattualeDatiSIIType">
+		<xsd:sequence>
+			<xsd:element name="Flusso" type="dat:FlussoVTG1.0050Type" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- ************** VTG1:0050 ************** -->
+
+	<!-- ************** VTG1:0100 ************** -->
+
+	<xsd:complexType name="AmmissibilitaRichiestaMessaggioSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:MessaggioSIIType">
+				<xsd:sequence>
+					<xsd:element name="RichiestaSII"
+						type="msgSII:AmmissibilitaRichiestaRichiestaSIIType" />
+					<xsd:element name="DatiSII"
+						type="msgSII:AmmissibilitaRichiestaDatiSIIType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="AmmissibilitaRichiestaRichiestaSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:RichiestaSIIType">
+				<xsd:sequence>
+					<xsd:element name="AzioneRichiesta"
+						type="msgSII:AmmissibilitaRichiestaAzioneRichiestaType" />
+					<xsd:element name="Erogatore"
+						type="msgSII:UtenteType" />
+					<xsd:element name="Fruitore"
+						type="msgSII:UtenteType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="AmmissibilitaRichiestaAzioneRichiestaType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:AzioneRichiestaType">
+				<xsd:sequence>
+					<xsd:element fixed="VTG1" name="Servizio"
+						type="xsd:string" />
+					<xsd:element fixed="VTG1.0100" name="Operazione"
+						type="xsd:string" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="AmmissibilitaRichiestaDatiSIIType">
+		<xsd:sequence>
+			<xsd:element name="Flusso" type="dat:FlussoVTG1.0100Type" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- ************** VTG1:0100 ************** -->
+
+	<!-- ************** VTG1:0150 ************** -->
+
+	<xsd:complexType
+		name="EsitoAttivazioneContrattualeMessaggioSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:MessaggioSIIType">
+				<xsd:sequence>
+					<xsd:element name="RichiestaSII"
+						type="msgSII:EsitoAttivazioneContrattualeRichiestaSIIType" />
+					<xsd:element name="DatiSII"
+						type="msgSII:EsitoAttivazioneContrattualeDatiSIIType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="EsitoAttivazioneContrattualeRichiestaSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:RichiestaSIIType">
+				<xsd:sequence>
+					<xsd:element name="AzioneRichiesta"
+						type="msgSII:EsitoAttivazioneContrattualeAzioneRichiestaType" />
+					<xsd:element name="Erogatore"
+						type="msgSII:UtenteType" />
+					<xsd:element name="Fruitore"
+						type="msgSII:UtenteType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="EsitoAttivazioneContrattualeAzioneRichiestaType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:AzioneRichiestaType">
+				<xsd:sequence>
+					<xsd:element fixed="VTG1" name="Servizio"
+						type="xsd:string" />
+					<xsd:element fixed="VTG1.0150" name="Operazione"
+						type="xsd:string" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="EsitoAttivazioneContrattualeDatiSIIType">
+		<xsd:sequence>
+			<xsd:element name="Flusso" type="dat:FlussoVTG1.0150Type" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- ************** VTG1:0150 ************** -->
+
+</xsd:schema>

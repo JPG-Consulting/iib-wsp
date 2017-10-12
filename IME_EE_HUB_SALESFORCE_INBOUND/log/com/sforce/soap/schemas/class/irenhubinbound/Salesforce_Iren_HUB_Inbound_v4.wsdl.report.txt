@@ -1,0 +1,22 @@
+
+
+Importing file: C:\Users\danie\Documents\PIC\IREN\Salesforce_Iren_HUB_Inbound_v4.wsdl
+
+The WSDL import will proceed with bindings Iren_HUB_InboundBinding.
+Creating wsdl schema document for file:///C:/Users/danie/Documents/PIC/IREN/Salesforce_Iren_HUB_Inbound_v4.wsdl.
+Parsing wsdl binding {http://soap.sforce.com/schemas/class/Iren_HUB_Inbound}Iren_HUB_InboundBinding.
+Parsing wsdl binding input WSHubCrmInboundResponse.
+Parsing wsdl binding output WSHubCrmInboundResponse.
+Processing doc style for operation WSHubCrmInboundResponse.
+Populating WSDL schema Salesforce_Iren_HUB_Inbound_v4.xsd.
+Creating file Salesforce_Iren_HUB_Inbound_v4.xsd in the workspace.
+Creating file Salesforce_Iren_HUB_Inbound_v4_InlineSchema1.xsd in the workspace.
+Copying source WSDL Salesforce_Iren_HUB_Inbound_v4.wsdl to Salesforce_Iren_HUB_Inbound_v4.wsdl.
+
+Elapsed time processing this message definition file: 0.178 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

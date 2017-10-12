@@ -1,0 +1,95 @@
+DECLARE ns137 NAMESPACE 'http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APN/v1';
+DECLARE ns27 NAMESPACE 'http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1';
+DECLARE ns9 NAMESPACE 'http://www.acquirenteunico.it/schemas/SII_AU/Flussi_SE3/v1';
+DECLARE ns3 NAMESPACE 'http://www.acquirenteunico.it/schemas/SII_AU/Flussi_RC1/v1';
+CREATE COMPUTE MODULE nameFileAPN_0200
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE fileName CHARACTER;
+		DECLARE seq CHARACTER;
+		SET OutputRoot = InputRoot;
+		--IF InputRoot.XMLNSC."FlussoAPN.0200Type".
+		SET Environment.SQLBox[] = PASSTHRU('SELECT THOR_APP.SEQ_FILENETA.NEXTVAL FROM DUAL');
+		SET seq = CAST ( CAST (Environment.SQLBox.NEXTVAL AS INTEGER) AS CHARACTER);
+		
+		SET fileName = InputRoot.XMLNSC."FlussoAPN.0200Type".COD_SERVIZIO || '_'||InputRoot.XMLNSC."FlussoAPN.0200Type".COD_FLUSSO ||'_' || InputRoot.XMLNSC."FlussoAPN.0200Type".ns137:IdentificativiRichiesta.ns20:CP_GESTORE || '_' || seq || '_EE.xml';
+		
+		SET OutputLocalEnvironment.Destination.File.Name = fileName;
+		SET OutputLocalEnvironment.Destination.File.Directory = '/ibmdata/WINSHARE/NETA/SII/INBOUND/SCHEDULER_RX';
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+CREATE COMPUTE MODULE nameFileSE3_0200
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE fileName CHARACTER;
+		DECLARE seq CHARACTER;
+		SET OutputRoot = InputRoot;
+		SET Environment.SQLBox[] = PASSTHRU('SELECT THOR_APP.SEQ_FILENETA.NEXTVAL FROM DUAL');
+		SET seq = CAST ( CAST (Environment.SQLBox.NEXTVAL AS INTEGER) AS CHARACTER);
+		
+		SET fileName = InputRoot.XMLNSC."FlussoSE3.0200Type".COD_SERVIZIO || '_'||InputRoot.XMLNSC."FlussoSE3.0200Type".COD_FLUSSO ||'_' || InputRoot.XMLNSC."FlussoSE3.0200Type".ns9:IdentificativiRichiesta.ns20:CP_GESTORE || '_' || seq || '_EE.xml';
+		
+		SET OutputLocalEnvironment.Destination.File.Name = fileName;
+		SET OutputLocalEnvironment.Destination.File.Directory = '/ibmdata/WINSHARE/NETA/SII/INBOUND/SCHEDULER_RX';		
+		RETURN TRUE;
+	END;
+END MODULE;
+
+CREATE COMPUTE MODULE nameFileAPR_0150
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		DECLARE fileName CHARACTER;
+		DECLARE seq CHARACTER;
+		SET OutputRoot = InputRoot;
+		SET Environment.SQLBox[] = PASSTHRU('SELECT THOR_APP.SEQ_FILENETA.NEXTVAL FROM DUAL');
+		SET seq = CAST ( CAST (Environment.SQLBox.NEXTVAL AS INTEGER) AS CHARACTER);
+		
+		SET fileName = InputRoot.XMLNSC."FlussoAPR.0150Type".COD_SERVIZIO || '_'||InputRoot.XMLNSC."FlussoAPR.0150Type".COD_FLUSSO ||'_' || InputRoot.XMLNSC."FlussoAPR.0150Type".ns27:DatiPratica.ns20:CP_GESTORE_ANN|| '_' || seq || '_EE.xml';
+		
+		SET OutputLocalEnvironment.Destination.File.Name = fileName;
+		SET OutputLocalEnvironment.Destination.File.Directory = '/ibmdata/WINSHARE/NETA/SII/INBOUND/SCHEDULER_RX';		
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+CREATE COMPUTE MODULE nameFileRC1_0100
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		DECLARE fileName CHARACTER;
+		DECLARE seq CHARACTER;
+		SET OutputRoot = InputRoot;
+		SET Environment.SQLBox[] = PASSTHRU('SELECT THOR_APP.SEQ_FILENETA.NEXTVAL FROM DUAL');
+		SET seq = CAST ( CAST (Environment.SQLBox.NEXTVAL AS INTEGER) AS CHARACTER);
+		
+		SET fileName = InputRoot.XMLNSC."FlussoRC1.0100Type".COD_SERVIZIO || '_'||InputRoot.XMLNSC."FlussoRC1.0100Type".COD_FLUSSO ||'_' || InputRoot.XMLNSC."FlussoRC1.0100Type".ns3:IdentificativiRichiesta.ns20:CP_UTENTE || '_' || seq || '_EE.xml';
+		
+		SET OutputLocalEnvironment.Destination.File.Name = fileName;
+		SET OutputLocalEnvironment.Destination.File.Directory = '/ibmdata/WINSHARE/NETA/SII/INBOUND/SCHEDULER_RX';		
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+CREATE COMPUTE MODULE nameFileAPR_0100
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		DECLARE fileName CHARACTER;
+		DECLARE seq CHARACTER;
+		SET OutputRoot = InputRoot;
+		SET Environment.SQLBox[] = PASSTHRU('SELECT THOR_APP.SEQ_FILENETA.NEXTVAL FROM DUAL');
+		SET seq = CAST ( CAST (Environment.SQLBox.NEXTVAL AS INTEGER) AS CHARACTER);
+		
+		SET fileName = InputRoot.XMLNSC."FlussoAPR.0100Type".COD_SERVIZIO || '_'||InputRoot.XMLNSC."FlussoAPR.0100Type".COD_FLUSSO ||'_' || InputRoot.XMLNSC."FlussoAPR.0100Type".ns27:IdentificativiRichiesta.ns20:CP_GESTORE || '_' || seq || '_EE.xml';
+		SET OutputLocalEnvironment.Destination.File.Name = fileName;
+		SET OutputLocalEnvironment.Destination.File.Directory = '/ibmdata/WINSHARE/NETA/SII/INBOUND/SCHEDULER_RX';		
+		RETURN TRUE;
+	END;
+
+END MODULE;

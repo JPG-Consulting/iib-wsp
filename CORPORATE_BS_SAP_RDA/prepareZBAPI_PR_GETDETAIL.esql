@@ -1,0 +1,30 @@
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbapiprgetdetail';
+
+
+CREATE COMPUTE MODULE prepareZBAPI_PR_GETDETAIL
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--| salvo le informazioni del richiedente
+		set Environment.Variables.richiedenteNome 	 = InputRoot.XMLNSC.DIPENDENTI.DIPENDENTE.NOME;
+		set Environment.Variables.richiedenteCognome = InputRoot.XMLNSC.DIPENDENTI.DIPENDENTE.COGNOME;
+		set Environment.Variables.richiedenteMail 	 = InputRoot.XMLNSC.DIPENDENTI.DIPENDENTE.EMAIL;
+		--| preparo la chiamata alla ZBAPI_PR_GETDETAIL
+		
+	    CREATE FIELD OutputRoot.DataObject.ns:SapZbapiPrGetdetail;
+	    
+		SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.NUMBER = Environment.Variables.numRda;		
+		SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.ACCOUNT_ASSIGNMENT = 'X';
+		SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.ITEM_TEXT ='X';
+		SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.HEADER_TEXT = 'X';
+		SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.DELIVERY_ADDRESS = 'X';
+		SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.VERSION ='X';		
+		SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.SC_COMPONENTS = 'X';
+		SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.SERIALNUMBERS ='X';
+        SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.SERVICES='X';
+        SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.FLAG_CUSTOM_EBAN ='X';
+        SET OutputRoot.DataObject.ns:SapZbapiPrGetdetail.FLAG_PRESTAZIONI= 'X';
+                
+		RETURN TRUE;
+	END;
+
+END MODULE;

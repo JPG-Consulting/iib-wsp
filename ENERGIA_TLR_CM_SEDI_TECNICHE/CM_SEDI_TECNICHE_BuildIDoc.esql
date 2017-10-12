@@ -1,0 +1,130 @@
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzpmfuncloc';
+
+
+CREATE COMPUTE MODULE CM_SEDI_TECNICHE_BuildIDoc
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.DataObject.ns:SapZpmFuncLoc.SapZpmFuncLocIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns:SapZpmFuncLoc.SapZpmFuncLocIDocBO.SapZpmFuncLocDataRecord.SapZpmFuncLocZpmFuncLocHdr000;
+		
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns:SapZpmFuncLoc.SapZpmFuncLocIDocBO.SapIDocControlRecord;
+		DECLARE header REFERENCE TO OutputRoot.DataObject.ns:SapZpmFuncLoc.SapZpmFuncLocIDocBO.SapZpmFuncLocDataRecord.SapZpmFuncLocZpmFuncLocHdr000;
+		DECLARE input REFERENCE TO InputRoot.XMLNSC.zpm_func_loc.zpm_func_loc_hdr;
+		
+		DECLARE numCla INTEGER 1;
+		DECLARE numPar INTEGER 1;
+		DECLARE numCt INTEGER 1;
+		
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CREAZIONE_SEDI_TECNICHE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CREAZIONE_SEDI_TECNICHE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZPM_FUNC_LOC';
+		SET outputCR.MESTYP = 'ZMESS_PM_FUNC_LOC';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CREAZIONE_SEDI_TECNICHE' 
+									AND T.VARIABILE = 'RCVPRN');
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		
+		
+		SET header.ACTION = input.ACTION;
+		SET header.TPLNR = input.TPLNR;
+		
+		---------CLA
+		FOR inputCla AS input.zpm_func_loc_kla[] DO
+			SET numCt = 1;
+			SET header.SapZpmFuncLocZpmFuncLocKla000[numCla].KLASS = inputCla.KLASS;
+			FOR inputCt AS input.zpm_func_loc_kla[numCla].zpm_func_loc_ct[] DO
+				
+				SET header.SapZpmFuncLocZpmFuncLocKla000[numCla].SapZpmFuncLocZpmFuncLocCt000[numCt].ATNAM = inputCt.ATNAM;
+				SET header.SapZpmFuncLocZpmFuncLocKla000[numCla].SapZpmFuncLocZpmFuncLocCt000[numCt].ATWRT = inputCt.ATWRT;
+				SET numCt = numCt +1;
+			END FOR;
+			
+			SET numCla = numCla + 1;
+		END FOR;
+		--------GEN
+		SET header.SapZpmFuncLocZpmFuncLocGen000.ANSDT = input.zpm_func_loc_gen.ANSDT;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.ANSWT = input.zpm_func_loc_gen.ANSWT;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.BAUJJ = input.zpm_func_loc_gen.BAUJJ;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.BAUMM = input.zpm_func_loc_gen.BAUMM;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.BEGRU = input.zpm_func_loc_gen.BEGRU;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.BRGEW = input.zpm_func_loc_gen.BRGEW;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.EQART = input.zpm_func_loc_gen.EQART;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.FLTYP = input.zpm_func_loc_gen.FLTYP;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.GEWEI = input.zpm_func_loc_gen.GEWEI;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.GROES = input.zpm_func_loc_gen.GROES;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.HERLD = input.zpm_func_loc_gen.HERLD;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.HERST = input.zpm_func_loc_gen.HERST;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.INBDT = input.zpm_func_loc_gen.INBTD;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.INVNR = input.zpm_func_loc_gen.INVNR;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.MAPAR = input.zpm_func_loc_gen.MAPAR;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.PLTXT = input.zpm_func_loc_gen.PLTXT;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.SERGE = input.zpm_func_loc_gen.SERGE;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.TYPBZ = input.zpm_func_loc_gen.TYPBZ;
+		SET header.SapZpmFuncLocZpmFuncLocGen000.WAERS = input.zpm_func_loc_gen.WAERS;
+
+		----------ORG
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.ANLNR = input.zpm_func_loc_org.ANLNR;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.ANLUN = input.zpm_func_loc_org.ANLUN;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.AUFNR = input.zpm_func_loc_org.AUFNR;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.BUKRS = input.zpm_func_loc_org.BURKS;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.DAUFN = input.zpm_func_loc_org.DAUFN;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.GEWRK = input.zpm_func_loc_org.GEWRK;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.GSBER = input.zpm_func_loc_org.GSBER;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.INGRP = input.zpm_func_loc_org.INGRP;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.IWERK = input.zpm_func_loc_org.IWERK;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.KOKRS = input.zpm_func_loc_org.KOKRS;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.KOSTL = input.zpm_func_loc_org.KOSTL;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.PROID = input.zpm_func_loc_org.PROID;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.RBNR = input.zpm_func_loc_org.RBNR;
+		SET header.SapZpmFuncLocZpmFuncLocOrg000.WERGW = input.zpm_func_loc_org.WERGW;
+		
+		-----------STA
+		SET header.SapZpmFuncLocZpmFuncLocSta000.STATO = input.zpm_func_loc_sta.STATO;
+		
+		--------STR
+		SET header.SapZpmFuncLocZpmFuncLocStr000.EINZL = input.zpm_func_loc_str.EINZL;
+		SET header.SapZpmFuncLocZpmFuncLocStr000.IEQUI = input.zpm_func_loc_str.IEQUI;
+		SET header.SapZpmFuncLocZpmFuncLocStr000.POSNR = input.zpm_func_loc_str.POSNR;
+		SET header.SapZpmFuncLocZpmFuncLocStr000.SUBMT = input.zpm_func_loc_str.SUBMT;
+		SET header.SapZpmFuncLocZpmFuncLocStr000.TPLKZ = input.zpm_func_loc_str.TPLKZ;
+		SET header.SapZpmFuncLocZpmFuncLocStr000.TPLMA = input.zpm_func_loc_str.TPLMA;
+		SET header.SapZpmFuncLocZpmFuncLocStr000.TRPNR = input.zpm_func_loc_str.TRPNR;
+		
+		------UBI
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.ABCKZ = input.zpm_func_loc_ubi.ABCKZ;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.ARBPL = input.zpm_func_loc_ubi.ARBPL;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.BEBER = input.zpm_func_loc_ubi.BEBER;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.CITY1 = input.zpm_func_loc_ubi.CITY1;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.COUNTRY = input.zpm_func_loc_ubi.COUNTRY;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.EQFNR = input.zpm_func_loc_ubi.EQFNR;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.FAX_NUMBER = input.zpm_func_loc_ubi.FAX_NUMBER;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.HOUSE_NUM1 = input.zpm_func_loc_ubi.HOUSE_NUM1;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.MSGRP = input.zpm_func_loc_ubi.MSGRP;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.NAME1 = input.zpm_func_loc_ubi.NAME1;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.POST_CODE1 = input.zpm_func_loc_ubi.POST_CODE1;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.REGION = input.zpm_func_loc_ubi.REGION;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.STORT = input.zpm_func_loc_ubi.SORT;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.STREET = input.zpm_func_loc_ubi.STREET;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.SWERK = input.zpm_func_loc_ubi.SWERK;
+		SET header.SapZpmFuncLocZpmFuncLocUbi000.TEL_NUMBER = input.zpm_func_loc_ubi.TEL_NUMBER;
+		
+		--------PAR
+		FOR inputPar AS input.zpm_func_loc_par[] DO
+			SET header.SapZpmFuncLocZpmFuncLocPar000[numPar].PARNR = inputPar.PARNR;
+			SET header.SapZpmFuncLocZpmFuncLocPar000[numPar].PARVW = inputPar.PARVW;
+			SET numPar = numPar + 1;
+		END FOR;
+		
+		RETURN TRUE;
+	END;
+END MODULE;

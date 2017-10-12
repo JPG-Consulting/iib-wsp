@@ -1,0 +1,23 @@
+
+
+CREATE COMPUTE MODULE EmailExceptionSAP
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.ns8:Params;
+		DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns8:Params;
+		DECLARE forn CHARACTER;
+		DECLARE nomeForn CHARACTER;
+		DECLARE msgnum CHARACTER;
+		DECLARE msgid CHARACTER;
+		SET forn = Environment.Variables.BID;
+		SET	nomeForn =  Environment.Variables.CNAME;
+		SET param.obj1 = 'Eccezione SAP per Bravo ID: '||forn||' - Company: '||nomeForn; --OGGETTO E-MAIL			
+		SET param.flusso = 'FORNITORI_BRAVOSOLUTION_EXC_SAP';
+		
+	
+		
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

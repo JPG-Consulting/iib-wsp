@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmMSLMapping.msgnode="ComIbmMSLMapping.msgnode" xmlns:ComIbmSOAPInput.msgnode="ComIbmSOAPInput.msgnode" xmlns:ComIbmSOAPReply.msgnode="ComIbmSOAPReply.msgnode" xmlns:ComIbmSOAPRequest.msgnode="ComIbmSOAPRequest.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor"
+    xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="HUB_Sf_Inbound.msgflow" nsPrefix="HUB_Sf_Inbound.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="HUB_Sf_Inbound" bundleName="HUB_Sf_Inbound" pluginId="IME_EE_HUB_SALESFORCE_INBOUND"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_EE_HUB_SALESFORCE_INBOUND/icons/full/obj16/HUB_Sf_Inbound.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_EE_HUB_SALESFORCE_INBOUND/icons/full/obj30/HUB_Sf_Inbound.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmSOAPInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="17,91" wsdlFileName="WS_HUB_CRM_Inbound.wsdl" selectedPortType="WS_HUB_CRM_Inbound" selectedBinding="WS_HUB_CRM_InboundHttpBinding" selectedPort="WS_HUB_CRM_InboundHttpPort" targetNamespace="http://WS_HUB_CRM_Inbound" useHTTPTransport="true" urlSelector="/WS_HUB_Inbound_Salesforce" messageSetProperty="{InboundLib}" parserXmlnscBuildTreeUsingXMLSchema="false" validateMaster="none">
+        <translation xmi:type="utility:ConstantString" string="InboundService"/>
+        <nsMappingTable nsPrefix="tns" namespace="urn:enterprise.soap.sforce.com"/>
+        <nsMappingTable nsPrefix="tns1" namespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+        <nsMappingTable nsPrefix="mrm" namespace="http://WS_HUB_CRM_Inbound"/>
+        <monitorEvents eventSourceDescription="Transaction rollback" eventSourceName="InboundService.transaction.Rollback" eventIdentity="Transazione fallita - Rollback">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/XMLNSC/mrm:WSHubCrmInbound/inboundRequest/tracking/idMessaggio" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Transazione fallita - Rollback"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="InboundService.terminal.failure" eventIdentity="Ricezione esito fallita">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/XMLNSC/mrm:WSHubCrmInbound/inboundRequest/tracking/idMessaggio" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Ricezione esito fallita"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="434,182" wsdlFileName="Enterprise.wsdl" selectedPortType="Soap" selectedBinding="SoapBinding" selectedOperation="login" selectedPort="Soap" targetNamespace="urn:enterprise.soap.sforce.com" useHTTPTransport="true" webServiceURL="https://test.salesforce.com/services/Soap/c/36.0/0DF3E0000008OLd" sslProtocol="TLSv1.1">
+        <translation xmi:type="utility:ConstantString" string="Login"/>
+        <nsMappingTable nsPrefix="tns" namespace="urn:enterprise.soap.sforce.com"/>
+        <nsMappingTable nsPrefix="tns1" namespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+        <nsMappingTable nsPrefix="mrm" namespace="http://WS_HUB_CRM_Inbound"/>
+        <nsMappingTable nsPrefix="tns2" namespace="http://schemas.xmlsoap.org/soap/envelope/"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="Login.terminal.failure" eventIdentity="Login SF fallito">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/SOAP/Body/mrm:WSHubCrmInbound/inboundRequest/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Login SF fallito"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Fault terminal" eventSourceName="Login.terminal.fault" eventIdentity="Login fallito">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/SOAP/Body/mrm:WSHubCrmInbound/inboundRequest/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Login fallito"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="526,78" validateMaster="none">
+        <translation xmi:type="utility:ConstantString" string="InboundReply"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="127,87" dataSource="HUB_EAI" computeExpression="esql://routine/#BuildRequest.Main">
+        <translation xmi:type="utility:ConstantString" string="BuildRequest"/>
+      </nodes>
+      <nodes xmi:type="ComIbmMSLMapping.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="361,102" mappingExpression="msl://{default}#BuildEsito">
+        <translation xmi:type="utility:ConstantString" string="BuildEsito"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="218,87" wsdlFileName="Salesforce_Iren_HUB_Inbound_v7.wsdl" selectedPortType="Iren_HUB_InboundPortType" selectedBinding="Iren_HUB_InboundBinding" selectedOperation="WSHubCrmInbound" selectedPort="Iren_HUB_Inbound" targetNamespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound" useHTTPTransport="true" webServiceURL="https://cs82.salesforce.com/services/Soap/class/Iren_HUB_Inbound" sslProtocol="TLSv1.1"
+          usingWsAddressing="true" populateLocalEnvWithWSAInfo="true">
+        <translation xmi:type="utility:ConstantString" string="SfInbound"/>
+        <mustUnderstandResponseHeadersWSDLDefined header="Header" namespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+        <nsMappingTable nsPrefix="tns" namespace="urn:enterprise.soap.sforce.com"/>
+        <nsMappingTable nsPrefix="tns1" namespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+        <nsMappingTable nsPrefix="mrm" namespace="http://WS_HUB_CRM_Inbound"/>
+        <nsMappingTable nsPrefix="tns2" namespace="http://schemas.xmlsoap.org/soap/envelope/"/>
+        <nsMappingTable nsPrefix="xml" namespace="http://www.w3.org/XML/1998/namespace"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="SfInbound.terminal.failure" eventIdentity="Invio esito fallito">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/SOAP/Body/mrm:WSHubCrmInbound/inboundRequest/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+              <nsPrefixMap prefix="xml" nsURI="http://www.w3.org/XML/1998/namespace"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+              <nsPrefixMap prefix="xml" nsURI="http://www.w3.org/XML/1998/namespace"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Invio esito fallito"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+              <nsPrefixMap prefix="xml" nsURI="http://www.w3.org/XML/1998/namespace"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Fault terminal" eventSourceName="SfInbound.terminal.fault" eventIdentity="Invio esito Fault">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/SOAP/Body/mrm:WSHubCrmInbound/inboundRequest/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+              <nsPrefixMap prefix="xml" nsURI="http://www.w3.org/XML/1998/namespace"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Invio esito Fault"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns2" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+              <nsPrefixMap prefix="xml" nsURI="http://www.w3.org/XML/1998/namespace"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="117,15" destination="none">
+        <translation xmi:type="utility:ConstantString" string="WSError"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="633,180">
+        <translation xmi:type="utility:ConstantString" string="LoginErrorReply"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="290,175" dataSource="HUB_EAI" computeExpression="esql://routine/#HUB_Sf_Inbound_InvalidSessionOrFault.Main">
+        <translation xmi:type="utility:ConstantString" string="InvalidSessionOrFault"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="598,129" dataSource="HUB_EAI" computeExpression="esql://routine/#HUB_Sf_Inbound_StoreSessionID.Main">
+        <translation xmi:type="utility:ConstantString" string="StoreSessionID"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="56,196" computeExpression="esql://routine/#HUB_Sf_Inbound_TIMOEmockResponse.Main">
+        <translation xmi:type="utility:ConstantString" string="TIMOEmockResponse"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.fault" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_15" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.fault" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_20" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_22" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_12" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in">
+        <bendPoints>104,-10,487,36</bendPoints>
+        <bendPoints>108,109,491,155</bendPoints>
+        <bendPoints>-411,109,-28,155</bendPoints>
+      </connections>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

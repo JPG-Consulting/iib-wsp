@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/SapZInternalorderGetdetail.xsd"/>
+    <output path="/AnagraficheCO_InlineSchema.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapreturn468436650"/>
+        <namespace kind="supplement" prefix="in4" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzinternalordergetdetail"/>
+        <namespace kind="supplement" prefix="in3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapsystemstatus2109464951"/>
+        <namespace kind="supplement" prefix="in5" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapuserstatus1019811316"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmasterdata1057246925"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="OI_getDetailToResp">
+        <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzinternalordergetdetail" path="mb:msg(SapZInternalorderGetdetail,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_SapZInternalorderGetdetail"/>
+        <output namespace="http://www.gruppoiren.it/AnagraficheCO/" path="mb:msg(Output,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Output"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_SapZInternalorderGetdetail/Properties"/>
+            <output path="$ComIbmMessageAssembly_Output/Properties"/>
+        </move>
+        <foreach>
+            <input path="$ComIbmMessageAssembly_SapZInternalorderGetdetail/SapZInternalorderGetdetail/SapMasterData" var="SapMasterData"/>
+            <input auxiliary="true" path="$ComIbmMessageAssembly_SapZInternalorderGetdetail/SapZInternalorderGetdetail/SapSystemStatus" var="SapSystemStatus"/>
+            <output path="$ComIbmMessageAssembly_Output/Output/oggettoContabile"/>
+            <test lang="xpath">fn:string-length($SapMasterData/AUFNR)&gt;0</test>
+            <assign value="OI">
+                <output path="@tipo"/>
+            </assign>
+            <move>
+                <input path="$SapMasterData/KTEXT" var="KTEXT"/>
+                <output path="descrizione"/>
+            </move>
+            <move>
+                <input path="$SapMasterData/BUKRS" var="BUKRS"/>
+                <output path="societa"/>
+            </move>
+            <move>
+                <input path="$SapMasterData/ZZ1ADB_1"/>
+                <output path="areaBusiness"/>
+            </move>
+            <move>
+                <input path="$SapMasterData/ZZ1AMBITO1"/>
+                <output path="ambito"/>
+            </move>
+            <move>
+                <input path="$SapMasterData/ZZ1SUBAMB1"/>
+                <output path="subambito"/>
+            </move>
+            <condition>
+                <if>
+                    <input path="$SapSystemStatus/." var="SapSystemStatus"/>
+                    <input path="$SapMasterData/." var="SapMasterData1"/>
+                    <output path="stato"/>
+                    <test lang="xpath">fn:count($SapSystemStatus[ORDERID = $SapMasterData1/AUFNR and SY_ST_TEXT = "RIL."]) &gt; 0</test>
+                    <assign value="VALIDO">
+                        <output path="."/>
+                    </assign>
+                </if>
+                <else>
+                    <output path="stato"/>
+                    <assign value="NON VALIDO">
+                        <output path="."/>
+                    </assign>
+                </else>
+            </condition>
+            <move>
+                <input path="$SapMasterData/AUART" var="AUART"/>
+                <output path="tipoOdi"/>
+            </move>
+            <move>
+                <input path="$SapMasterData/AUFNR"/>
+                <output path="codice"/>
+            </move>
+        </foreach>
+    </mappingDeclaration>
+</mappingRoot>

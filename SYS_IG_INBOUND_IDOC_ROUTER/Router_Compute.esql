@@ -1,0 +1,13 @@
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapgenericidocobject';
+
+
+CREATE COMPUTE MODULE Route_IDoc
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.BLOB.BLOB = InputRoot.DataObject.ns:SapGenericIDocObject.IDocStreamData;
+		SET OutputLocalEnvironment.Destination.MQ.DestinationData[1].queueName = InputRoot.DataObject.ns:SapGenericIDocObject.IDocType;
+		RETURN TRUE;
+	END;
+
+	
+END MODULE;

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII" xmlns:dat="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APN/v1" xmlns:msgSII="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII">
+
+	<include schemaLocation="SII_PdC-MessaggioSII.xsd"/>
+
+	<import namespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APN/v1" schemaLocation="APN.xsd"/>
+	
+	<!-- ************** APN:0200 ************** -->
+	
+	<complexType name="ComunicazioneAnnullamentoPraticaMessaggioSIIType">
+		<complexContent>
+			<restriction base="msgSII:MessaggioSIIType">
+				<sequence>
+					<element name="RichiestaSII" type="msgSII:ComunicazioneAnnullamentoPraticaRichiestaSIIType"/>
+					<element name="DatiSII" type="msgSII:ComunicazioneAnnullamentoPraticaDatiSIIType"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<complexType name="ComunicazioneAnnullamentoPraticaRichiestaSIIType">
+		<complexContent>
+			<restriction base="msgSII:RichiestaSIIType">
+				<sequence>
+					<element name="AzioneRichiesta" type="msgSII:ComunicazioneAnnullamentoPraticaAzioneRichiestaType"/>
+					<element name="Erogatore" type="msgSII:UtenteType"/>
+					<element name="Fruitore" type="msgSII:UtenteType"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<complexType name="ComunicazioneAnnullamentoPraticaAzioneRichiestaType">
+		<complexContent>
+			<restriction base="msgSII:AzioneRichiestaType">
+				<sequence>
+					<element fixed="APN" name="Servizio" type="string"/>
+					<element fixed="APN.0200" name="Operazione" type="string"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<complexType name="ComunicazioneAnnullamentoPraticaDatiSIIType">
+		<sequence>
+			<element name="Flusso" type="dat:FlussoAPN.0200Type"/>
+		</sequence>
+	</complexType>
+	
+	<!-- ************** APN:0200 ************** -->
+
+	<!-- ************** APN:RESP ************** -->
+
+	<complexType name="DefaultResponseMessaggioSIIType">
+		<complexContent>
+			<restriction base="msgSII:MessaggioSIIType">
+				<sequence>
+					<element name="RichiestaSII" type="msgSII:DefaultResponseRichiestaSIIType"/>
+					<element name="DatiSII" type="msgSII:DefaultResponseDatiSIIType"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<complexType name="DefaultResponseRichiestaSIIType">
+		<complexContent>
+			<restriction base="msgSII:RichiestaSIIType">
+				<sequence>
+					<element name="AzioneRichiesta" type="msgSII:DefaultResponseAzioneRichiestaType"/>
+					<element name="Erogatore" type="msgSII:UtenteType"/>
+					<element name="Fruitore" type="msgSII:UtenteType"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+	<complexType name="DefaultResponseAzioneRichiestaType">
+		<complexContent>
+			<restriction base="msgSII:AzioneRichiestaType">
+				<sequence>
+					<element fixed="APN" name="Servizio" type="string"/>
+					<element fixed="APN.RESP" name="Operazione" type="string"/>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType> 
+	<complexType name="DefaultResponseDatiSIIType">
+		<sequence>
+			<element name="Flusso" type="dat:FlussoAPN.RESPType"/>
+		</sequence>
+	</complexType>
+
+	<!-- ************** APN:RESP ************** -->
+	
+</schema>

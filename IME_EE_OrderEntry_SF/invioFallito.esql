@@ -1,0 +1,12 @@
+
+
+CREATE COMPUTE MODULE invioFallito
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		UPDATE Database.HUB_EAI.EE_DATI_PRESTAZIONI_EVENT AS T
+		 SET STATO					   = 'INVIO FALLITO'    	 		   
+		WHERE T.ID_EE_PRESTAZIONE_TRACKING = Environment.ns25:OEWebForm.ns25:tracking.ns25:codicePratica; --'IP16F14SE1E0AHO';--Environment.ns25:OEWebForm. ;	
+		RETURN FALSE;	
+	END;
+
+END MODULE;

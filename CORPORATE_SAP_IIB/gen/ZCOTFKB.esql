@@ -1,0 +1,55 @@
+BROKER SCHEMA gen
+DECLARE ns3 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzcotfkb';
+
+
+CREATE COMPUTE MODULE ZCOTFKB
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Variables.idocNum = InputRoot.DataObject.ns3:SapZcotfkb.SapZcotfkbIDocBO.SapIDocControlRecord.DOCNUM;
+		DECLARE idocData REFERENCE TO InputRoot.DataObject.ns3:SapZcotfkb.SapZcotfkbIDocBO.SapZcotfkbDataRecord.SapZcotfkbZcostfkb000[1];
+		DECLARE c INTEGER;
+		DECLARE updated INTEGER;
+		DECLARE inserted INTEGER;
+		SET updated = 0;
+		SET inserted = 0;
+		
+		WHILE LASTMOVE(idocData)=TRUE DO
+		DECLARE codice CHAR;
+		
+		IF LENGTH(TRIM(idocData.FKBER)) > 0 THEN
+			SET codice = idocData.FKBER;
+		ELSE
+			SET codice = '';
+		END IF;
+		
+		SET c = SELECT COUNT(*)
+				FROM Database.S1_DEC_ANAG_TECNOLOGIA
+				WHERE S1_DEC_ANAG_TECNOLOGIA.CODICE = codice;
+				
+		IF c > 0 THEN
+			UPDATE Database.S1_DEC_ANAG_TECNOLOGIA SET DESCRIZIONE = idocData.FKBTX
+			WHERE S1_DEC_ANAG_TECNOLOGIA.CODICE = codice;
+			
+			set updated = updated + 1;
+			
+		ELSE
+			INSERT INTO Database.S1_DEC_ANAG_TECNOLOGIA VALUES(codice, idocData.FKBTX, NULL);
+			
+			SET inserted = inserted + 1;
+		
+		END IF;
+				
+		MOVE idocData NEXTSIBLING NAME 'SapZcotfkbZcostfkb000';
+		END WHILE;
+		
+		SET OutputRoot.XMLNSC.ns5:Params.flusso = 'ZCOTFKB';
+		SET OutputRoot.XMLNSC.ns5:Params.body1 = inserted;
+		SET OutputRoot.XMLNSC.ns5:Params.body2 = updated;
+		
+		SET OutputLocalEnvironment.Variables.dbString = 'Processato IDOC di tipo ZCOTFKB - Inseriti '||CAST(inserted AS CHARACTER)||' record - Aggiornati '|| CAST(0 AS CHARACTER) ||' record';
+
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

@@ -1,0 +1,61 @@
+
+
+CREATE COMPUTE MODULE AMBIENTE_ECOS_SAP_MASSIVO_SELECT_PROFILI
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- LOGICA
+		-- recupero dall'rl chiamante il parametro passato valori corretti I (isole) , C (ontenitori)
+		-- acceso al db sql server
+		-- recupero valori distinti dalla tabella
+		-- ciclio ,  invio dati ad un http con propagate
+		-- count delle righe processate.
+		
+		 DECLARE count     INTEGER;
+		 DECLARE end_point CHARACTER;
+		 
+		 DECLARE tipo      CHARACTER;
+		
+      	 IF (InputLocalEnvironment.HTTP.Input.QueryString.tipo = 'I')THEN
+			   SET tipo = 'conferimenti';
+		 ELSEIF (InputLocalEnvironment.HTTP.Input.QueryString.tipo = 'C') THEN
+			   SET tipo = 'svuotamenti';
+		 
+		 ELSE
+			   SET tipo = 'parametro non valido !';
+		 END IF;
+		 
+		 DECLARE dsn_endp CHARACTER 'INT_ENGINE';
+		 DECLARE dsn_ecos CHARACTER 'ECOS';
+		 
+		 SET Environment.Variables.indice = 0;
+					      	
+		 SET Environment.Query[] = (PASSTHRU('SELECT T.VALORE
+				      		  FROM INT_ENGINE.IIB_VAR_CFG T
+					          WHERE T.FLUSSO    = ? 
+						      AND T.VARIABILE = ?' TO Database.{dsn_endp} VALUES('ECOS_SAP', 'ENDPOINT_IIB')));
+		   
+		 SET Environment.Tasapexpsv.Sapexpsv_cod[] =  PASSTHRU('SELECT DISTINCT (P.sapexpsv_cod)
+											 			 FROM  tasapexpsv P
+											 			where  P.sapexpsv_flag_tipo_exp = ?
+											  			  and  P.sapexpsv_flag_tipo = ? ' TO Database.{dsn_ecos} VALUES ('S', InputLocalEnvironment.HTTP.Input.QueryString.tipo));
+											   
+		
+		  
+  
+		 FOR righe AS  Environment.Tasapexpsv.Sapexpsv_cod[] DO
+		 	   
+		 	   SET OutputLocalEnvironment.Destination.HTTP.RequestURL = Environment.Query[1].VALORE||tipo||'?sapexpv_cod='||righe.sapexpsv_cod;
+		 	      
+		 	    PROPAGATE TO TERMINAL 'out1';   
+		     
+	     END FOR;
+	     
+	     SET OutputLocalEnvironment.Variables.count = CARDINALITY(Environment.Tasapexpsv.Sapexpsv_cod[]);
+	     
+	     
+ 
+		RETURN TRUE;
+	END;
+
+	 
+END MODULE;

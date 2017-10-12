@@ -1,0 +1,13 @@
+
+
+CREATE COMPUTE MODULE Users_DeleteUser
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF CARDINALITY(InputLocalEnvironment.HTTP.Input.Path.Segment[]) = 3 AND InputLocalEnvironment.HTTP.Input.Path.Segment[3] IS NOT NULL THEN
+			DELETE FROM Database.IIB_USERS AS T WHERE T.ID_USER = InputLocalEnvironment.HTTP.Input.Path.Segment[3];
+		ELSE
+			SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 404;
+		END IF;
+		RETURN TRUE;
+	END;
+END MODULE;

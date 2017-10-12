@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_SE3/v1" xmlns:dat="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_SE3/v1" xmlns:sel="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3" xmlns:sg="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5">
+	
+	<xs:import namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5" schemaLocation="StruttureGenerali_v1_5.xsd"/>
+	<xs:import namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3" schemaLocation="StruttureEl_v1_3.xsd"/>
+	
+	<!-- ************** FLUSSI **************** -->
+	
+	<!-- *************** 0200 ***************** -->
+	
+	<xs:complexType name="FlussoSE3.0200Type">
+		<xs:complexContent>
+			<xs:extension base="sg:FlussoTypeAbstract">
+				<xs:sequence>
+					<xs:element name="IdentificativiRichiesta" type="sg:IdentificativiRichiestaUtenteGestoreCPType"/>
+					<xs:element name="DatiTecnici" type="sel:DatiTecniciBaseType"/>
+					<xs:element name="DatiSwitching" type="sel:DatiSwitchingBaseType"/>
+				</xs:sequence>
+				<xs:attribute fixed="SE3" name="COD_SERVIZIO" use="required"/>
+				<xs:attribute fixed="0200" name="COD_FLUSSO" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- *************** RESP ***************** 
+
+	<xs:complexType name="FlussoSE3.RESPType" >
+		<xs:complexContent>
+			<xs:extension base="sg:FlussoTypeAbstract">
+				<xs:sequence>
+					<xs:element name="IdentificativiRichiesta" type="sg:IdentificativiRichiestaUtenteGestoreCPType"/>
+					<xs:element name="Esito" type="sg:DefaultEsitoType"/>
+				</xs:sequence>        
+				<xs:attribute name="COD_SERVIZIO" use="required" fixed="SE3"/>
+				<xs:attribute name="COD_FLUSSO" use="required" fixed="RESP"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+-->	
+
+
+	<xs:element name="FlussoSE3.0200Type"
+		type="dat:FlussoSE3.0200Type">
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,22 @@
+DECLARE ns221 NAMESPACE 'http://schemas.xmlsoap.org/soap/envelope/';
+DECLARE ns24 NAMESPACE 'urn:fault.enterprise.soap.sforce.com';
+
+
+CREATE COMPUTE MODULE HUB_Sf_Inbound_InvalidSessionOrFault
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE faultcode CHARACTER;
+		SET faultcode = InputRoot.SOAP.Body.ns221:Fault.faultcode;
+		IF faultcode = 'sf:INVALID_SESSION_ID' THEN
+			SET OutputRoot.SOAP.Body.ns25:login.ns25:username = THE(SELECT ITEM T.USERNAME
+																	FROM Database.SF_SESSION AS T);
+			SET OutputRoot.SOAP.Body.ns25:login.ns25:password = THE(SELECT ITEM T.PASSWORD
+																	FROM Database.SF_SESSION AS T);
+			PROPAGATE TO TERMINAL 'out1';
+		ELSE
+			RETURN FALSE;
+		END IF;
+		
+		RETURN FALSE;
+	END;
+END MODULE;

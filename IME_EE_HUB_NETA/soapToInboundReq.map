@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd" var="var"/>
+    <output path="mbsharedlib://InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="out2" uri="http://HUB_CRM_EE/crm_dati"/>
+        <namespace kind="supplement" prefix="out" uri="http://WS_HUB_CRM_Inbound"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="soapToInboundReq">
+        <input path="$var/mb:msg(SOAP_Domain_Msg,assembly,SOAP,Properties)" var="ComIbmMessageAssembly_SOAP_Domain_Msg">
+            <cast path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/any" qualifier="{http://WS_HUB_CRM_Inbound}WSHubCrmInbound" ref="var1"/>
+        </input>
+        <output namespace="http://WS_HUB_CRM_Inbound" path="mb:msg(WSHubCrmInbound,assembly,XMLNSC,LocalEnvironment,Properties)" var="ComIbmMessageAssembly_WSHubCrmInbound"/>
+        <local>
+            <input path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/WSHubCrmInbound"/>
+            <output path="$ComIbmMessageAssembly_WSHubCrmInbound/WSHubCrmInbound"/>
+            <move>
+                <input path="inboundRequest"/>
+                <output path="inboundRequest"/>
+            </move>
+        </local>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema targetNamespace="http://www.gruppoiren.it/schemas" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:Q1="http://www.gruppoiren.it/schemas">
+    <xsd:complexType name="IBGM">
+    	<xsd:sequence>
+    		<xsd:element name="numeroFattura" type="xsd:string"></xsd:element>
+    		<xsd:element name="row" type="xsd:string"></xsd:element>
+    		<xsd:element name="IDT1" type="Q1:IDT1" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="IFT1" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="ICUX" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="ICNT" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="IMO3" type="Q1:IMO3" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="ITA2" type="Q1:ITA2" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="IRF1" type="Q1:IRF1" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="INA1" type="Q1:INA1" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="ILIN" type="Q1:ILIN" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+
+    <xsd:complexType name="EDI">
+    	<xsd:sequence>
+    		<xsd:element ref="Q1:IBGM" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="IBGM" type="Q1:IBGM"></xsd:element>
+
+    <xsd:complexType name="IDT1">
+    	<xsd:sequence>
+    		<xsd:choice minOccurs="0" maxOccurs="1">
+	    		<xsd:element name="dataFattura" type="xsd:string"></xsd:element>
+	    		<xsd:element name="dataScadenza" type="xsd:string"></xsd:element>
+    		</xsd:choice>
+    		<xsd:element name="row" type="xsd:string"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="IMO3">
+    	<xsd:sequence>
+    		<xsd:element name="codiceAddebito" type="xsd:string"></xsd:element>
+    		<xsd:element name="segno" type="xsd:string"></xsd:element>
+    		<xsd:element name="importo" type="xsd:string"></xsd:element>
+    		<xsd:element name="valuta" type="xsd:string"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ITA2">
+    	<xsd:sequence>
+    		<xsd:element name="codiceIVA1" type="xsd:string"></xsd:element>
+    		<xsd:element name="codiceIVA2" type="xsd:string"></xsd:element>
+    		<xsd:element name="codiceImponibile" type="xsd:string"></xsd:element>
+    		<xsd:element name="segnoImponibile" type="xsd:string"></xsd:element>
+    		<xsd:element name="imponibile" type="xsd:string"></xsd:element>
+    		<xsd:element name="importoIVA" type="xsd:string"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="IRF1">
+    	<xsd:sequence>
+    		<xsd:element name="idFlusso" type="xsd:string"></xsd:element>
+    		<xsd:element name="IDT2" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="INA1">
+    	<xsd:sequence>
+    		<xsd:element name="row" type="xsd:string"></xsd:element>
+    		<xsd:element name="IFII" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="ICTA" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="IRF2" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ILIN">
+    	<xsd:sequence>
+    		<xsd:element name="tipoIlin" type="xsd:string"></xsd:element>
+    		<xsd:element name="row" type="xsd:string"></xsd:element>
+    		<xsd:element name="IQTY" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="IDT3" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="IFT3" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="IMO1" type="Q1:IMO1" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="IPRI" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element name="ITA1" type="Q1:ITA1" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="IMO1">
+    	<xsd:sequence>
+    		<xsd:element name="codiceAddebito" type="xsd:string"></xsd:element>
+    		<xsd:element name="segno" type="xsd:string"></xsd:element>
+    		<xsd:element name="importo" type="xsd:string"></xsd:element>
+    		<xsd:element name="valuta" type="xsd:string"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ITA1">
+    	<xsd:sequence>
+    		<xsd:element name="codiceIVA" type="xsd:string"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="EDI" type="Q1:EDI"></xsd:element>
+</xsd:schema>

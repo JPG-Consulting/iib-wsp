@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	targetNamespace="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII"
+	xmlns:dat="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_AE1/v1"
+	xmlns:msgSII="http://www.acquirenteunico.it/schemas/2010/SII_AU/MessaggioSII">
+
+
+	<xsd:import
+		namespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_AE1/v1"
+		schemaLocation="AE1.xsd" />
+
+	<!-- ************** AE1:0050 ************** -->
+
+	<xsd:include schemaLocation="../SII_PdC-MessaggioSII.xsd"></xsd:include>
+	<xsd:complexType
+		name="ComunicazioneAggiornamentoDatiRcuMessaggioSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:MessaggioSIIType">
+				<xsd:sequence>
+					<xsd:element name="RichiestaSII"
+						type="msgSII:ComunicazioneAggiornamentoDatiRcuRichiestaSIIType" />
+					<xsd:element name="DatiSII"
+						type="msgSII:ComunicazioneAggiornamentoDatiRcuDatiSIIType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="ComunicazioneAggiornamentoDatiRcuRichiestaSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:RichiestaSIIType">
+				<xsd:sequence>
+					<xsd:element name="AzioneRichiesta"
+						type="msgSII:ComunicazioneAggiornamentoDatiRcuAzioneRichiestaType" />
+					<xsd:element name="Erogatore"
+						type="msgSII:UtenteType" />
+					<xsd:element name="Fruitore"
+						type="msgSII:UtenteType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="ComunicazioneAggiornamentoDatiRcuAzioneRichiestaType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:AzioneRichiestaType">
+				<xsd:sequence>
+					<xsd:element fixed="AE1" name="Servizio"
+						type="xsd:string" />
+					<xsd:element fixed="AE1.0050" name="Operazione"
+						type="xsd:string" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="ComunicazioneAggiornamentoDatiRcuDatiSIIType">
+		<xsd:sequence>
+			<xsd:element name="Flusso" type="dat:FlussoAE1.0050Type" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- ************** AE1:0050 ************** -->
+
+	<!-- ************** AE1:0100 ************** -->
+
+	<xsd:complexType
+		name="AmmissibilitaComunicazioneMessaggioSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:MessaggioSIIType">
+				<xsd:sequence>
+					<xsd:element name="RichiestaSII"
+						type="msgSII:AmmissibilitaComunicazioneRichiestaSIIType" />
+					<xsd:element name="DatiSII"
+						type="msgSII:AmmissibilitaComunicazioneDatiSIIType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="AmmissibilitaComunicazioneRichiestaSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:RichiestaSIIType">
+				<xsd:sequence>
+					<xsd:element name="AzioneRichiesta"
+						type="msgSII:AmmissibilitaComunicazioneAzioneRichiestaType" />
+					<xsd:element name="Erogatore"
+						type="msgSII:UtenteType" />
+					<xsd:element name="Fruitore"
+						type="msgSII:UtenteType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="AmmissibilitaComunicazioneAzioneRichiestaType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:AzioneRichiestaType">
+				<xsd:sequence>
+					<xsd:element fixed="AE1" name="Servizio"
+						type="xsd:string" />
+					<xsd:element fixed="AE1.0100" name="Operazione"
+						type="xsd:string" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="AmmissibilitaComunicazioneDatiSIIType">
+		<xsd:sequence>
+			<xsd:element name="Flusso" type="dat:FlussoAE1.0100Type" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- ************** AE1:0100 ************** -->
+
+	<!-- ************** AE1:0150 ************** -->
+
+	<xsd:complexType name="EsitoAggiornamentoDatiRcuMessaggioSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:MessaggioSIIType">
+				<xsd:sequence>
+					<xsd:element name="RichiestaSII"
+						type="msgSII:EsitoAggiornamentoDatiRcuRichiestaSIIType" />
+					<xsd:element name="DatiSII"
+						type="msgSII:EsitoAggiornamentoDatiRcuDatiSIIType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="EsitoAggiornamentoDatiRcuRichiestaSIIType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:RichiestaSIIType">
+				<xsd:sequence>
+					<xsd:element name="AzioneRichiesta"
+						type="msgSII:EsitoAggiornamentoDatiRcuAzioneRichiestaType" />
+					<xsd:element name="Erogatore"
+						type="msgSII:UtenteType" />
+					<xsd:element name="Fruitore"
+						type="msgSII:UtenteType" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType
+		name="EsitoAggiornamentoDatiRcuAzioneRichiestaType">
+		<xsd:complexContent>
+			<xsd:restriction base="msgSII:AzioneRichiestaType">
+				<xsd:sequence>
+					<xsd:element fixed="AE1" name="Servizio"
+						type="xsd:string" />
+					<xsd:element fixed="AE1.0150" name="Operazione"
+						type="xsd:string" />
+				</xsd:sequence>
+			</xsd:restriction>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="EsitoAggiornamentoDatiRcuDatiSIIType">
+		<xsd:sequence>
+			<xsd:element name="Flusso" type="dat:FlussoAE1.0150Type" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- ************** AE1:0150 ************** -->
+
+</xsd:schema>

@@ -1,0 +1,13 @@
+BROKER SCHEMA gen
+
+
+CREATE COMPUTE MODULE Delete_Request_Response_sendFailure
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.ns:DeleteResponse.status.status = 'KO';
+		SET OutputRoot.XMLNSC.ns:DeleteResponse.status.descrizione = parseToString(InputExceptionList.RecoverableException);
+		SET OutputRoot.XMLNSC.ns:DeleteResponse.status.ID = '500 Internal Error';
+		RETURN TRUE;
+	END;
+
+END MODULE;

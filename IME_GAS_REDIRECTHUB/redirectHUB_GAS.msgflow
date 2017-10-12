@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmHTTPHeader.msgnode="ComIbmHTTPHeader.msgnode" xmlns:ComIbmSOAPInput.msgnode="ComIbmSOAPInput.msgnode" xmlns:ComIbmSOAPReply.msgnode="ComIbmSOAPReply.msgnode" xmlns:ComIbmSOAPRequest.msgnode="ComIbmSOAPRequest.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor"
+    xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="redirectHUB_GAS.msgflow" nsPrefix="redirectHUB_GAS.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="redirectHUB_GAS" bundleName="redirectHUB_GAS" pluginId="IME_GAS_REDIRECTHUB"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_GAS_REDIRECTHUB/icons/full/obj16/redirectHUB_GAS.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_GAS_REDIRECTHUB/icons/full/obj30/redirectHUB_GAS.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmSOAPReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="456,80" validateMaster="none">
+        <translation xmi:type="utility:ConstantString" string="SOAP Reply"/>
+        <nsMappingTable nsPrefix="mrm" namespace="http://WS_HUB_CRM_Inbound"/>
+        <nsMappingTable nsPrefix="tns" namespace="http://schemas.xmlsoap.org/soap/envelope/"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="77,78" wsdlFileName="WS_HUB_CRM_Inbound_GAS.wsdl" selectedPortType="WS_HUB_CRM_Inbound" selectedBinding="WS_HUB_CRM_InboundHttpBinding" selectedPort="WS_HUB_CRM_InboundHttpPort" targetNamespace="http://HUB_CRM_GAS/crm_dati" useHTTPTransport="true" urlSelector="/WS_HUB_CRM_Inbound_GAS" allowQueryWSDL="true" usingWsAddressing="true" populateLocalEnvWithWSAInfo="true" messageSetProperty="{InboundLib_GAS}"
+          parserXmlnscBuildTreeUsingXMLSchema="false" parserXmlnscMixedContentRetainMode="all" validateMaster="none" additionalInstances="5">
+        <translation xmi:type="utility:ConstantString" string="SOAP Input"/>
+        <nsMappingTable nsPrefix="mrm" namespace="http://WS_HUB_CRM_Inbound"/>
+        <nsMappingTable nsPrefix="tns" namespace="http://schemas.xmlsoap.org/soap/envelope/"/>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Out terminal" eventSourceName="SOAP Input.terminal.out" eventIdentity="Ricevuto esito asincrono">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/SOAP/Body/mrm:WSHubCrmInbound/inboundRequest/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA" bitstreamContent="body"/>
+            <eventName literal="Ricevuto esito asincrono"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="319,78" wsdlFileName="WS_HUB_CRM_Inbound_GAS.wsdl" selectedPortType="WS_HUB_CRM_Inbound" selectedBinding="WS_HUB_CRM_InboundHttpBinding" selectedOperation="WSHubCrmInbound" selectedPort="WS_HUB_CRM_InboundHttpPort" targetNamespace="http://HUB_CRM_GAS/crm_dati" useHTTPTransport="true" webServiceURL="http://localhost:7800/WS_HUB_CRM_Inbound_GAS" sslProtocol="TLS" usingWsAddressing="true" populateLocalEnvWithWSAInfo="true"
+          messageSetProperty="{InboundLib_GAS}" parserXmlnscBuildTreeUsingXMLSchema="false" validateMaster="none">
+        <translation xmi:type="utility:ConstantString" string="SOAP Request"/>
+        <nsMappingTable nsPrefix="mrm" namespace="http://WS_HUB_CRM_Inbound"/>
+        <nsMappingTable nsPrefix="tns" namespace="http://schemas.xmlsoap.org/soap/envelope/"/>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Out terminal" eventSourceName="SOAP Request.terminal.out" eventIdentity="Risposta esito asincrono">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/SOAP/Body/mrm:WSHubCrmInbound/inboundRequest/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <applicationData dataLocation="$Root/SOAP/Body/mrm:WSHubCrmInboundResponse/inboundResponse/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA" bitstreamContent="body"/>
+            <eventName literal="Risposta esito asincrono"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="SOAP Request.terminal.failure" eventIdentity="Risposta Esito Asincrono Failure">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/SOAP/Body/mrm:WSHubCrmInbound/inboundRequest/tracking/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Risposta Esito Asincrono Failure"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Fault terminal" eventSourceName="SOAP Request.terminal.fault" eventIdentity="Risposta Esito Asincrono Fault">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/codicePraticaOrigine" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA" bitstreamContent="body"/>
+            <eventName literal="Risposta Esito Asincrono Fault"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="mrm" nsURI="http://WS_HUB_CRM_Inbound"/>
+              <nsPrefixMap prefix="tns" nsURI="http://schemas.xmlsoap.org/soap/envelope/"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="165,76" dataSource="HUB_EAI" computeExpression="esql://routine/#redirectHub_Compute.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="Compute"/>
+        <nsMappingTable nsPrefix="mrm" namespace="http://WS_HUB_CRM_Inbound"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPHeader.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="239,73" httpInputHeader="DeleteHeader" httpResponseHeader="DeleteHeader" httpRequestHeader="Add" httpReplyHeader="DeleteHeader">
+        <translation xmi:type="utility:ConstantString" string="HTTP Header"/>
+        <nameValue4RequestHeader name="SOAPAction" value="http://WS_HUB_CRM_Inbound/WSHubCrmInbound"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="231,162" computeExpression="esql://routine/#showError.Main">
+        <translation xmi:type="utility:ConstantString" string="showError"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_1" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

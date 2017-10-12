@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">      
+    <xsd:element name="societa" type="xsd:string"/>      
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var1"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var3"/>
+    <input path="/SapBapiBus2054GetStatus.xsd" var="var6"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var4"/>
+    <output path="/AnagraficheCO_InlineSchema.xsd" var="var5"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapreturn1637533643"/>
+        <namespace kind="supplement" prefix="in4" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapiwbselementtable495931570"/>
+        <namespace kind="supplement" prefix="in3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapemessagetable1523055734"/>
+        <namespace kind="supplement" prefix="in9" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapewbshierarchietable996998357"/>
+        <namespace kind="supplement" prefix="in5" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapeactivitytable1771165692"/>
+        <namespace kind="supplement" prefix="in6" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapeprojectdefinition91345001"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiprojectgetinfo"/>
+        <namespace kind="supplement" prefix="in7" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapewbselementtable1120337203"/>
+        <namespace kind="supplement" prefix="in8" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapewbsmilestonetable399056885"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+        <namespace kind="supplement" prefix="in14" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapibus2054getstatus"/>
+        <namespace kind="supplement" prefix="in11" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapeuserstatus339791925"/>
+        <namespace kind="supplement" prefix="in10" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapesystemstatus1869395203"/>
+        <namespace kind="supplement" prefix="in13" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/saperesult1139610383"/>
+        <namespace kind="supplement" prefix="in12" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapiwbselements1487552552"/>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="WBS_getInfoObjKOToResp">
+        <input path="$var1/mb:env(Environment)" var="Environment">
+            <cast castType="userDefined" path="$Environment/Variables/any" qualifier="societa" ref="var" var="any"/>
+        </input>
+        <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapibus2054getstatus" path="$var6/mb:msg(SapBapiBus2054GetStatus,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <output path="$var4/mb:env(Environment)" var="Environment1">
+            <cast castType="userDefined" path="$Environment1/Variables/any" qualifier="societa" ref="var" var="any1"/>
+        </output>
+        <output namespace="http://www.gruppoiren.it/AnagraficheCO/" path="$var5/mb:msg(Output,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Output"/>
+        <passthrough>
+            <input path="$Environment/."/>
+            <output path="$Environment1/."/>
+            <updates/>
+        </passthrough>
+        <assign value="WBS non trovata">
+            <output path="$ComIbmMessageAssembly_Output/Output/oggettoContabile/descrizione"/>
+        </assign>
+        <assign value="WBS">
+            <output path="$ComIbmMessageAssembly_Output/Output/oggettoContabile/@tipo"/>
+        </assign>
+        <move>
+            <input path="$Environment/Variables/societa[1]"/>
+            <output path="$ComIbmMessageAssembly_Output/Output/oggettoContabile/societa"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$ComIbmMessageAssembly_Output/Properties"/>
+        </move>
+        <assign value="KO">
+            <output path="$ComIbmMessageAssembly_Output/Output/oggettoContabile/codice"/>
+        </assign>
+    </mappingDeclaration>
+</mappingRoot>

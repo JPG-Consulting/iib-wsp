@@ -1,0 +1,78 @@
+BROKER SCHEMA gen
+DECLARE ns7 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzprpswbs';
+
+
+CREATE COMPUTE MODULE ZPRPS_WBS
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE idocData REFERENCE TO InputRoot.DataObject.ns7:SapZprpsWbs.SapZprpsWbsIDocBO.SapZprpsWbsDataRecord.SapZprpsWbsZcosprpsWbs000;
+			
+			 INSERT INTO Database.S1_QUAD_WBS 
+			 (PROGETTO, LEVELL, WBS, 
+			 NAME, CDELCONTAB, SOCIETA, 
+			 SETTCONT, CDCDEF, AREABUSINESS, 
+			 CDR, UNB, AMBITO, SUB_AMBITO, 
+			 LOCALITA_AEEG, EPM_TRATTAM_CONTAB, 
+			 IMPORTO, RESP_COMMESSA_PRE, COMMESSA_OLD, 
+			 ATTIVITA_OLD, CDC_MITT, AREAFUNZ, 
+			 PROFIT_CENT, CLASSEOGG, CDC_COMM, 
+			 PROJ_TYPE, CDELEMPIAN, CDELEMFATT, 
+			 SCHEMACALCOSTI, PROF_INVEST, STATISTICO, 
+			 MOTIVO_INVEST, LIV_SUP, PROCESSO, 
+			 TIPO_INVEST, TIPO_PIANIF, EPM_MOTIV, 
+			 DEST_CONTAB, TIPO_OGG_FATT, OGG_RIFATT, 
+			 ATTIVITA_INV_1, ATTIVITA_INV_2, MOD_INVEST, 
+			 EPM_IMP_WBS, EPM_SEZ_IMP_WBS, CLASSIF_TECNICA, 
+			 RIF_AUTORITA, CAMPO_ATO, CLASS_CONTAB_REGOLA, 
+			 ELEM_AGGREGA, CAT_ATTIVITA, AREA_COMPET, 
+			 WBS_I_LIV, AUTORIZZ_INVEST, INIZIO_LAV, 
+			 FINE_LAV, EPM_SOC_PARTNER, EPM_CAT_FISC, 
+			 ENTRATA_ESER, COMPILATORE, VALIDATORE, 
+			 RESP_FUNZ, TIPO_PREVENTIVO, NUM_PREVENTIVO, 
+			 EPM_TIPOL_LAVORI, COD_CLIENTE, CDC_DEST, 
+			 RIF_OLD, CAMPO_UT_2, CAMPO_UT_3, 
+			 INVESTIMENTI_INCENT, PRIORITA) 
+			 
+			 VALUES (idocData.PSPID, idocData.STUFE, idocData.POSID,
+			 		idocData.POST1, idocData.BELKZ, idocData.PBUKR,
+			 		idocData.PGSBR, idocData.USR02, idocData.ZZ1ADB,
+			 		idocData.ZZ1CDRCDC, idocData.ZZ1UNB, idocData.ZZ1AMBITO,
+			 		idocData.ZZ1SUBAMB, idocData.ZZ1LOCAEEG, idocData.ZZ1TRCON,
+			 		idocData.ZZ1IMPAUT, idocData.ZZ1VKGRP, idocData.ZZ1COMMOLD,
+			 		idocData.ZZ1ATTIVOLD, idocData.ZZ1CDCMITTO, idocData.XSTAT[1],
+			 		idocData.PRCTR, idocData.SCOPE, idocData.AKSTL,
+			 		idocData.PRART, idocData.PLAKZ, idocData.FAKKZ,
+			 		idocData.KALSM, idocData.IMPRF, idocData.XSTAT[1],
+			 		idocData.USR03, idocData.USR00, idocData.ZZ1PROCESSO,
+			 		idocData.ZZ1TIPOINV, idocData.ZZ1TPPNF, idocData.ZZ1MOTIV,
+			 		idocData.ZZ1DSTCNTBL, idocData.ZZ1TIPOFAT, idocData.ZZ1OBJFAT,
+			 		idocData.ZZ1ATTINV1, idocData.ZZ1ATTINV2, idocData.ZZ1MDINVST,
+			 		idocData.ZZ1IMPWBS, idocData.ZZ1SEZIMPWBS, idocData.ZZ1CLSSFTEC,
+			 		idocData.ZZ1RIFAUTO, idocData.ZZ1ATO, idocData.ZZ1CLASCNTB,
+			 		idocData.ZZ1ELAGGRGTR, idocData.ZZ1CATATTVT, idocData.ZZ1ACOMPTNZ,
+			 		idocData.ZZ1LIVLL1, idocData.ZZ1AUTOINV, idocData.ZZ1INZLVR,
+			 		idocData.ZZ1FNLVR, idocData.ZZ1SOCPAR, idocData.ZZ1CATEG,
+			 		idocData.ZZ1DATA, idocData.ZZ1COMPIL, idocData.ZZ1VALID,
+			 		idocData.ZZ1RESPFUNZ, idocData.ZZ1UARC, idocData.ZZ1VBELN,
+			 		idocData.ZZ1TIPLAV, idocData.ZZ1KUNNR, idocData.ZZ1CDCDSTO,
+			 		idocData.ZZ1RIFOLD, idocData.ZZ1ZCSTM2, idocData.ZZ1ZCSTM3,
+			 		idocData.ZZ1INVINCENT, idocData.PSPRI);
+			 
+		SET Environment.Variables.Ins_ZPRPS_WBS = Environment.Variables.Ins_ZPRPS_WBS + 1;
+		
+		IF Environment.Variables.Count_ZPRPS_WBS = Environment.Variables.Ins_ZPRPS_WBS THEN
+			
+			SET OutputRoot.XMLNSC.ns5:Params.flusso = 'ZPRPS_WBS';
+			SET OutputRoot.XMLNSC.ns5:Params.body1 = Environment.Variables.Count_ZPRPS_WBS;
+			SET OutputRoot.XMLNSC.ns5:Params.body2 = 0;
+			SET OutputRoot.XMLNSC.ns5:Params.body3 = idocData.PBUKR;
+			
+			SET OutputLocalEnvironment.Variables.dbString = 'Processato IDOC di tipo ZPRPS_WBS - Inseriti '||CAST(Environment.Variables.Count_ZPRPS_WBS AS CHARACTER)||' record - Aggiornati '|| CAST(0 AS CHARACTER) ||' record per la società ' || idocData.PBUKR;
+			PROPAGATE;
+		END IF;
+		
+		RETURN FALSE;
+	END;
+
+
+END MODULE;

@@ -1,0 +1,30 @@
+
+
+Importing file: P:\Users\e-decaro\Documents\WSDL SII GAS\Volture\wsdl\VTG1.wsdl
+
+The WSDL import will proceed with bindings VTG1Binding.
+Creating wsdl schema document for file:///P:/Users/e-decaro/Documents/WSDL SII GAS/Volture/wsdl/VTG1.wsdl.
+Parsing wsdl binding {http://www.sii.acquirenteunico.it/VTG1}VTG1Binding.
+Parsing wsdl binding input VTG1.0050.
+Parsing wsdl binding output VTG1.0050.
+Parsing wsdl binding input VTG1.0150.
+Parsing wsdl binding output VTG1.0150.
+Processing rpc style for operation VTG1.0050.
+Processing rpc style for operation VTG1.0150.
+Populating WSDL schema VTG1.xsd.
+Creating file VTG1.xsd in the workspace.
+Creating file /SIILib/VTG1_msgSII.xsd in the workspace.
+Creating file /SIILib/SII_PdC-MessaggioSII.xsd in the workspace.
+Creating file /SIILib/SchemaEsterno-SwaRef.xsd in the workspace.
+Creating file /SIILib/VTG1.xsd in the workspace.
+Creating file /SIILib/StruttureGenerali_v1_6.xsd in the workspace.
+Creating file /SIILib/StruttureGas_v1_4.xsd in the workspace.
+Copying source WSDL VTG1.wsdl to VTG1.wsdl.
+
+Elapsed time processing this message definition file: 1.0 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

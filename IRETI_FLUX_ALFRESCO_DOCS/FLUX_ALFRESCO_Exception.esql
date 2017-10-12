@@ -1,0 +1,51 @@
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_Exception
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE exc REFERENCE TO InputExceptionList.RecoverableException;
+		
+		--||LOG TABELLA PROTOCOLLI FLUX
+	    UPDATE Database.IIB_FLUX_PROTOCOLLO AS T
+	    SET RISPOSTA_FLUX = parseToString(exc),
+	    ESITO_FLUX = 'ECCEZIONE NON GESTITA',
+	    TMS_RISPOSTA_FLUX = CURRENT_TIMESTAMP
+	    WHERE T.ID_FLUX = Environment.Variables.idFlux;
+	    
+	    SET OutputRoot.XMLNSC.result.esito = 'OK';
+		SET OutputRoot.XMLNSC.result.messaggio = 'Preso in carico';
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+CREATE FUNCTION parseToString(IN root REFERENCE) RETURNS CHARACTER
+	BEGIN
+		DECLARE concatString character;
+		SET concatString = '';
+		CALL ComposeDetails(root,concatString);
+ 		return concatString;
+	END;
+
+
+	CREATE PROCEDURE ComposeDetails(IN root REFERENCE,INOUT concatString CHARACTER) 
+	BEGIN
+		DECLARE CRLF CHARACTER CAST(X'0D0A' AS CHARACTER CCSID 1208);
+		DECLARE TAB CHARACTER CAST(X'09' AS CHARACTER CCSID 1208);
+		DECLARE fieldName CHARACTER;
+		DECLARE fieldValue CHARACTER;
+		DECLARE cursor REFERENCE TO root;
+		MOVE cursor FIRSTCHILD;
+		WHILE LASTMOVE(cursor) Do
+			SET fieldName = FIELDNAME(cursor);
+			SET fieldValue = FIELDVALUE(cursor);
+			IF (fieldValue is not null) THEN
+				SET  concatString  =  concatString  ||'<'||fieldName||'>' ||fieldValue||'</'||fieldName||'>'||CRLF;
+			ELSE
+				SET  concatString  =  concatString  ||'<'||fieldName||'>'||CRLF;
+				CALL ComposeDetails(cursor, concatString);
+				SET  concatString  =  concatString  ||'</'||fieldName||'>'||CRLF;
+			END IF;
+		MOVE cursor NEXTSIBLING;
+		END WHILE;  
+	END;

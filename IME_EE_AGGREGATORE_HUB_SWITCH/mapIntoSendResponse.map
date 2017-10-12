@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd" var="var"/>
+    <input path="mbsharedlib://OutboundLib/HUB_CRM_EE_WSHubCrmEE_InlineSchema1.xsd" var="var2"/>
+    <output path="mbsharedlib://OutboundLib/HUB_CRM_EE_WSHubCrmEE_InlineSchema1.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="out2" uri="http://HUB_CRM_EE/IHubCrmEE"/>
+        <namespace kind="supplement" prefix="out" uri="http://HUB_CRM_EE/crm_dati"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="mapIntoSendResponse">
+        <input path="$var/mb:msg(SOAP_Domain_Msg,assembly,SOAP,LocalEnvironment,Properties)" var="ComIbmMessageAssembly_SOAP_Domain_Msg">
+            <cast path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/any" qualifier="{http://HUB_CRM_EE/IHubCrmEE}SendRequestEEResponse" ref="var2"/>
+        </input>
+        <output namespace="http://HUB_CRM_EE/IHubCrmEE" path="mb:msg(SendRequestEEResponse,assembly,XMLNSC,LocalEnvironment,Properties)" var="MessageAssembly"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_SOAP_Domain_Msg/Properties"/>
+            <output path="$MessageAssembly/Properties"/>
+            <override>
+                <assign value="{OutboundLib}">
+                    <output path="$MessageAssembly/Properties/MessageSet"/>
+                </assign>
+            </override>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/SendRequestEEResponse"/>
+            <output path="$MessageAssembly/SendRequestEEResponse"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_SOAP_Domain_Msg/LocalEnvironment"/>
+            <output path="$MessageAssembly/LocalEnvironment"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,14 @@
+BROKER SCHEMA gen
+
+
+CREATE COMPUTE MODULE Delete_Request_Response_sendError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIRSTCHILD OF Environment.Variables DOMAIN('JSON') PARSE(InputRoot.BLOB.BLOB);
+		SET OutputRoot.XMLNSC.ns:DeleteResponse.status.status = 'KO';
+		SET OutputRoot.XMLNSC.ns:DeleteResponse.status.descrizione = Environment.Variables.JSON.Data.error.briefSummary;
+		SET OutputRoot.XMLNSC.ns:DeleteResponse.status.ID = CAST(Environment.Variables.JSON.Data.error.statusCode AS CHARACTER)|| ' ' || Environment.Variables.JSON.Data.error.errorKey;
+		RETURN TRUE;
+	END;
+
+END MODULE;

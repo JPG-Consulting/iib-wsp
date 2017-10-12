@@ -1,0 +1,14 @@
+DECLARE ns2 NAMESPACE 'www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE XML_Receiver_buildReportMailOK
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.ns2:Params.flusso = 'CONTABILE_XML';
+		SET OutputRoot.XMLNSC.ns2:Params.obj1 =  InputLocalEnvironment.Variables.IDFlusso;
+		SET OutputRoot.XMLNSC.ns2:Params.body1 = InputLocalEnvironment.Variables.NomeFile;
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

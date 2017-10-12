@@ -1,0 +1,14 @@
+
+
+CREATE COMPUTE MODULE EDI_Receiver_buildReportMailOK
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.ns2:Params.flusso = 'CONTABILE_EDI';
+		SET OutputRoot.XMLNSC.ns2:Params.obj1 =  InputLocalEnvironment.Variables.IDFlusso;
+		SET OutputRoot.XMLNSC.ns2:Params.body1 = InputLocalEnvironment.Variables.nomeFile;
+		SET OutputRoot.XMLNSC.ns2:Params.body2 = InputLocalEnvironment.Variables.NumeroFatture;
+		SET OutputRoot.XMLNSC.ns2:Params.body3 = InputLocalEnvironment.Variables.ListaFatture;
+		RETURN TRUE;
+	END;
+
+END MODULE;

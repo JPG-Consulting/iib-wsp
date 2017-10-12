@@ -1,0 +1,29 @@
+BROKER SCHEMA gen
+
+
+CREATE COMPUTE MODULE Retrieve_Request_Response_sendResponse
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE numberOfFiles INTEGER InputRoot.JSON.Data.total;
+		DECLARE node REFERENCE TO InputRoot.JSON.Data.nodes.Item[>];
+		DECLARE i INTEGER 1;
+		CREATE FIELD OutputRoot.XMLNSC.ns:RetrieveResponse;
+		SET OutputRoot.XMLNSC.ns:RetrieveResponse.status.status = 'OK';
+		SET OutputRoot.XMLNSC.ns:RetrieveResponse.status.descrizione = 'Ricerca eseguita con successo';
+		SET OutputRoot.XMLNSC.ns:RetrieveResponse.status.ID = '200 OK';
+		
+		WHILE(LASTMOVE(node)=TRUE) DO
+			SET OutputRoot.XMLNSC.ns:RetrieveResponse.files[i].nomeFile = node.name;
+			SET OutputRoot.XMLNSC.ns:RetrieveResponse.files[i].path = node.cifsPath;
+			SET OutputRoot.XMLNSC.ns:RetrieveResponse.files[i].URL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'DOCUMENTALE' AND T.VARIABILE = 'ENDPOINT_ALFRESCO')||node.downloadUrl;
+			SET OutputRoot.XMLNSC.ns:RetrieveResponse.files[i].ID = node.nodeRef;
+			MOVE node NEXTSIBLING REPEAT NAME;
+			SET i = i +1;
+		END WHILE;
+		
+		
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

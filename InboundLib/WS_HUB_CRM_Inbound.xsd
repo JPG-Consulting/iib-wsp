@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://WS_HUB_CRM_Inbound" xmlns:bons1="http://HUB_CRM_EE/crm_dati" xmlns:tns="http://WS_HUB_CRM_Inbound">
+  <xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema1.xsd"/>
+  <xsd:import namespace="http://HUB_CRM_EE/crm_dati" schemaLocation="WS_HUB_CRM_Inbound_InlineSchema2.xsd"/>
+  <xsd:import namespace="http://HUB_CRM_EE/crm_dati" schemaLocation="WS_HUB_CRM_Inbound_InlineSchema3.xsd"/>
+  <xsd:import namespace="http://HUB_CRM_EE/crm_dati" schemaLocation="WS_HUB_CRM_Inbound_InlineSchema8.xsd"/>
+  <xsd:import namespace="http://HUB_CRM_EE/crm_dati" schemaLocation="WS_HUB_CRM_Inbound_InlineSchema4.xsd"/>
+  <xsd:import namespace="http://HUB_CRM_EE/crm_dati" schemaLocation="WS_HUB_CRM_Inbound_InlineSchema6.xsd"/>
+  <xsd:import namespace="http://HUB_CRM_EE/crm_dati" schemaLocation="WS_HUB_CRM_Inbound_InlineSchema5.xsd"/>
+  <xsd:import namespace="http://HUB_CRM_EE/crm_dati" schemaLocation="WS_HUB_CRM_Inbound_InlineSchema7.xsd"/>
+
+<!-- BEGIN Global group petaining to all wsdl:message definitions -->
+<!-- END Global group -->
+
+
+<!-- BEGIN Message Definitions for the wsdl:operations  -->
+<!-- END Message Definitions -->
+
+
+</xsd:schema>

@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE Users_NotAllowed
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 405;
+		SET OutputRoot.HTTPReplyHeader.Allow = 'GET, POST, DELETE';
+		RETURN TRUE;
+	END;
+
+END MODULE;

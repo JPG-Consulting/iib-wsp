@@ -1,0 +1,23 @@
+
+
+CREATE COMPUTE MODULE HTTP_CONTABILITA_Fatturazione_Esazione
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		CREATE FIELD OutputRoot.XMLNSC.Info.testo;
+		IF InputLocalEnvironment.HTTP.Input.QueryString.tipo = 'fatturazione' THEN
+			SET OutputRoot.XMLNSC.Info.testo = 'PROCESSO PER ELABORAZIONE FILE FATTURAZIONE AVVIATO CORRETTAMENTE';
+			RETURN TRUE;
+		ELSE
+			IF InputLocalEnvironment.HTTP.Input.QueryString.tipo = 'esazione' THEN
+				SET OutputRoot.XMLNSC.Info.testo  = 'PROCESSO PER ELABORAZIONE ESAZIONE AVVIATO CORRETTAMENTE';
+				RETURN TRUE;
+			ELSE
+				SET OutputRoot.XMLNSC.Info.testo  = 'PROCESSO PER ELABORAZIONE FILE ZUORA NON AVVIATO CORRETTAMENTE - PARAMETRI ERRATI';
+				RETURN TRUE;
+			END IF;
+		END IF;
+		RETURN TRUE;
+	END;
+
+END MODULE;

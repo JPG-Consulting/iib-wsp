@@ -1,0 +1,19 @@
+DECLARE ns NAMESPACE 'www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE sendEmailKO
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	    CREATE FIELD OutputRoot.XMLNSC.ns:Params;
+		DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns:Params;
+		DECLARE today date;
+		DECLARE today_str CHARACTER;
+		set today = current_date;
+		set today_str    = cast(today as character format 'dd/MM/yyyy');
+		SET param.obj1   = Environment.Variables.sistema;
+		SET param.obj2   = today_str; 
+		SET param.body1  = today_str; 	
+		SET param.flusso = 'IME_EE_CNRG_AE1_KO';
+		RETURN TRUE;
+	END;
+END MODULE;

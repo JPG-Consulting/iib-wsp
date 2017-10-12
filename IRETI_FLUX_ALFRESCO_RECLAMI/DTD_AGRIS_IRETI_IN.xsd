@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="PROTOCOLLI">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="PROTOCOLLO"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="PROTOCOLLO">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="SOCIETA"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="NUMERO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="DATA_PROTOCOLLO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="DATA_DOCUMENTO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="OGGETTO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="NOMINATIVO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="INDIRIZZO"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="MITTENTE_INTERMEDIO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="NOTE"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="RISPOSTA_PROTOCOLLO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="LINK_DOCUMENTO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="DOCNUMBER"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="DATA_RISPOSTA"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="NUMERO_RISPOSTA"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="LINK_RISPOSTA"/>
+                <xsd:element maxOccurs="unbounded" minOccurs="0" ref="STATO"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="R11_CLASSIFICAZIONE"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="SOCIETA" type="xsd:string"/>
+    <xsd:element name="NUMERO" type="xsd:string"/>
+    <xsd:element name="DATA_PROTOCOLLO" type="xsd:string"/>
+    <xsd:element name="DATA_DOCUMENTO" type="xsd:string"/>
+    <xsd:element name="OGGETTO" type="xsd:string"/>
+    <xsd:element name="NOMINATIVO" type="xsd:string"/>
+    <xsd:element name="INDIRIZZO" type="xsd:string"/>
+    <xsd:element name="MITTENTE_INTERMEDIO" type="xsd:string"/>
+    <xsd:element name="NOTE" type="xsd:string"/>
+    <xsd:element name="RISPOSTA_PROTOCOLLO" type="xsd:string"/>
+    <xsd:element name="LINK_DOCUMENTO">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" ref="DOCUMENTO"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="DOCUMENTO" type="xsd:string"/>
+    <xsd:element name="DOCNUMBER" type="xsd:string"/>
+    <xsd:element name="DATA_RISPOSTA" type="xsd:string"/>
+    <xsd:element name="NUMERO_RISPOSTA" type="xsd:string"/>
+    <xsd:element name="LINK_RISPOSTA">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" minOccurs="1" ref="DOCUMENTO"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="STATO" type="xsd:string"/>
+    <xsd:element name="R11_CLASSIFICAZIONE" type="xsd:string"/>
+</xsd:schema>

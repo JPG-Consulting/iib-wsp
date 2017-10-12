@@ -1,0 +1,30 @@
+
+
+CREATE COMPUTE MODULE OEWebForm_StoreSessionID
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE sessionID CHARACTER;
+		SET sessionID = InputRoot.SOAP.Body.ns20:loginResponse.ns20:result.ns20:sessionId;
+		
+		UPDATE Database.SF_SESSION AS T
+		SET SESSION_ID = sessionID;
+		
+		SET OutputRoot.SOAP.Header.ns25:AllowFieldTruncationHeader.ns25:allowFieldTruncation = '0';
+		SET OutputRoot.SOAP.Header.ns25:DebuggingHeader.ns25:categories.ns25:category = 'Db';
+		SET OutputRoot.SOAP.Header.ns25:DebuggingHeader.ns25:categories.ns25:level = 'none';
+		SET OutputRoot.SOAP.Header.ns25:DebuggingHeader.ns25:debugLevel = 'none';
+		--SET OutputRoot.SOAP.Header.ns25:CallOptions.ns25:client = InputRoot.SOAP.Body.ns20:loginResponse.ns20:result.ns20:serverUrl;
+		SET OutputRoot.SOAP.Header.ns25:SessionHeader.ns25:sessionId = COALESCE(sessionID, 'SESSION');
+		SET OutputRoot.SOAP.Body.ns25:OEWebForm.ns25:tracking = Environment.ns25:OEWebForm.ns25:tracking;
+		SET OutputRoot.SOAP.Body.ns25:OEWebForm.ns25:inboundRequest = Environment.ns25:OEWebForm.ns25:inboundRequest;
+		IF OutputRoot.SOAP.Body.ns25:OEWebForm.ns25:tracking.ns25:codicePraticaDistributore IS NULL THEN
+			SET OutputRoot.SOAP.Body.ns25:OEWebForm.ns25:tracking.ns25:codicePraticaDistributore = NULL;
+		END IF;
+		IF OutputRoot.SOAP.Body.ns25:OEWebForm.ns25:tracking.ns25:idMessaggio IS NULL THEN
+			SET OutputRoot.SOAP.Body.ns25:OEWebForm.ns25:tracking.ns25:idMessaggio = NULL;
+		END IF;
+		SET OutputLocalEnvironment = NULL;
+		RETURN TRUE;
+	END;
+
+END MODULE;

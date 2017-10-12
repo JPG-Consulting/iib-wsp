@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">  
+    <xsd:element name="numRda" type="xsd:string"/>  
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var2"/>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/BlobMessage.xsd" var="var1"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var3"/>
+    <output path="/SapZbapiRequisitionResetRelWf.xsd" var="var4"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="out2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapreturn798193681"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbapirequisitionresetrelwf"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="RESET_REL_RDA_Map">
+        <input path="$var2/mb:env(Environment)" var="Environment"/>
+        <input path="$var1/mb:msg(BLOB,assembly,BLOB,LocalEnvironment,Properties,HTTPInputHeader)" var="ComIbmMessageAssembly_BLOB">
+            <cast castType="userDefined" path="$ComIbmMessageAssembly_BLOB/LocalEnvironment/HTTP/Input/QueryString/any" qualifier="numRda" ref="var" var="any"/>
+        </input>
+        <output path="$var3/mb:env(Environment)" var="Environment1"/>
+        <output namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbapirequisitionresetrelwf" path="$var4/mb:msg(SapZbapiRequisitionResetRelWf,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_SapZbapiRequisitionResetRelWf"/>
+        <passthrough>
+            <input path="$Environment/."/>
+            <output path="$Environment1/."/>
+            <updates/>
+        </passthrough>
+        <move>
+            <input path="$ComIbmMessageAssembly_BLOB/Properties"/>
+            <output path="$ComIbmMessageAssembly_SapZbapiRequisitionResetRelWf/Properties"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_BLOB/LocalEnvironment/HTTP/Input/QueryString/numRda[1]"/>
+            <output path="$ComIbmMessageAssembly_SapZbapiRequisitionResetRelWf/SapZbapiRequisitionResetRelWf/NUMBER"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,15 @@
+
+
+CREATE COMPUTE MODULE Sort_ZPORDRead
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		FOR seg AS InputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001.SapAleaud01E2state002[] DO
+			CREATE FIELD OutputRoot.DataObject.SapZIdocReadCompletely.DOCUMENT_NUMBER;
+			SET OutputRoot.DataObject.SapZIdocReadCompletely.DOCUMENT_NUMBER = seg.SapAleaud01E2prtob.DOCNUM;
+			PROPAGATE;
+		END FOR;
+				
+		RETURN FALSE;
+	END;
+
+END MODULE;

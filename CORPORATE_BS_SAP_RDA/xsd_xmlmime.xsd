@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://www.w3.org/2005/05/xmlmime" xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
+    <xsd:attribute name="contentType">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+                <xsd:minLength value="3"/>
+            </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:attribute>
+    <xsd:attribute name="expectedContentTypes" type="xsd:string"/>
+    <xsd:complexType name="base64Binary">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:base64Binary">
+                <xsd:attribute ref="xmime:contentType"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="hexBinary">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:hexBinary">
+                <xsd:attribute ref="xmime:contentType"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+</xsd:schema>

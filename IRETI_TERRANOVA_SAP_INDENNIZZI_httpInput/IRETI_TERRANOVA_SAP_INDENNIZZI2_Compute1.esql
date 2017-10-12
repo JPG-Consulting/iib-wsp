@@ -1,0 +1,41 @@
+
+
+CREATE COMPUTE MODULE IRETI_TERRANOVA_SAP_INDENNIZZI2_Compute1
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- CALL CopyMessageHeaders();
+		-- CALL CopyEntireMessage();
+
+		DECLARE nrecTotTRN INTEGER CARDINALITY (Environment.result[]);
+
+		DECLARE i INTEGER 1;
+
+		WHILE i <= nrecTotTRN DO
+
+
+			DECLARE belzart_tras CHARACTER COALESCE(THE(SELECT ITEM T.BELZART FROM Database.IIB_TERRANOVA_SAPISU AS T WHERE TRIM(T.CODCA) = TRIM(Environment.result[i].codca) ),''); 			
+
+			SET Environment.result[i].belzart_tras = belzart_tras;		
+
+			SET i=i+1;
+
+		END WHILE;		
+
+
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

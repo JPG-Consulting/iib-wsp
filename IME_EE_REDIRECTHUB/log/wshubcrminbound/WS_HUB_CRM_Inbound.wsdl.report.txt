@@ -1,0 +1,29 @@
+
+
+Importing file: P:\Users\e-decaro\IBM\IIBT10\IREN\REDIRECTHUB\WS_HUB_CRM_Inbound.wsdl
+
+The WSDL import will proceed with bindings WS_HUB_CRM_InboundHttpBinding.
+Creating wsdl schema document for file:///P:/Users/e-decaro/IBM/IIBT10/IREN/REDIRECTHUB/WS_HUB_CRM_Inbound.wsdl.
+Parsing wsdl binding {http://WS_HUB_CRM_Inbound}WS_HUB_CRM_InboundHttpBinding.
+Parsing wsdl binding input WSHubCrmInbound.
+Parsing wsdl binding output WSHubCrmInbound.
+Processing doc style for operation WSHubCrmInbound.
+Populating WSDL schema WS_HUB_CRM_Inbound.xsd.
+Creating file WS_HUB_CRM_Inbound.xsd in the workspace.
+Creating file /REDIRECTHUB/WS_HUB_CRM_Inbound_InlineSchema1.xsd in the workspace.
+Creating file /REDIRECTHUB/InboundResponse.xsd in the workspace.
+Creating file /REDIRECTHUB/REDIRECTHUB/Esito.xsd in the workspace.
+Creating file /REDIRECTHUB/REDIRECTHUB/Tracking.xsd in the workspace.
+Creating file /REDIRECTHUB/InboundRequest.xsd in the workspace.
+Creating file /REDIRECTHUB/Ammissibilita.xsd in the workspace.
+Creating file /REDIRECTHUB/Cliente.xsd in the workspace.
+Creating file /REDIRECTHUB/Timoe.xsd in the workspace.
+Copying source WSDL WS_HUB_CRM_Inbound.wsdl to WS_HUB_CRM_Inbound.wsdl.
+
+Elapsed time processing this message definition file: 0.503 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

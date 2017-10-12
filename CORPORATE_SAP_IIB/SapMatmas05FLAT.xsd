@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510"
+	xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions"
+	xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata"
+	xmlns:sapmatmas05zmatmas0510="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510"
+	xmlns:sapmatmas05zmatmas0510idocbo="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510idocbo"
+	xmlns:Q1="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2maram008">
+
+
+
+
+
+	<xsd:import
+		schemaLocation="../SAP_ALE_InboundLib/SapMatmas05Zmatmas0510IDocBO.xsd"
+		namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510idocbo">
+	</xsd:import>
+	<xsd:import schemaLocation="../SAP_ALE_InboundLib/SapMatmas05Zmatmas0510E2maram008.xsd" namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2maram008"></xsd:import>
+	<xsd:annotation xml:space="preserve">
+<xsd:appinfo
+			source="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability">
+<info:resourceAdapter
+				xmlns:info="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability"
+				version="7.5.0.5_IF02" />
+</xsd:appinfo>
+</xsd:annotation>
+
+	<xsd:annotation xml:space="preserve">
+<xsd:appinfo source="commonj.connector.asi">
+<asi:annotationSet xmlns:asi="commonj.connector.asi"
+				asiNSURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata" />
+</xsd:appinfo>
+</xsd:annotation>
+
+
+
+	<xsd:element name="FlatElem"
+		type="sapmatmas05zmatmas0510:FlatElemType">
+	</xsd:element>
+
+	<xsd:complexType name="FlatElemType">
+		<xsd:sequence>
+			<xsd:element name="MATNR" type="xsd:string"></xsd:element>
+			<xsd:element name="MTART" type="xsd:string"></xsd:element>
+			<xsd:element name="LVORM" type="xsd:string"></xsd:element>
+			<xsd:element name="MBRSH" type="xsd:string"></xsd:element>
+			<xsd:element name="WERKS" type="xsd:string"></xsd:element>
+			<xsd:element name="LGORT" type="xsd:string"></xsd:element>
+			<xsd:element name="VKORG" type="xsd:string"></xsd:element>
+			<xsd:element name="VTWEG" type="xsd:string"></xsd:element>
+			<xsd:element name="MAKTX" type="xsd:string"></xsd:element>
+			<xsd:element name="MEINS" type="xsd:string"></xsd:element>
+			<xsd:element name="MATKL" type="xsd:string"></xsd:element>
+			<xsd:element name="SPART" type="xsd:string"></xsd:element>
+			<xsd:element name="PRDHA" type="xsd:string"></xsd:element>
+			<xsd:element name="MSTAE" type="xsd:string"></xsd:element>
+			<xsd:element name="MSTDE" type="xsd:string"></xsd:element>
+			<xsd:element name="MTPOS_MARA" type="xsd:string"></xsd:element>
+			<xsd:element name="BRGEW" type="xsd:string"></xsd:element>
+			<xsd:element name="NTGEW" type="xsd:string"></xsd:element>
+			<xsd:element name="GROES" type="xsd:string"></xsd:element>
+			<xsd:element name="GEWEI" type="xsd:string"></xsd:element>
+			<xsd:element name="ZEINR" type="xsd:string"></xsd:element>
+			<xsd:element name="BLATT" type="xsd:string"></xsd:element>
+			<xsd:element name="DWERK" type="xsd:string"></xsd:element>
+			<xsd:element name="TAXKM" type="xsd:string"></xsd:element>
+			<xsd:element name="SKTOF" type="xsd:string"></xsd:element>
+			<xsd:element name="MTPOS_MVKE" type="xsd:string"></xsd:element>
+			<xsd:element name="KTGRM" type="xsd:string"></xsd:element>
+			<xsd:element name="KONDM" type="xsd:string"></xsd:element>
+			<xsd:element name="MVGR2" type="xsd:string"></xsd:element>
+			<xsd:element name="MVGR3" type="xsd:string"></xsd:element>
+			<xsd:element name="MVGR4" type="xsd:string"></xsd:element>
+			<xsd:element name="MTVFP" type="xsd:string"></xsd:element>
+			<xsd:element name="TRAGR" type="xsd:string"></xsd:element>
+			<xsd:element name="LADGR" type="xsd:string"></xsd:element>
+			<xsd:element name="EKGRP" type="xsd:string"></xsd:element>
+			<xsd:element name="MMSTA" type="xsd:string"></xsd:element>
+			<xsd:element name="MMSTD" type="xsd:string"></xsd:element>
+			<xsd:element name="MFRGR" type="xsd:string"></xsd:element>
+			<xsd:element name="XCHPF" type="xsd:string"></xsd:element>
+			<xsd:element name="EKWSL" type="xsd:string"></xsd:element>
+			<xsd:element name="DISMM" type="xsd:string"></xsd:element>
+			<xsd:element name="DISPO" type="xsd:string"></xsd:element>
+			<xsd:element name="DISLS" type="xsd:string"></xsd:element>
+			<xsd:element name="LAGPR" type="xsd:string"></xsd:element>
+			<xsd:element name="BESKZ" type="xsd:string"></xsd:element>
+			<xsd:element name="WEBAZ" type="xsd:string"></xsd:element>
+			<xsd:element name="FHORI" type="xsd:string"></xsd:element>
+			<xsd:element name="PLIFZ" type="xsd:string"></xsd:element>
+			<xsd:element name="EISBE" type="xsd:string"></xsd:element>
+			<xsd:element name="PERKZ" type="xsd:string"></xsd:element>
+			<xsd:element name="LMINB" type="xsd:string"></xsd:element>
+			<xsd:element name="IPRKZ" type="xsd:string"></xsd:element>
+			<xsd:element name="LGPBE" type="xsd:string"></xsd:element>
+			<xsd:element name="PRCTR" type="xsd:string"></xsd:element>
+			<xsd:element name="SERNP" type="xsd:string"></xsd:element>
+			<xsd:element name="VPRSV" type="xsd:string"></xsd:element>
+			<xsd:element name="LBKUM" type="xsd:string"></xsd:element>
+			<xsd:element name="PEINH" type="xsd:string"></xsd:element>
+			<xsd:element name="VERPR" type="xsd:string"></xsd:element>
+			<xsd:element name="STPRS" type="xsd:string"></xsd:element>
+			<xsd:element name="ZSONEANAMAT_TXT" type="xsd:string"></xsd:element>
+			<xsd:element name="ORIGINE" type="xsd:string"></xsd:element>
+			<xsd:element name="TAXK1" type="xsd:string"></xsd:element>
+			<xsd:element name="BKLAS" type="xsd:string"></xsd:element>
+			<xsd:element name="BUKRS" type="xsd:string"></xsd:element>
+			<xsd:element name="VALUE" type="xsd:string"></xsd:element>
+			<xsd:element name="VALUE_TO" type="xsd:string"></xsd:element>
+			<xsd:element name="BISMT" type="xsd:string"></xsd:element>
+			<xsd:element name="ZKDAT" type="xsd:string"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="FlatArrayType">
+		<xsd:sequence>
+			<xsd:element ref="sapmatmas05zmatmas0510:FlatElem"
+				maxOccurs="unbounded" minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="FlatArray"
+		type="sapmatmas05zmatmas0510:FlatArrayType">
+	</xsd:element>
+</xsd:schema>

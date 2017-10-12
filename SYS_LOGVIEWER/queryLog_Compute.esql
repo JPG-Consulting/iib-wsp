@@ -1,0 +1,34 @@
+
+
+CREATE COMPUTE MODULE queryLog_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE flow CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.flow;
+		DECLARE fromDate CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.from;
+		DECLARE toDate CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.to;
+		DECLARE id CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.id;
+		DECLARE type CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.type;
+		DECLARE flowFilter CHARACTER;
+		
+		IF toDate = '19700101' THEN
+			SET toDate = CAST(CURRENT_DATE + INTERVAL '1' DAY AS CHARACTER FORMAT 'yyyyMMdd');
+		END IF;
+		DECLARE dbString CHARACTER;
+		
+		IF flow = 'All message flows' THEN
+			SET flowFilter = '';
+		ELSE
+			SET flowFilter = 'AND FLOW_NAME = '''||flow||''' ';
+		END IF;
+		
+		IF id IS NOT NULL THEN
+			SET dbString = 'SELECT ' || type ||' FROM IIB_LOG WHERE ID_IIB_LOG = ' || id;
+		ELSE
+			SET dbString = 'SELECT ID_IIB_LOG, ID_MSG, SERVICE_NAME, FLOW_NAME, DESCRIPTION, HAS_XML, HAS_EXCEPTION, TMS_CREATED FROM IIB_LOG T WHERE TMS_CREATED >= TO_DATE(''' || fromDate ||''', ''yyyymmdd'') AND TMS_CREATED <= TO_DATE(''' || toDate ||''', ''yyyymmdd'') '||flowFilter||' ORDER BY ID_IIB_LOG DESC';
+		END IF;
+			
+		CREATE FIELD OutputRoot.JSON.Data IDENTITY(JSON.Array)Data;
+		SET OutputRoot.JSON.Data.Item[] = PASSTHRU(dbString TO Database.INT_ENGINE);
+		RETURN TRUE;
+	END;
+END MODULE;

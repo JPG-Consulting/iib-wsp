@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:Q1="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_RC1/v1">
+    <xsd:import schemaLocation="RC1.xsd" namespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_RC1/v1"></xsd:import>
+    <xsd:element name="FlussoRC1.0100Type" type="Q1:FlussoRC1.0100Type"></xsd:element>
+    
+    <xsd:element name="FlussoRC1.0050Type" type="Q1:FlussoRC1.0050Type"></xsd:element>
+</xsd:schema>

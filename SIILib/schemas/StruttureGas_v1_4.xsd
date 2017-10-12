@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGAS/v1.4" xmlns:sg="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.6" xmlns:sgas="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGAS/v1.4">
+  
+  <xsd:import namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.6" schemaLocation="StruttureGenerali_v1_6.xsd"/>
+  
+  <!-- Tipologia PdR 0 = punto di riconsegna nella titolarità di un cliente domestico
+                     1 = punto di riconsegna relativo a un condominio con uso domestico
+                     2 = punto di riconsegna per usi diversi
+                     3 = punto di riconsegna nella titolarità di un’utenza relativa ad attività di servizio pubblico  -->
+  <xsd:element name="TIPO_PDR" type="sgas:TipologiaPdrStringType"/>
+  <xsd:simpleType name="TipologiaPdrType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="0"/>
+      <xsd:enumeration value="1"/>
+      <xsd:enumeration value="2"/>
+      <xsd:enumeration value="3"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TipologiaPdrStringType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\w"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <!-- Codice PDR -->
+  <xsd:element name="COD_PDR" type="sgas:CodicePdrType"/>
+  <xsd:simpleType name="CodicePdrType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[\da-zA-Z]{14}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <!-- Codice REMI -->
+  <xsd:element name="COD_REMI" type="sgas:CodiceRemiType"/>
+  <xsd:simpleType name="CodiceRemiType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,13}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Prelievo Annuo Previsto -->
+  <xsd:element name="PRELIEVO_ANNUO_PREV" type="sgas:PrelievoAnnuoPrevistoType"/>
+  <xsd:simpleType name="PrelievoAnnuoPrevistoType">
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Codice profilo prelievo standard -->
+  <xsd:element name="COD_PROF_PREL_STD" type="sgas:CodProfPrelStdType"/>
+  <xsd:simpleType name="CodProfPrelStdType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="C1A1"/>
+      <xsd:enumeration value="C1B1"/>
+      <xsd:enumeration value="C1C1"/>
+      <xsd:enumeration value="C1D1"/>
+      <xsd:enumeration value="C1E1"/>
+      <xsd:enumeration value="C1F1"/>
+      <xsd:enumeration value="C2X1"/>
+      <xsd:enumeration value="C3A1"/>
+      <xsd:enumeration value="C3B1"/>
+      <xsd:enumeration value="C3C1"/>
+      <xsd:enumeration value="C3D1"/>
+      <xsd:enumeration value="C3E1"/>
+      <xsd:enumeration value="C3F1"/>
+      <xsd:enumeration value="C4X1"/>
+      <xsd:enumeration value="C5A1"/>
+      <xsd:enumeration value="C5B1"/>
+      <xsd:enumeration value="C5C1"/>
+      <xsd:enumeration value="C5D1"/>
+      <xsd:enumeration value="C5E1"/>
+      <xsd:enumeration value="C5F1"/>
+      <xsd:enumeration value="T1X1"/>
+      <xsd:enumeration value="T1X2"/>
+      <xsd:enumeration value="T1X3"/>
+      <xsd:enumeration value="T2A1"/>
+      <xsd:enumeration value="T2B1"/>
+      <xsd:enumeration value="T2C1"/>
+      <xsd:enumeration value="T2D1"/>
+      <xsd:enumeration value="T2E1"/>
+      <xsd:enumeration value="T2F1"/>
+      <xsd:enumeration value="T2A2"/>
+      <xsd:enumeration value="T2B2"/>
+      <xsd:enumeration value="T2C2"/>
+      <xsd:enumeration value="T2D2"/>
+      <xsd:enumeration value="T2E2"/>
+      <xsd:enumeration value="T2F2"/>
+      <xsd:enumeration value="T2A3"/>
+      <xsd:enumeration value="T2B3"/>
+      <xsd:enumeration value="T2C3"/>
+      <xsd:enumeration value="T2D3"/>
+      <xsd:enumeration value="T2E3"/>
+      <xsd:enumeration value="T2F3"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="CodProfPrelStdStringType">
+    <xsd:restriction base="xsd:string">
+      <xsd:length value="4"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Codice prestazione PdR -->
+  <xsd:element name="COD_PRESTAZIONE" type="sgas:CodPrestazionePdrStringType"/>
+
+  <xsd:simpleType name="CodPrestazionePdrType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="A01"/>
+      <xsd:enumeration value="A40"/>
+      <xsd:enumeration value="D01"/>
+      <xsd:enumeration value="SW1"/>
+      <xsd:enumeration value="VL1"/>
+      <xsd:enumeration value="CA1"/>
+      <xsd:enumeration value="CA2"/>
+      <xsd:enumeration value="CA3"/>
+      <xsd:enumeration value="CA4"/>
+      <xsd:enumeration value="SM1"/>
+      <xsd:enumeration value="SM2"/>
+      <xsd:enumeration value="R01"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="CodPrestazionePdrStringType">
+    <xsd:restriction base="xsd:string">
+      <xsd:length value="3"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:element name="TIPO_FORNITURA" type="sgas:TipoFornituraStringType"/>
+  <xsd:element name="TIPOLOGIA_VOLTURA" type="sg:String2ObbType"/>
+  
+  <xsd:simpleType name="TipoFornituraType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="01"/>
+      <xsd:enumeration value="02"/>
+      <xsd:enumeration value="03"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="TipoFornituraStringType">
+    <xsd:restriction base="xsd:string">
+      <xsd:length value="2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:element name="PIVA_UTENTE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="DATA_ESECUZIONE" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_INIZIO" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_FINE" type="sg:GGMMAAAAType"/>
+  <xsd:element name="CODICE_COMUNE" type="sg:CodiceComuneIstatType"/>
+  <xsd:element name="MATR_MIS" type="sg:String20obb"/>
+  <xsd:element name="CLASSE_PRELIEVO" type="sg:String1"/>
+  <xsd:element name="PREL_ANNUO_PREV" type="sg:Numeric10"/>
+  <xsd:element name="POT_MAX_RIC" type="sg:Numeric10"/>
+  <xsd:element name="POT_TOT_INST" type="sg:Numeric10"/>
+  <xsd:element name="CAT_USO" type="sg:String2ObbType"/>
+  
+  
+  <xsd:complexType name="DatiTecniciBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sgas:COD_PDR"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciBaseRemiOpzType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sgas:COD_REMI"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciBaseRemiType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sgas:COD_REMI"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciAnagraficaType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sgas:COD_REMI"/>
+          <xsd:element minOccurs="0" ref="sgas:TIPO_PDR"/>
+          <xsd:element minOccurs="0" ref="sgas:COD_PROF_PREL_STD"/>
+          <xsd:element minOccurs="0" ref="sgas:PRELIEVO_ANNUO_PREV"/>
+          <xsd:element minOccurs="0" ref="sg:PIVA_DISTRIBUTORE"/>
+        </xsd:sequence>    
+      </xsd:extension>
+    </xsd:complexContent>    
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciAnagraficaBaseType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sgas:COD_REMI"/>
+          <xsd:element ref="sgas:TIPO_PDR"/>
+          <xsd:element ref="sg:PIVA_DISTRIBUTORE"/>
+        </xsd:sequence>    
+      </xsd:extension>
+    </xsd:complexContent>    
+  </xsd:complexType>
+  
+  <xsd:element name="Prelievo" type="sgas:DatiPrelievoType"/>
+  <xsd:complexType name="DatiPrelievoType">
+    <xsd:sequence>
+      <xsd:element ref="sgas:CAT_USO"/>
+      <xsd:element ref="sgas:CLASSE_PRELIEVO"/>
+      <xsd:element ref="sgas:PREL_ANNUO_PREV"/>
+      <xsd:element minOccurs="0" ref="sgas:POT_MAX_RIC"/>
+      <xsd:element minOccurs="0" ref="sgas:POT_TOT_INST"/>
+    </xsd:sequence>    
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciConPrelievoType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sgas:COD_REMI"/>
+          <xsd:element minOccurs="0" ref="sgas:MATR_MIS"/>
+          <xsd:element ref="sgas:Prelievo"/>
+        </xsd:sequence>    
+      </xsd:extension>
+    </xsd:complexContent>    
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciMatrMisType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sgas:MATR_MIS"/>
+        </xsd:sequence>    
+      </xsd:extension>
+    </xsd:complexContent>    
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiPrestazionePdrType">
+    <xsd:sequence>
+      <xsd:element ref="sgas:COD_PRESTAZIONE"/>
+      <xsd:element ref="sgas:PIVA_UTENTE"/>
+      <xsd:element ref="sgas:DATA_ESECUZIONE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="FornituraBaseType">
+    <xsd:sequence>
+      <xsd:element minOccurs="0" ref="sgas:DATA_INIZIO"/>
+      <xsd:element minOccurs="0" ref="sgas:DATA_FINE"/>
+      <xsd:element minOccurs="0" ref="sgas:TIPO_FORNITURA"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="UbicazioneBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sgas:CODICE_COMUNE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiAttivazioneVolturaGasBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sgas:TIPOLOGIA_VOLTURA"/>
+      <xsd:element ref="sgas:TIPO_FORNITURA"/>
+      <xsd:element ref="sgas:TIPO_PDR"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiAttivazioneVolturaGasDecorrenzaType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiAttivazioneVolturaGasBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:DATA_DECORRENZA"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiRichiestaAttivazioneVolturaGasType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiAttivazioneVolturaGasBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:SETT_MERCEOLOGICO"/>
+          <xsd:element ref="sg:DATA_RICHIESTA"/>
+          <xsd:element ref="sg:DATA_DECORRENZA"/>
+          <xsd:element minOccurs="0" ref="sg:PIVA_CONTROPARTE_COMMERCIALE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiAttivazioneVolturaGasType">
+    <xsd:complexContent>
+      <xsd:extension base="sgas:DatiAttivazioneVolturaGasBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:PIVA_UTENTE_ENTRANTE"/>
+          <xsd:element ref="sg:PIVA_UTENTE_USCENTE"/>
+          <xsd:element ref="sg:DATA_DECORRENZA"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+</xsd:schema>

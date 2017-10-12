@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">     
+    <xsd:element name="societa" type="xsd:string"/>     
+    <xsd:element name="dataInizioValidita" type="xsd:string"/>     
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var1"/>
+    <input path="/SapBapiCostcenterGetlist1.xsd" var="var2"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var3"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var4"/>
+    <output path="/AnagraficheCO_InlineSchema.xsd" var="var5"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapreturn1478768624"/>
+        <namespace kind="supplement" prefix="in3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcostcenterlist1498929925"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapicostcentergetlist1"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="CDC_getListToResp">
+        <input path="$var1/mb:env(Environment)" var="Environment">
+            <cast castType="userDefined" path="$Environment/Variables/any" qualifier="dataInizioValidita" ref="var" var="any"/>
+            <cast castType="userDefined" path="$Environment/Variables/any" qualifier="societa" ref="var" var="any1"/>
+        </input>
+        <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapicostcentergetlist1" path="$var2/mb:msg(SapBapiCostcenterGetlist1,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_SapBapiCostcenterGetlist1"/>
+        <output path="$var4/mb:env(Environment)" var="Environment1">
+            <cast castType="userDefined" path="$Environment1/Variables/any" qualifier="dataInizioValidita" ref="var" var="any2"/>
+            <cast castType="userDefined" path="$Environment1/Variables/any" qualifier="societa" ref="var" var="any3"/>
+        </output>
+        <output namespace="http://www.gruppoiren.it/AnagraficheCO/" path="$var5/mb:msg(Output,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Output"/>
+        <passthrough>
+            <input path="$Environment/."/>
+            <output path="$Environment1/."/>
+            <updates/>
+        </passthrough>
+        <move>
+            <input path="$ComIbmMessageAssembly_SapBapiCostcenterGetlist1/Properties"/>
+            <output path="$ComIbmMessageAssembly_Output/Properties"/>
+            <override>
+                <assign value="{AnagraficheCO}">
+                    <output path="$ComIbmMessageAssembly_Output/Properties/MessageSet"/>
+                </assign>
+            </override>
+        </move>
+        <foreach>
+            <input path="$ComIbmMessageAssembly_SapBapiCostcenterGetlist1/SapBapiCostcenterGetlist1/SapCostcenterlist" var="SapCostcenterlist"/>
+            <input auxiliary="true" path="$Environment/Variables/dataInizioValidita" var="dataInizioValidita"/>
+            <input auxiliary="true" path="$Environment/Variables/societa" var="societa"/>
+            <output path="$ComIbmMessageAssembly_Output/Output/oggettoContabile"/>
+            <test lang="xpath">fn:string-length($SapCostcenterlist/COSTCENTER)&gt;0</test>
+            <assign value="CDC">
+                <output path="@tipo"/>
+            </assign>
+            <move>
+                <input path="$SapCostcenterlist/COSTCENTER"/>
+                <output path="codice"/>
+            </move>
+            <move>
+                <input path="$dataInizioValidita/." var="dataInizioValidita"/>
+                <output path="dataInizioValidita"/>
+            </move>
+            <assign value="9999-12-31">
+                <output path="dataFineValidita"/>
+            </assign>
+            <move>
+                <input path="$societa/." var="societa"/>
+                <output path="societa"/>
+            </move>
+            <move>
+                <input path="$SapCostcenterlist/NAME"/>
+                <output path="descrizione"/>
+            </move>
+        </foreach>
+    </mappingDeclaration>
+</mappingRoot>

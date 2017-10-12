@@ -1,0 +1,18 @@
+DECLARE ns NAMESPACE 'http://www.gruppoiren.it/AnagraficheCO/';
+
+
+CREATE COMPUTE MODULE ANAGRAFICHE_CO_SOAP_SetLabel
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--SET OutputRoot = InputRoot;
+		
+		SET OutputLocalEnvironment.Destination.RouterList.DestinationData.labelName = TRIM(InputRoot.SOAP.Body.ns:Input.tipo);
+		
+		CREATE FIELD OutputRoot.XMLNSC.ns:Input;
+		
+		SET OutputRoot.XMLNSC.ns:Input = InputRoot.SOAP.Body.ns:Input;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

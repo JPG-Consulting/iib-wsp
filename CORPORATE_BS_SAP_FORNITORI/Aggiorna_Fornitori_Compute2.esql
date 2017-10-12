@@ -1,0 +1,110 @@
+
+
+CREATE COMPUTE MODULE Aggiorna_Fornitori_Compute2
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN		
+		--DICHIARO IL RITORNO DELLA FUNCTION SAP	
+		DECLARE funcSAP REFERENCE TO InputRoot.DataObject.ns5:SapZAnagrafeFornitori.SapTbLfa1;		
+		DECLARE msgOk CHARACTER;
+		DECLARE mID CHARACTER;
+		DECLARE mNR CHARACTER;
+		DECLARE contAnag INTEGER;
+		DECLARE c_msgTab INT CARDINALITY(InputRoot.DataObject.ns5:SapZAnagrafeFornitori.SapMesstab[]);
+		DECLARE i_msgTab INTEGER 1;
+		DECLARE trovatoErrore BOOLEAN FALSE;
+				
+		SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL = Environment.Variables.url_aggiornaFornitori;
+		--DEVO RECUPERARE IL MESSAGIO DI BUON FINE DALLA FUNZIONE SAP, SE OK PROSEGUO ALTRIMENTI MANDO EMAIL:
+		
+		ciclo_wsMsgTab: LOOP
+	        IF (i_msgTab > c_msgTab or trovatoErrore=TRUE) THEN	        	
+			   LEAVE ciclo_wsMsgTab;
+		    END IF;	
+		    DECLARE msgTab REFERENCE TO InputRoot.DataObject.ns5:SapZAnagrafeFornitori.SapMesstab[i_msgTab];
+			SET msgOk = msgTab.MSGTYP;
+			  IF (msgOk = 'E') or (msgOk = 'S' and msgTab.MSGNR<>'056' and msgTab.MSGNR<>'170') THEN--se errore
+				SET trovatoErrore = TRUE;
+				SET Environment.Variables.MSGID = msgTab.MSGID;
+				SET Environment.Variables.MSGNR = msgTab.MSGNR;
+				SET Environment.Variables.MSG 	= msgTab.MSGV1;
+				SET Environment.Variables.ErroreSAP = Environment.Variables.rag_soc_fornitore || '#' ||Environment.Variables.MSGID || ' ' || Environment.Variables.MSGNR || ' '|| Environment.Variables.MSG;
+			  END IF;
+		   set i_msgTab = i_msgTab + 1;	   	
+		END LOOP ciclo_wsMsgTab;		  				    
+		if (trovatoErrore = TRUE) THEN	
+				PROPAGATE TO TERMINAL 'out1';
+			ELSE			
+				--| MO 15032017 INSERT/UPDATE SU CICLO_PAS.PF_FORNITORE
+				SET contAnag = SELECT COUNT(*) 
+					   		     FROM Database.PF_FORNITORE as pf
+					  		     WHERE pf.P_IVA_FORNITORE = Environment.Variables.piva_fornitore;
+					  		     
+				IF (contAnag > 0 ) THEN
+					 UPDATE Database.PF_FORNITORE AS pf
+						SET ID_FORNITORE_SAP = coalesce(funcSAP.LIFNR,'')
+						  , ID_FORNITORE_BRAVO_SOLUTION = Environment.Variables.bravoId					  
+						  , TIPO_FORNITORE				= ''
+						  , RAGIONE_SOCIALE_FORNITORE   = Environment.Variables.rag_soc_fornitore
+						  , STATO_FORNITORE				= 'A'
+					  	  , USER_ALIAS					= Environment.Variables.userAlias
+					  	  , CONDIZIONI_PAGAMENTO		= ''
+						  , MAIL_FORNITORE				= Environment.Variables.mail_fornitore					  
+					  WHERE pf.P_IVA_FORNITORE = Environment.Variables.piva_fornitore;	
+					  SET Environment.Variables.Elaborati = Environment.Variables.Elaborati + 1;
+				ELSE
+					INSERT INTO Database.PF_FORNITORE(ID_FORNITORE_SAP
+													 ,ID_FORNITORE_BRAVO_SOLUTION
+													 ,P_IVA_FORNITORE
+													 ,TIPO_FORNITORE
+													 ,RAGIONE_SOCIALE_FORNITORE
+													 ,STATO_FORNITORE
+													 ,USER_ALIAS
+													 ,PASSWORD
+													 ,CONDIZIONI_PAGAMENTO
+													 ,MAIL_FORNITORE
+													 ,REGISTRATO				
+													 )
+										VALUES(funcSAP.LIFNR
+											  ,Environment.Variables.bravoId	
+											  ,Environment.Variables.piva_fornitore
+											  ,''
+											  ,Environment.Variables.rag_soc_fornitore
+											  ,'A'
+											  ,Environment.Variables.userAlias
+											  ,''
+											  ,''
+											  ,Environment.Variables.mail_fornitore
+											  ,'0'
+										);			
+					SET Environment.Variables.Elaborati = Environment.Variables.Elaborati + 1;					 
+				END IF;			
+			    --| se il codice sap è già valorizzato nell'export non chiamare il servizio di import
+			    if (Environment.Variables.extCode = 'XX') THEN  --| vuol dire che non è ancora valorizzato il codice sap		     
+			
+					--DEVO COSTRUIRE IL MESSAGGIO DA MANDARE AL WEB SERVICE DI IMPORT BRAVOSOLUTION
+					CREATE FIELD OutputRoot.XMLNSC.ns:ImportProfilesRequest.companyData.company;
+					DECLARE impSOAPcomp REFERENCE TO OutputRoot.XMLNSC.ns:ImportProfilesRequest.companyData.company;
+					SET impSOAPcomp.operationCode = '004';
+					
+					CREATE FIELD OutputRoot.XMLNSC.ns:ImportProfilesRequest.companyData.company.companyInfo;
+					
+					CREATE FIELD OutputRoot.XMLNSC.ns:ImportProfilesRequest.companyData.dataElements.dataElements;
+					
+					DECLARE impSOAPcompInfo REFERENCE TO OutputRoot.XMLNSC.ns:ImportProfilesRequest.companyData.company.companyInfo;
+					DECLARE impSOAPdata REFERENCE TO OutputRoot.XMLNSC.ns:ImportProfilesRequest.companyData.dataElements.dataElements;
+					
+					--VALORIZZO I CAMPI DA MANDARE A BRAVOSOLUTION 
+					SET impSOAPcompInfo.bravoId = Environment.Variables.BID;
+					SET impSOAPcompInfo.extCode = funcSAP.LIFNR;--'0000041013';
+					
+					SET impSOAPdata.deInfo.name = 'INT.ANAGRAFICA_Termini di pagamento';
+					SET impSOAPdata.deInfo.values.value.deValue = '999';--funcSAP.				
+				    PROPAGATE TO TERMINAL 'out';			    
+				END IF;
+			END IF;		 
+		RETURN FALSE;		
+		
+	END;
+END MODULE;
+
+

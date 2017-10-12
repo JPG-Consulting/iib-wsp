@@ -1,0 +1,46 @@
+DECLARE ns NAMESPACE 'http://host.bs.com/common/webservice/ProfileManagement/';
+
+CREATE COMPUTE MODULE SetCallWS
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+	    CREATE FIELD OutputRoot.XMLNSC.ns:ExportProfilesPagedRequest;
+	    DECLARE bodyReq REFERENCE TO OutputRoot.XMLNSC.ns:ExportProfilesPagedRequest;
+
+		SET bodyReq.componentFilter[1] = 'DEBASIC';
+		SET bodyReq.componentFilter[2] = 'DECATEGORY';
+		
+		SET bodyReq.conditionFilter[1].name = 'LASTMODTIME';	
+		if (Environment.Variables.DataFr = 'XX') THEN
+		  SET bodyReq.conditionFilter[1].value = CAST(CURRENT_DATE AS CHARACTER FORMAT 'yyyyMMdd'); 
+		else
+		  SET bodyReq.conditionFilter[1].value = Environment.Variables.DataFr;  
+		end if;			
+		SET bodyReq.conditionFilter[2].name = 'TYPE';
+		SET bodyReq.conditionFilter[2].value = 'SELLER';
+		if (Environment.Variables.bravotest <> 'XX') then
+		 	SET bodyReq.conditionFilter[3].name = 'BRAVOID';
+			SET bodyReq.conditionFilter[3].value = Environment.Variables.bravotest;	
+			SET bodyReq.conditionFilter[4].name = 'STATUSEXT';
+			SET bodyReq.conditionFilter[4].value = 'ATTIVO Codificato SAP';	
+		ELSE
+			SET bodyReq.conditionFilter[3].name = 'STATUSEXT';
+			SET bodyReq.conditionFilter[3].value = 'ATTIVO Codificato SAP';					
+		end if;		
+		
+		--SET bodyReq.startAt = InputLocalEnvironment.HTTP.Input.QueryString.STARTPAR;
+		SET bodyReq.startAt = Environment.Variables.STARTPAR;		
+		
+		--| recupero endpoint BRAVOSOLUTION 
+		SET Environment.Variables.url_aggiornaFornitori = THE (SELECT ITEM T.VALORE
+		                           	     						FROM Database.IIB_VAR_CFG AS T
+		                              							  WHERE T.FLUSSO    = 'CORPORATE_BS_SAP'
+		                                						  AND T.VARIABILE   = 'URL_AGGIORNA_FORNITORI');
+		                                						  
+						  
+		SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL = Environment.Variables.url_aggiornaFornitori;
+		RETURN TRUE;
+		
+	END;
+END MODULE;
+

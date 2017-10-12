@@ -1,0 +1,17 @@
+
+
+Importing file: P:\Users\e-decaro\IBM\IIBT10\workspace_TEST\DBSE1_SAP\SAP200.dbm
+
+
+Processing schema SAPR3.
+Creating complex type for table ZSWITCHCRM.
+Creating global element for table ZSWITCHCRM.
+Creating file \HUB_SAP_SE1\database\sapr3\SAP200.xsd in the workspace.
+
+Elapsed time processing this message definition file: 4.574 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

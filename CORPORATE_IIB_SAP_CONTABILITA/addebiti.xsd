@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/schemas" xmlns:Q1="http://www.gruppoiren.it/schemas">
+    <xsd:element name="addebito" type="Q1:addebitoType"></xsd:element>
+    
+    <xsd:complexType name="addebitoType">
+    	<xsd:sequence>
+    		<xsd:element name="tipoIva" type="xsd:string"></xsd:element>
+    		<xsd:element name="tipoAddebitoCodice" type="xsd:string"></xsd:element>
+    		<xsd:element name="importo" type="xsd:string" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="addebiti" type="Q1:addebitiType"></xsd:element>
+    
+    <xsd:complexType name="addebitiType">
+    	<xsd:sequence>
+    		<xsd:element ref="Q1:addebito" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

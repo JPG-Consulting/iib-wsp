@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmJavaCompute.msgnode="ComIbmJavaCompute.msgnode" xmlns:ComIbmSAPRequest.msgnode="ComIbmSAPRequest.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="sub/Publish_UpdateDB.subflow" nsPrefix="sub_Publish_UpdateDB.subflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1" useDefaults="true" udpSupport="true">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="Publish_UpdateDB" bundleName="sub/Publish_UpdateDB" pluginId="CORPORATE_IIB_SAP_CONTABILITA"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_IIB_SAP_CONTABILITA/icons/full/obj16/Publish_UpdateDB.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_IIB_SAP_CONTABILITA/icons/full/obj30/Publish_UpdateDB.gif"/>
+    <composition>
+      <nodes xmi:type="eflow:FCMSource" xmi:id="InTerminal.Input" location="20,20">
+        <translation xmi:type="utility:TranslatableString" key="InTerminal.Input" bundleName="sub/Publish_UpdateDB" pluginId="CORPORATE_IIB_SAP_CONTABILITA"/>
+      </nodes>
+      <nodes xmi:type="eflow:FCMSink" xmi:id="OutTerminal.Output" location="532,19">
+        <translation xmi:type="utility:TranslatableString" key="OutTerminal.Output" bundleName="sub/Publish_UpdateDB" pluginId="CORPORATE_IIB_SAP_CONTABILITA"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="119,35" adapterComponent="Adapters/SAP/SAP_ALE.outadapter" defaultMethod="executeSapZfidccp02N" dataLocation="$Root/DataObject">
+        <translation xmi:type="utility:ConstantString" string="ZFIDCCP02_N"/>
+        <nsMappingTable nsPrefix="sap" namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfidccp02n"/>
+        <nsMappingTable nsPrefix="Q1" namespace="http://www.gruppoiren.it/schemas"/>
+        <nsMappingTable nsPrefix="cms" namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcmsend01"/>
+        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="ZFIDCCP02_N.terminal.out" eventIdentity="Inviato IDoc di tipo ZFIDCCP02_N">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/sap:SapZfidccp02N/SAPTransactionID" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfidccp02n"/>
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/schemas"/>
+              <nsPrefixMap prefix="cms" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcmsend01"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Inviato IDoc di tipo ZFIDCCP02_N"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfidccp02n"/>
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/schemas"/>
+              <nsPrefixMap prefix="cms" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcmsend01"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="187,70" dataSource="INT_ENGINE" computeExpression="esql://routine/sub#PublishZFICCP02N_ElaboraPrevisionale.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="ElaboraPrevisionale"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="295,138" adapterComponent="Adapters/SAP/SAP_ALE.outadapter" defaultMethod="executeSapCmsend01">
+        <translation xmi:type="utility:ConstantString" string="CMSEND"/>
+        <nsMappingTable nsPrefix="Q1" namespace="http://www.gruppoiren.it/schemas"/>
+        <nsMappingTable nsPrefix="cms" namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcmsend01"/>
+        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="CMSEND.terminal.out" eventIdentity="Inviato IDoc di tipo CMSEND">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/cms:SapCmsend01/SAPTransactionID" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/schemas"/>
+              <nsPrefixMap prefix="cms" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcmsend01"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Inviato IDoc di tipo CMSEND"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="Q1" nsURI="http://www.gruppoiren.it/schemas"/>
+              <nsPrefixMap prefix="cms" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcmsend01"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmJavaCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="379,71" javaClass="sub.PublishZFICCP02N_UpdateDB">
+        <translation xmi:type="utility:ConstantString" string="UpdateDB"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_1" sourceNode="InTerminal.Input" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="OutTerminal.Output" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

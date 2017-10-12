@@ -1,0 +1,27 @@
+
+
+CREATE COMPUTE MODULE OI_getListToResp
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF InputLocalEnvironment.Variables.Final = 'YES' THEN
+			CREATE FIELD OutputRoot.XMLNSC.ns:Output;
+			SET OutputRoot.XMLNSC.ns:Output = Environment.Data.Output;
+			FOR ogg AS OutputRoot.XMLNSC.ns:Output.oggettoContabile[] DO
+				SET ogg.(XMLNSC.Attribute)tipo = 'OI';
+			END FOR;
+			RETURN TRUE;
+		ELSE
+			DECLARE oi REFERENCE TO Environment.Data.ns:Output;
+			FOR dataIn AS InputRoot.DataObject.ns59:SapBapiInternalorderGetlist.SapOrderList[] DO
+				CREATE LASTCHILD OF Environment.Data.Output AS oi NAME 'oggettoContabile';
+				SET oi.codice = dataIn.ORDER;
+				SET oi.descrizione = dataIn.ORDER_NAME;
+				SET oi.societa = Environment.Variables.societa;
+				SET oi.dataInizioValidita =  Environment.Variables.dataInizioValidita;
+				SET oi.dataFineValidita = '9999-12-31';
+			END FOR;
+			RETURN FALSE;			
+		END IF;
+	END;
+
+END MODULE;

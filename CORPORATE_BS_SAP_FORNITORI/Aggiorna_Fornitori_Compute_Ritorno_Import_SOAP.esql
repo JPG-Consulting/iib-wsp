@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE Aggiorna_Fornitori_Compute_Ritorno_Import_SOAP
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE msgRet CHARACTER;
+		SET msgRet = InputRoot.SOAP.Body.ns:ImportProfilesResponse.returnMessage;
+		
+		RETURN TRUE;
+	END;
+END MODULE;

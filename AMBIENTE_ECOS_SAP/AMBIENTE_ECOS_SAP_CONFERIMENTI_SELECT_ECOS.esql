@@ -1,0 +1,124 @@
+
+
+CREATE COMPUTE MODULE AMBIENTE_ECOS_SAP_CONFERIMENTI_SELECT_ECOS
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE sapexpv_cod CHARACTER InputLocalEnvironment.HTTP.Input.QueryString.sapexpv_cod;
+		DECLARE idunico INTEGER SELECT MAX(T.usersapbuslog_id) FROM Database.usersapbuslog AS T;
+		DECLARE rowNum INTEGER 1;
+		
+		IF sapexpv_cod IS NULL THEN
+			RETURN FALSE;
+		END IF;	
+		
+		IF sapexpv_cod <> '' THEN
+			SET Environment.Variables.sapexpv_cod  = sapexpv_cod;
+		ELSE
+			RETURN FALSE;
+		END IF;
+		
+		
+		IF idunico IS NULL THEN
+			SET idunico = 1; --primo run con tabella LOG vuota!
+		ELSE
+			SET idunico = idunico + 1;
+		END IF;
+		SET Environment.Variables.idunico = idunico;
+		--variabili in ENV per CONTARE poi INS/UPDATE:---------------------------------------
+		IF Environment.Variables.Count IS NULL THEN
+			CREATE FIELD Environment.Variables.Count VALUE 0;
+		ELSE
+			SET Environment.Variables.Count = 0;
+		END IF;
+		
+		IF Environment.Variables.Ins IS NULL THEN
+			CREATE FIELD Environment.Variables.Ins VALUE 0;
+		ELSE
+			SET Environment.Variables.Ins = 0;
+		END IF;
+		IF Environment.Variables.Upd IS NULL THEN
+			CREATE FIELD Environment.Variables.Upd VALUE 0;
+		ELSE
+			SET Environment.Variables.Upd = 0;
+		END IF;
+		
+		CREATE FIELD Environment.Variables.DataInizio VALUE CURRENT_TIMESTAMP;
+		CREATE FIELD Environment.Variables.Profilo VALUE sapexpv_cod;
+		
+		---tabella LOg scritta subito per via del: 		usersapbuslog_id==idUnico
+		INSERT INTO Database.usersapbuslog
+			(usersapbuslog_id, --database = ECOS
+	 		usersapbuslog_dataora_ini, 
+	 		usersapbuslog_dataora_fin, 
+	 		usersapbuslog_num_rec, 
+	 		usersapbuslog_esito, 
+	 		usersapbuslog_descrizione_esito, 
+	 		usersapbuslog_inserted,
+	 		usersapbuslog_updated,
+	 		sapexpsv_cod)
+	 		VALUES(
+	 		(SELECT MAX(T.usersapbuslog_id) FROM Database.usersapbuslog AS T) +1, 
+	 		Environment.Variables.DataInizio,
+	 		NULL, 
+	 		CAST(Environment.Variables.Count AS INTEGER), 
+	 		'?', 
+	 		'inizio', 
+	 		CAST(Environment.Variables.Ins AS INTEGER),
+	 		CAST(Environment.Variables.Upd AS INTEGER),
+	 		COALESCE(sapexpv_cod, ''));
+		
+	--------------------------------------------------------------	
+		
+		IF sapexpv_cod IS NOT NULL THEN 	--ESTRAZIONE DATI RELATIVI A UN SOLO PROFILO
+			SET Environment.Query.Result[] =
+			SELECT T.*
+			FROM Database.tasapexpied AS T, Database.tasapexpsv AS M
+			WHERE T.sapexpied_flag_ecos = '0'
+			AND T.sapexpied_flag_exp = 'D'
+			AND M.sapexpsv_flag_tipo_exp = 'S'
+			AND M.sapexpsv_flag_tipo = 'I'
+			AND T.sapexpsv_cod = sapexpv_cod
+			AND T.sapexpsv_cod = M.sapexpsv_cod;
+		ELSE								--ESTRAZIONE DATI DI TUTTI I PROFILI
+			SET Environment.Query.Result[] =
+			SELECT T.*
+			FROM Database.tasapexpied AS T, Database.tasapexpsv AS M
+			WHERE T.sapexpied_flag_ecos = '0'
+			AND T.sapexpied_flag_exp = 'D'
+			AND M.sapexpsv_flag_tipo_exp = 'S'
+			AND M.sapexpsv_flag_tipo = 'I'
+			AND T.sapexpsv_cod = M.sapexpsv_cod;
+		END IF;
+		
+		CREATE FIELD OutputRoot.XMLNSC.zsea_dati_ecos;
+		
+		FOR record AS Environment.Query.Result[] DO
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].MANDT = '200';
+			IF record.conf_qta_p >= 0 THEN
+				SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].TIPO_RECORD = 'AC';
+			ELSE
+				SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].TIPO_RECORD = 'CA';
+			END IF;
+			--codice istat comune da decodifica
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].CITY_CODE = TRIM(THE(SELECT ITEM t.zco_cod from Database.bsimp as t where t.imp_cod = record.imp_cod_comune_sl and t.imp_uni = record.imp_uni_comune_sl));
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].PARTNER = TRIM(THE(SELECT ITEM t.acn_id_partita from Database.bsacn as t where t.imp_cod_comune_sl = record.imp_cod_comune_sl and t.imp_uni_comune_sl = record.imp_uni_comune_sl and t.acn_cod = record.acn_cod));
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].VERTRAG = TRIM(RIGHT('0000000000' || TRIM(THE(select ITEM t.uab_pin from Database.bsuab as t where t.imp_cod_comune_sl = record.imp_cod_comune_sl and t.imp_uni_comune_sl = record.imp_uni_comune_sl and t.acn_cod = record.acn_cod and t.uab_prog = record.uab_prog)), 10));
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].ANLAGE = TRIM(RIGHT(TRIM(THE(select ITEM t.uab_cod from Database.bsuab as t where t.imp_cod_comune_sl = record.imp_cod_comune_sl and t.imp_uni_comune_sl = record.imp_uni_comune_sl and t.acn_cod = record.acn_cod and t.uab_prog = record.uab_prog)),10));
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].DATA_INIZIO = TRIM(CAST(record.conf_data AS CHARACTER FORMAT 'yyyyMMdd'));
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].DATA_FINE = TRIM(CAST(record.conf_data AS CHARACTER FORMAT 'yyyyMMdd'));
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].Codice_cer = TRIM(THE(SELECT ITEM bsrif.cer2_cod FROM Database.bsrif WHERE bsrif.rif_cod = record.rif_cod));
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].CHILI_CONFERITI = record.conf_qta_p;
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].PUNTI_RACCOLTI = record.conf_qta_bollini;
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].DATA_IMPORTAZIONE = TRIM(CAST(CURRENT_DATE AS CHARACTER FORMAT 'yyyyMMdd'));
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].UTENTE_IMPORTAZIONE = 'IIB';
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].NOME_FILE_IMPORTAZIONE = sapexpv_cod ||'_' ||CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMddHHmmss') ||'_'|| CAST(idunico AS CHARACTER);
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].ANOMALIA_CARICAMENTO = '00'; --nessun valore
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].DATA_CARICAMENTO = CAST(CURRENT_DATE AS CHARACTER FORMAT 'yyyyMMdd'); --nessun valore
+			SET OutputRoot.XMLNSC.zsea_dati_ecos[rowNum].UTENTE_CARICAMENTO = ' '; --nessun valore
+			SET rowNum = rowNum + 1;
+		END FOR;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

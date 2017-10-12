@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.4" xmlns:sel="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.4" xmlns:sg="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.6">
+  
+  <xsd:import namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.6" schemaLocation="StruttureGenerali_v1_6.xsd"/>
+  
+  <xsd:element name="COD_POD" type="sel:CodicePODType"/>
+  <xsd:element name="DATA_RICHIESTA" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_CONTRATTO" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_DECORRENZA" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_FINE" type="sg:GGMMAAAAType"/>
+  <xsd:element name="COD_CONTR_DISP" type="sel:CodContrattoDispacciamentoType"/>
+  <xsd:element name="COD_CONTR_DISP_ENTRANTE" type="sel:CodContrattoDispacciamentoType"/>
+  <xsd:element name="COD_CONTR_DISP_USCENTE" type="sel:CodContrattoDispacciamentoType"/>
+  <xsd:element name="PIVA_UTENTE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_UTENTE_ENTRANTE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_UTENTE_USCENTE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="PIVA_CONTROPARTE_COMMERCIALE" type="sg:PartitaIVAUEType"/>
+  <xsd:element name="REVOCA_TIMOE" type="sg:EsitoBoolType"/>
+  <xsd:element name="ACQUISTO_CREDITO" type="sg:EsitoBoolType"/>
+  <xsd:element name="SOSP_MOR" type="sg:EsitoBoolType"/>          
+  <xsd:element name="PRESENZA_CMOR" type="sg:EsitoBoolType"/>
+  <xsd:element name="DATE_SOSP" type="sg:DateGGMMAAAAType"/>
+  <xsd:element name="DATE_SWITCH" type="sg:DateGGMMAAAAType"/>
+  <xsd:element name="DATA_SALVAGUARDIA" type="sg:GGMMAAAAType"/>          
+  <xsd:element name="DATA_ULTIMA_RICH_SOSP" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATA_ULTIMA_SOSP" type="sg:GGMMAAAAType"/>
+  <xsd:element name="TIPOLOGIA_RISOLUZIONE" type="sg:TipologiaRisoluzioneType"/>
+  <xsd:element name="TENSIONE" type="sg:Numeric10"/>
+  <xsd:element name="TIPO_POD" type="sg:String2ObbType"/>
+  <xsd:element name="TIPO_MISURATORE" type="sg:String1"/>
+  <xsd:element name="CIFREATT_O" type="sg:Numeric3"/>
+  <xsd:element name="CIFREREA_O" type="sg:Numeric3"/>
+  <xsd:element name="KA" type="sg:Decimal_12_3_Type"/>
+  <xsd:element name="KR" type="sg:Decimal_12_3_Type"/>
+  <xsd:element name="KP" type="sg:Decimal_12_3_Type"/>
+  <xsd:element name="MATRATT" type="sg:String17obb"/>
+  <xsd:element name="MATRREA" type="sg:String17obb"/>
+  <xsd:element name="MATRPOT" type="sg:String17obb"/>
+  <xsd:element name="DATAINSTMISATT" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATAINSTMISREA" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DATAINSTMISPOT" type="sg:GGMMAAAAType"/>
+  <xsd:element name="CIFREATT_NO" type="sg:Numeric3"/>
+  <xsd:element name="CIFREREA_NO" type="sg:Numeric3"/>
+  <xsd:element name="CIFREPOT_NO" type="sg:Numeric3"/>
+  <xsd:element name="GRUPPOMIS" type="sg:String2ObbType"/>
+  <xsd:element name="FORFAIT" type="sg:String2ObbType"/>
+  <xsd:element name="COD_PRESTAZIONE" type="sg:String3ObbType"/>
+  <xsd:element name="CAUSALE_INTERRUZIONE" type="sg:String255obb"/>
+  <xsd:element name="DATA_ESECUZIONE" type="sg:GGMMAAAAType"/>
+  <xsd:element name="DISALIMENTABILITA" type="sg:String1"/>
+  <xsd:element name="TARIFFA" type="sg:String4obb"/>
+  <xsd:element name="POTCONTRIMP" type="sg:Decimal_9_3_Type"/>
+  <xsd:element name="POTDISP" type="sg:Decimal_9_3_Type"/>
+  <xsd:element name="MESE_SETTLEMENT" type="sg:MMType"/>
+  <xsd:element name="TRATTAMENTO_M" type="sg:String1"/>
+  <xsd:element name="TRATTAMENTO_M1" type="sg:String1"/>
+  <xsd:element name="CONSUMO_TOT" type="sg:Decimal_12_3_Type"/>
+  <xsd:element name="CONSUMO_F1" type="sg:Decimal_9_3_Type"/>
+  <xsd:element name="CONSUMO_F2" type="sg:Decimal_9_3_Type"/>
+  <xsd:element name="CONSUMO_F3" type="sg:Decimal_9_3_Type"/>
+  
+  <xsd:simpleType name="CodicePODType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{13}.?"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="DatiTecniciBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sel:COD_POD"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciDistributoreType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sg:PIVA_DISTRIBUTORE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciUbicazioneBaseType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sg:ISTAT"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciFornituraType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="Fornitura" type="sg:IndirizzoType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciCompletiType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:DatiTecniciFornituraType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="Ubicazione" type="sg:IndirizzoType"/>
+          <xsd:element minOccurs="0" name="Tensione" type="sel:TensioneType"/>
+          <xsd:element minOccurs="0" name="TipologiaPod" type="sel:TipologiaPodType"/>
+          <xsd:element minOccurs="0" name="Misuratore" type="sel:MisuratoreType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTecniciTipologiaType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:DatiTecniciBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="TipologiaPod" type="sel:TipologiaPodType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="TensioneType">
+    <xsd:sequence>
+      <xsd:element ref="sel:TENSIONE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="TipologiaPodType">
+    <xsd:sequence>
+      <xsd:element ref="sel:TIPO_POD"/>
+      <xsd:element minOccurs="0" ref="sel:DATA_FINE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="MisuratoreType">
+    <xsd:sequence>
+      <xsd:element ref="sel:TIPO_MISURATORE"/>
+      <xsd:element minOccurs="0" ref="sel:CIFREATT_O"/>
+      <xsd:element minOccurs="0" ref="sel:CIFREREA_O"/>
+      <xsd:element minOccurs="0" ref="sel:KA"/>
+      <xsd:element minOccurs="0" ref="sel:KR"/>
+      <xsd:element minOccurs="0" ref="sel:KP"/>
+      <xsd:element minOccurs="0" ref="sel:MATRATT"/>
+      <xsd:element minOccurs="0" ref="sel:MATRREA"/>
+      <xsd:element minOccurs="0" ref="sel:MATRPOT"/>
+      <xsd:element minOccurs="0" ref="sel:DATAINSTMISATT"/>
+      <xsd:element minOccurs="0" ref="sel:DATAINSTMISREA"/>
+      <xsd:element minOccurs="0" ref="sel:DATAINSTMISPOT"/>
+      <xsd:element minOccurs="0" ref="sel:CIFREATT_NO"/>
+      <xsd:element minOccurs="0" ref="sel:CIFREREA_NO"/>
+      <xsd:element minOccurs="0" ref="sel:CIFREPOT_NO"/>
+      <xsd:element minOccurs="0" ref="sel:GRUPPOMIS"/>
+      <xsd:element minOccurs="0" ref="sel:FORFAIT"/>
+    </xsd:sequence>
+  </xsd:complexType>
+ 
+  <xsd:complexType name="DatiPrestazioneType">
+    <xsd:sequence>
+      <xsd:element ref="sel:COD_PRESTAZIONE"/>
+      <xsd:element minOccurs="0" ref="sel:CAUSALE_INTERRUZIONE"/>
+      <xsd:element minOccurs="0" ref="sel:PIVA_UTENTE"/>
+      <xsd:element minOccurs="0" ref="sel:COD_CONTR_DISP"/>
+      <xsd:element ref="sel:DATA_ESECUZIONE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="DatiPrestazioneUDDType">
+    <xsd:sequence>
+      <xsd:element ref="sel:COD_PRESTAZIONE"/>
+      <xsd:element ref="sel:PIVA_UTENTE"/>
+      <xsd:element ref="sel:COD_CONTR_DISP"/>
+      <xsd:element ref="sel:DATA_ESECUZIONE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="DatiCommercialiType">
+    <xsd:sequence>
+      <xsd:element ref="sel:DISALIMENTABILITA"/>
+      <xsd:element ref="sel:TARIFFA"/>
+      <xsd:element ref="sel:POTCONTRIMP"/>
+      <xsd:element ref="sel:POTDISP"/>
+    </xsd:sequence>        
+  </xsd:complexType>
+  
+  <xsd:complexType name="SettlementType">
+      <xsd:sequence>
+        <xsd:element name="Attivazione" type="sel:SettlementAttivazioneType"/>
+      </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="SettlementAttivazioneType">
+    <xsd:sequence>
+      <xsd:element ref="sel:MESE_SETTLEMENT"/>
+      <xsd:element ref="sel:TRATTAMENTO_M"/>
+      <xsd:element ref="sel:TRATTAMENTO_M1"/>
+      <xsd:element ref="sel:CONSUMO_TOT"/>
+      <xsd:element ref="sel:CONSUMO_F1"/>
+      <xsd:element ref="sel:CONSUMO_F2"/>
+      <xsd:element ref="sel:CONSUMO_F3"/>
+    </xsd:sequence>        
+  </xsd:complexType>
+  
+  <xsd:element name="TIPOLOGIA_VOLTURA" type="sel:TipologiaVolturaType"/>
+  <xsd:simpleType name="TipologiaVolturaType">
+    <xsd:restriction base="xsd:string">
+      <xsd:length value="2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="TIPO_CONTRATTO" type="sel:TipoContrattoType"/>
+  <xsd:simpleType name="TipoContrattoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:length value="2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="CATEGORIA_CLIENTE" type="sel:CategoriaClienteType"/>
+  <xsd:simpleType name="CategoriaClienteType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,2}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:element name="SETT_MERCEOLOGICO" type="sel:SettMerceolType"/>
+  <xsd:simpleType name="SettMerceolType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,7}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="CodContrattoDispacciamentoType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\S.{0,5}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="VolturaDatiAttivazioneBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sel:TIPOLOGIA_VOLTURA"/>
+      <xsd:element ref="sel:TIPO_CONTRATTO"/>
+      <xsd:element minOccurs="0" ref="sel:CATEGORIA_CLIENTE"/>
+      <xsd:element minOccurs="0" ref="sel:SETT_MERCEOLOGICO"/>
+    </xsd:sequence>        
+  </xsd:complexType>
+  
+  <xsd:complexType name="VolturaAccettazioneDatiAttivazioneType">
+    <xsd:sequence>
+      <xsd:element ref="sel:COD_CONTR_DISP"/>
+      <xsd:element ref="sel:PIVA_UTENTE"/>
+    </xsd:sequence>        
+  </xsd:complexType>
+  
+  <xsd:complexType name="VolturaDatiAttivazioneNotificaType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:VolturaDatiAttivazioneBaseType">
+        <xsd:sequence>          
+          <xsd:element ref="sel:DATA_DECORRENZA"/>          
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+   
+  <xsd:complexType name="VolturaDatiAttivazioneRichiestaType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:VolturaDatiAttivazioneBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sel:DATA_RICHIESTA"/>
+          <xsd:element ref="sel:DATA_DECORRENZA"/>
+          <xsd:element ref="sel:COD_CONTR_DISP"/>
+          <xsd:element minOccurs="0" ref="sel:PIVA_CONTROPARTE_COMMERCIALE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="VolturaDatiAttivazioneComunicazioneType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:VolturaDatiAttivazioneBaseType">
+        <xsd:sequence>
+          <xsd:element ref="sel:COD_CONTR_DISP_ENTRANTE"/>
+          <xsd:element ref="sel:PIVA_UTENTE_ENTRANTE"/>
+          <xsd:element ref="sel:COD_CONTR_DISP_USCENTE"/>
+          <xsd:element ref="sel:PIVA_UTENTE_USCENTE"/>
+          <xsd:element ref="sel:DATA_DECORRENZA"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="VolturaDatiAttivazioneEsitoType">
+    <xsd:sequence>
+      <xsd:element ref="sel:COD_CONTR_DISP"/>
+      <xsd:element ref="sel:DATA_DECORRENZA"/>          
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiSwitchingBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sel:DATA_DECORRENZA"/>          
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiSwitchingRichType">
+    <xsd:sequence>
+      <xsd:element ref="sel:DATA_CONTRATTO"/>          
+      <xsd:element ref="sel:DATA_DECORRENZA"/>          
+      <xsd:element minOccurs="0" ref="sel:REVOCA_TIMOE"/>
+      <xsd:element minOccurs="0" ref="sel:ACQUISTO_CREDITO"/>
+      <xsd:element ref="sel:COD_CONTR_DISP"/>
+      <xsd:element ref="sel:PIVA_CONTROPARTE_COMMERCIALE"/>
+    </xsd:sequence>
+  </xsd:complexType>  
+    
+  <xsd:complexType name="DatiSwitchingInoltroBaseType">
+    <xsd:sequence>
+      <xsd:element ref="sel:DATA_DECORRENZA"/>          
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiSwitchingInoltroType">
+    <xsd:complexContent>
+      <xsd:extension base="sel:DatiSwitchingInoltroBaseType">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" ref="sel:REVOCA_TIMOE"/>
+          <xsd:element ref="sel:COD_CONTR_DISP"/>
+          <xsd:element ref="sel:PIVA_UTENTE"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTimoe6-4Type">
+    <xsd:sequence>
+      <xsd:element ref="sel:SOSP_MOR"/>          
+      <xsd:element ref="sel:PRESENZA_CMOR"/>
+      <xsd:element ref="sg:MERCATO_PROVENIENZA"/>
+      <xsd:element minOccurs="0" ref="sel:DATE_SOSP"/>
+      <xsd:element minOccurs="0" ref="sel:DATE_SWITCH"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTimoe6-4BaseType">
+    <xsd:sequence>
+      <xsd:element ref="sel:SOSP_MOR"/>          
+      <xsd:element ref="sel:PRESENZA_CMOR"/>
+      <xsd:element minOccurs="0" ref="sel:DATE_SOSP"/>
+      <xsd:element minOccurs="0" ref="sel:DATE_SWITCH"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiTimoe14-1Type">
+    <xsd:sequence>
+      <xsd:element ref="sel:DATA_SALVAGUARDIA"/>          
+      <xsd:element minOccurs="0" ref="sel:DATA_ULTIMA_RICH_SOSP"/>
+      <xsd:element minOccurs="0" ref="sel:DATA_ULTIMA_SOSP"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiRisoluzioneContrattualeType">
+    <xsd:sequence>
+      <xsd:element ref="sel:PIVA_UTENTE"/>
+      <xsd:element ref="sel:COD_CONTR_DISP"/>
+      <xsd:element ref="sel:DATA_DECORRENZA"/>
+    </xsd:sequence>        
+  </xsd:complexType>
+  
+  <xsd:complexType name="DatiEstesiRisoluzioneContrattualeType">
+    <xsd:sequence>
+      <xsd:element ref="sel:PIVA_UTENTE"/>
+      <xsd:element ref="sel:COD_CONTR_DISP"/>
+      <xsd:element ref="sel:TIPOLOGIA_RISOLUZIONE"/>
+      <xsd:element ref="sel:DATA_DECORRENZA"/>
+    </xsd:sequence>        
+  </xsd:complexType>
+
+</xsd:schema>

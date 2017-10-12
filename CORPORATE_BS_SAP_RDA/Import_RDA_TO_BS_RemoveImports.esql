@@ -1,0 +1,37 @@
+
+
+CREATE COMPUTE MODULE Import_RDA_TO_BS_RemoveImports
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE url CHARACTER THE(SELECT ITEM T.VALORE
+				     FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+				    WHERE T.FLUSSO = 'CORPORATE_BS_SAP_RDA' 
+					  AND T.VARIABILE = 'URL_IMPORT_RDA_IN_BS');
+		FOR obj AS Environment.Variables.Items.Item[] DO
+			
+			FOR riga AS obj.PurchaseRequestRow[] DO
+				SET riga.prGroupCode = 'BIDONE';
+			END FOR;
+			SET OutputRoot.SOAP.Body.ns3:importInput.operationCode = '005';
+			SET OutputRoot.SOAP.Body.ns3:importInput.purchase = obj;
+			SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL = url;
+			PROPAGATE DELETE DEFAULT;
+		END FOR;
+		
+		RETURN FALSE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

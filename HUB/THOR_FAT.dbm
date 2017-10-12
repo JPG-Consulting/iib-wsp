@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--xtools2_universal_type_manager-->
+<xmi:XMI xmlns:datamodelversion="http://www.ibm.com/com.ibm.datatools.core/model/data/1.8.0.0" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:OracleModel="http:///com/ibm/db/models/oracle/oracle.ecore" xmlns:SQLConstraints="http:///org/eclipse/datatools/modelbase/sql/constraints.ecore" xmlns:SQLDataTypes="http:///org/eclipse/datatools/modelbase/sql/datatypes.ecore" xmlns:SQLSchema="http:///org/eclipse/datatools/modelbase/sql/schema.ecore">
+  <OracleModel:OracleDatabase xmi:id="_PSU14GY4EeedBs2StKGtHA" name="THOR_FAT" vendor="Oracle" version="11" schemas="_PU3MgGY4EeedBs2StKGtHA"/>
+  <SQLSchema:Schema xmi:id="_PU3MgGY4EeedBs2StKGtHA" name="THOR_FAT" tables="_lYifEGY4EeedBs2StKGtHA" database="_PSU14GY4EeedBs2StKGtHA"/>
+  <OracleModel:OracleTable xmi:id="_lYifEGY4EeedBs2StKGtHA" name="CADE_FILE_OUT" schema="_PU3MgGY4EeedBs2StKGtHA">
+    <columns xmi:id="_rhVpUGY4EeedBs2StKGtHA" name="ID_FILE_OUTPUT" nullable="false">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_xMspoGY4EeedBs2StKGtHA" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="4000"/>
+    </columns>
+    <columns xmi:id="_3sLOgGY4EeedBs2StKGtHA" name="FILE_NAME" nullable="false">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_4sxI0GY4EeedBs2StKGtHA" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="4000"/>
+    </columns>
+    <columns xmi:id="_7DnEYGY4EeedBs2StKGtHA" name="FILE_BLOB" nullable="false">
+      <containedType xsi:type="SQLDataTypes:BinaryStringDataType" xmi:id="_80a6sGY4EeedBs2StKGtHA" name="BLOB" primitiveType="BINARY_LARGE_OBJECT"/>
+    </columns>
+    <columns xmi:id="__bylkGY4EeedBs2StKGtHA" name="USR_CREATED">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_Dhw8cGY5EeedBs2StKGtHA" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="4000"/>
+    </columns>
+    <columns xmi:id="_AKLVkGY5EeedBs2StKGtHA" name="USR_UPDATED">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_D-FFAGY5EeedBs2StKGtHA" name="VARCHAR2" primitiveType="CHARACTER_VARYING" length="4000"/>
+    </columns>
+    <columns xmi:id="_A8j0wGY5EeedBs2StKGtHA" name="TMS_CREATED">
+      <containedType xsi:type="SQLDataTypes:TimeDataType" xmi:id="_F2bGsGY5EeedBs2StKGtHA" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+    </columns>
+    <columns xmi:id="_BhqF4GY5EeedBs2StKGtHA" name="TMS_UPDATED">
+      <containedType xsi:type="SQLDataTypes:TimeDataType" xmi:id="_GWnpsGY5EeedBs2StKGtHA" name="TIMESTAMP" primitiveType="TIMESTAMP" fractionalSecondsPrecision="6"/>
+    </columns>
+    <constraints xsi:type="SQLConstraints:PrimaryKey" xmi:id="_wkKqAGY4EeedBs2StKGtHA" name="CADE_FILE_OUT_PK" members="_rhVpUGY4EeedBs2StKGtHA"/>
+  </OracleModel:OracleTable>
+</xmi:XMI>

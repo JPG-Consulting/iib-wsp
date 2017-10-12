@@ -1,0 +1,26 @@
+
+CREATE COMPUTE MODULE Sort_DBRoute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot = InputRoot;
+		DECLARE esito CHARACTER;
+		IF InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIdocControl.STATUS = '53' THEN
+			SET esito = 'OK';
+		ELSE
+			SET esito = 'KO';
+		END IF;
+		
+		UPDATE Database.IIB_CORPORATE_STR_SAP_MM_TRACE AS T
+		SET ESITO = esito,
+			DESCRIZIONE_ESITO = InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIntEdids[<].STAPA2,
+			IDOC = InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIdocControl.DOCNUM,
+			DATA_ESITO_SAP = CURRENT_DATE
+		WHERE T.ID_ESTERNO = InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIdocControl.ARCKEY;
+		IF STARTSWITH(InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIdocControl.ARCKEY, 'STR#01') THEN
+			PROPAGATE TO TERMINAL 'out1';
+		ELSE
+			PROPAGATE TO TERMINAL 'out2';
+		END IF;
+		RETURN FALSE;
+	END;
+END MODULE;

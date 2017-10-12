@@ -1,0 +1,34 @@
+
+
+Importing file: P:\Users\e-decaro\IBM\IIBT10\workspace_prod\REDIRECTHUB\WS_HUB_CRM_Inbound.wsdl
+
+
+The following is a list of WS-I warning messages found when importing:
+XSD: The location 'WS_HUB_CRM_Inbound_InlineSchema2.xsd' has not been resolved because the import is unused, Line: 51, Column: 1
+
+
+The WSDL import will proceed with bindings WS_HUB_CRM_InboundHttpBinding.
+Creating wsdl schema document for file:///P:/Users/e-decaro/IBM/IIBT10/workspace_prod/REDIRECTHUB/WS_HUB_CRM_Inbound.wsdl.
+Parsing wsdl binding {http://WS_HUB_CRM_Inbound}WS_HUB_CRM_InboundHttpBinding.
+Parsing wsdl binding input WSHubCrmInbound.
+Parsing wsdl binding output WSHubCrmInbound.
+Processing doc style for operation WSHubCrmInbound.
+Populating WSDL schema WS_HUB_CRM_Inbound.xsd.
+Creating file WS_HUB_CRM_Inbound.xsd in the workspace.
+Creating file /InboundLib/InboundLib/InboundLib/WS_HUB_CRM_Inbound_InlineSchema7.xsd in the workspace.
+Creating file /InboundLib/InboundLib/InboundLib/WS_HUB_CRM_Inbound_InlineSchema5.xsd in the workspace.
+Creating file /InboundLib/InboundLib/InboundLib/InboundLib/WS_HUB_CRM_Inbound_InlineSchema6.xsd in the workspace.
+Creating file /InboundLib/InboundLib/InboundLib/InboundLib/WS_HUB_CRM_Inbound_InlineSchema4.xsd in the workspace.
+Creating file /InboundLib/InboundLib/InboundLib/WS_HUB_CRM_Inbound_InlineSchema8.xsd in the workspace.
+Creating file /InboundLib/InboundLib/InboundLib/WS_HUB_CRM_Inbound_InlineSchema3.xsd in the workspace.
+Creating file /InboundLib/InboundLib/InboundLib/WS_HUB_CRM_Inbound_InlineSchema2.xsd in the workspace.
+Creating file /InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd in the workspace.
+Copying source WSDL WS_HUB_CRM_Inbound.wsdl to WS_HUB_CRM_Inbound.wsdl.
+
+Elapsed time processing this message definition file: 0.932 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

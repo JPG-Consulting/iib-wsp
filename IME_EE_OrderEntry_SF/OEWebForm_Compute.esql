@@ -1,0 +1,33 @@
+DECLARE ns20 NAMESPACE 'urn:enterprise.soap.sforce.com';
+DECLARE ns25 NAMESPACE 'http://soap.sforce.com/schemas/class/EAIServiceInbound';
+
+
+CREATE COMPUTE MODULE OEWebForm_BuildRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE sessionID CHARACTER;
+		SET sessionID = THE (SELECT ITEM T.SESSION_ID
+							FROM Database.SF_SESSION AS T);
+		SET Environment.ns25:OEWebForm = InputRoot.XMLNSC.ns25:OEWebForm;
+		SET OutputRoot.SOAP.Header.ns25:AllowFieldTruncationHeader.ns25:allowFieldTruncation = '0';
+		SET OutputRoot.SOAP.Header.ns25:DebuggingHeader.ns25:categories.ns25:category = 'Db';
+		SET OutputRoot.SOAP.Header.ns25:DebuggingHeader.ns25:categories.ns25:level = 'none';
+		SET OutputRoot.SOAP.Header.ns25:DebuggingHeader.ns25:debugLevel = 'none';
+		--SET OutputRoot.SOAP.Header.ns25:CallOptions.ns25:client = InputRoot.SOAP.Body.ns20:loginResponse.ns20:result.ns20:serverUrl;
+		SET OutputRoot.SOAP.Header.ns25:SessionHeader.ns25:sessionId = COALESCE(sessionID, 'SESSION');
+		SET OutputRoot.SOAP.Body.ns25:OEWebForm = InputRoot.XMLNSC.ns25:OEWebForm;
+		RETURN TRUE;
+	END;
+
+	
+END MODULE;
+
+CREATE COMPUTE MODULE OEWebForm_tracking
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET Environment.codicePraticaHub = InputRoot.DataObject.ns:V_EE_DATI_PRESTAZIONI.ID_EE_PRESTAZIONE_TRACKING;
+		SET OutputRoot = InputRoot;
+		RETURN TRUE;
+	END;
+	
+END MODULE;

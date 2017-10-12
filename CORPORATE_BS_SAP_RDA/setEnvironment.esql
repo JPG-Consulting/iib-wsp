@@ -1,0 +1,28 @@
+
+
+CREATE COMPUTE MODULE setEnvironment
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN		
+		SET Environment.Variables.numRda 	 = InputLocalEnvironment.HTTP.Input.QueryString.numRda;
+		SET Environment.Variables.codFiscale = InputLocalEnvironment.HTTP.Input.QueryString.codFiscale;	
+		
+		--| preparo la chiamata al servizio di anagrafica dei dipendenti per recuperare: nome, cognome, mail		
+		SET OutputLocalEnvironment.Destination.HTTP.QueryString.I_COD_FISC =  InputLocalEnvironment.HTTP.Input.QueryString.codFiscale;		
+		SET OutputLocalEnvironment.Destination.HTTP.RequestURL = THE(SELECT ITEM T.VALORE
+																	   FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+																	  WHERE T.FLUSSO = 'CORPORATE_BS_SAP_RDA' 
+																		AND T.VARIABILE = 'URL_ANAGRAFICA_DIPENDENTI');	
+		SET Environment.Variables.downloadRDA = THE(SELECT ITEM T.VALORE
+												     FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+												    WHERE T.FLUSSO = 'CORPORATE_BS_SAP_RDA' 
+													  AND T.VARIABILE = 'URL_DOWNLOAD_RDA');		       
+
+		SET Environment.Variables.url_import = THE(SELECT ITEM T.VALORE
+												     FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+												    WHERE T.FLUSSO = 'CORPORATE_BS_SAP_RDA' 
+													  AND T.VARIABILE = 'URL_IMPORT_RDA_IN_BS');		       
+																			       
+		RETURN TRUE;
+	END;
+
+END MODULE;

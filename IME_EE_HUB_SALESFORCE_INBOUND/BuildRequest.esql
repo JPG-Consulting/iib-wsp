@@ -1,0 +1,30 @@
+DECLARE ns10 NAMESPACE 'http://soap.sforce.com/schemas/class/Iren_HUB_Inbound';
+DECLARE ns25 NAMESPACE 'urn:enterprise.soap.sforce.com';
+DECLARE ns NAMESPACE 'http://WS_HUB_CRM_Inbound';
+
+
+
+CREATE COMPUTE MODULE BuildRequest
+	
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--SET OutputRoot = InputRoot;
+		DECLARE sessionID CHARACTER;
+		SET sessionID = THE (SELECT ITEM T.SESSION_ID
+							FROM Database.SF_SESSION AS T);
+		SET Environment.inboundRequest = InputRoot.SOAP.Body.ns:WSHubCrmInbound.inboundRequest;
+		SET OutputRoot.SOAP.Header.ns10:AllowFieldTruncationHeader.ns10:allowFieldTruncation = '0';
+		SET OutputRoot.SOAP.Header.ns10:DebuggingHeader.ns10:categories.ns10:category = 'Db';
+		SET OutputRoot.SOAP.Header.ns10:DebuggingHeader.ns10:categories.ns10:level = 'none';
+		SET OutputRoot.SOAP.Header.ns10:DebuggingHeader.ns10:debugLevel = 'none';
+		--SET OutputRoot.SOAP.Header.ns10:CallOptions.ns10:client = Environment.SOAP.Body.ns25:loginResponse.ns25:result.ns25:serverUrl;
+		
+		SET OutputRoot.SOAP.Header.ns25:SessionHeader.ns25:sessionId = COALESCE(sessionID, 'SESSION');--Environment.SOAP.Body.ns25:loginResponse.ns25:result.ns25:sessionId;
+		
+		SET OutputRoot.SOAP.Body.ns10:WSHubCrmInbound.ns10:inboundRequest = InputRoot.SOAP.Body.ns:WSHubCrmInbound.inboundRequest;
+		
+		DELETE FIELD OutputRoot.HTTPResponseHeader;
+		RETURN TRUE;
+	END;
+
+END MODULE;

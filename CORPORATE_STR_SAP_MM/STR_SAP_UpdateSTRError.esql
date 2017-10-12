@@ -1,0 +1,20 @@
+
+
+CREATE COMPUTE MODULE STR_SAP_UpdateSTRError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		FOR record AS InputRoot.JSON.Data.Record.result[] DO
+			UPDATE Database.STR_CONTAB_CONS_FORM AS T
+			SET FL_ACQ = 0
+			WHERE T.ROWID = record.ROWID;
+
+		END FOR;
+		CREATE FIELD OutputRoot.XMLNSC.Result.Status;
+		SET OutputRoot.XMLNSC.Result.Info.IDFlusso = InputRoot.JSON.Data.IDFlusso;
+		SET OutputRoot.XMLNSC.Result.Status.Codice = '999';
+		SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'Errore - Rollback eseguito';
+		SET OutputRoot.XMLNSC.Result.Status.Dettaglio = InputExceptionList;
+		RETURN TRUE;
+	END;
+
+END MODULE;

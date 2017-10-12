@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><!--File Status.xsd, application CORPORATE_WS_DOCUMENTALE--><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE">
+    <xsd:complexType name="StatusType">
+    	<xsd:sequence>
+    		<xsd:element maxOccurs="1" minOccurs="0" name="status" type="xsd:string"/>
+    		<xsd:element maxOccurs="1" minOccurs="0" name="descrizione" type="xsd:string"/>
+    		<xsd:element maxOccurs="1" minOccurs="0" name="path" type="xsd:string"/>
+    		<xsd:element maxOccurs="1" minOccurs="0" name="URL" type="xsd:string"/>
+    		<xsd:element maxOccurs="1" minOccurs="0" name="ID" type="xsd:string"/>
+    	</xsd:sequence>
+    </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,56 @@
+-- 
+-- AP 26.01.2017 
+-- Aggiunta la select a db nella tabella IIB_VAR_CFG del path
+-- Path scritto come /ibmdata/data/download/
+-- 
+
+CREATE COMPUTE MODULE Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		CALL CopyMessageHeaders();
+		DECLARE nomeFile CHARACTER;
+
+		DECLARE filename CHARACTER;		-- parametro dall'esterno HTTP QueryString
+		DECLARE flusso CHARACTER;  
+		DECLARE path CHARACTER;
+		
+		SET flusso = 'FILE_DOWNLOAD';
+		
+		SET path = THE(SELECT ITEM R.VALORE FROM Database.IIB_VAR_CFG AS R WHERE R.FLUSSO = flusso AND R.VARIABILE= 'PATH');
+
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET nomeFile = InputLocalEnvironment.HTTP.Input.QueryString.filename;
+		--leggo da QueryString
+		WHILE (SUBSTRING(nomeFile AFTER '/') <> '') DO
+			SET path = path || SUBSTRING(nomeFile BEFORE '/') || '/';
+			SET nomeFile = SUBSTRING(nomeFile AFTER '/');
+		END WHILE;
+		
+		SET Environment.Variables.nomeFile = nomeFile;
+		SET OutputLocalEnvironment.Destination.File.Name = nomeFile; 
+		SET OutputLocalEnvironment.Destination.File.Directory = path ; -- da tabella
+		
+	--FONDAMENTALE la scrittura in ENV di queste 2 proprietà lette/impostate poi nel nodo
+	--HTTP HEADER !!!!!!!!!!			
+--		SET OutputRoot.HTTPReplyHeader."Content-Type"='multipart/form-data';
+		
+			--NB: se qui sopra TOGLIAMO la parte attachment;, con IE11 lo apre subito!!!!!!!!!	
+	--	SET OutputRoot.HTTPReplyHeader."Content-Disposition"='filename=' || fileCOPYname;
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

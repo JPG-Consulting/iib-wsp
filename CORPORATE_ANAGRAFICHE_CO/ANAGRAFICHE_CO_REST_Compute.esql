@@ -1,0 +1,10 @@
+DECLARE ns68 NAMESPACE 'http://schemas.xmlsoap.org/soap/envelope/';
+
+
+CREATE COMPUTE MODULE SOAP_showError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.SOAP.Body.ns68:Fault = InputExceptionList.RecoverableException;
+		RETURN TRUE;
+	END;
+END MODULE;

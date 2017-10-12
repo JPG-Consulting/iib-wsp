@@ -1,0 +1,25 @@
+
+
+CREATE COMPUTE MODULE GET_ORE_LAVORATE_PY
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE inp REFERENCE TO InputRoot.DataObject.*.SapBapiPtimeoverviewGet;
+		DECLARE fromdate INTEGER CAST(REPLACE(inp.FROMDATE, '-', '') AS INTEGER);
+		DECLARE todate INTEGER CAST(REPLACE(inp.TODATE, '-', '') AS INTEGER);
+		SET Environment.result[] = PASSTHRU('SELECT * 
+		FROM VISORA.V_ORE_LAVORATE
+		WHERE COD_FISCALE = ? AND 
+		DATA >= ? AND DATA <= ? 
+		ORDER BY DATA ASC' VALUES(Environment.Data[1].CODICE_FISCALE, fromdate, todate)) ;
+		CREATE FIELD OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SapBapiPtimeoverviewGet.SapTimetypevalues;
+		DECLARE val REFERENCE TO OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SapBapiPtimeoverviewGet.SapTimetypevalues;
+		FOR result AS Environment.result[] DO
+			SET val.VALIDITYDATE = CAST(CAST(result.DATA AS INTEGER) AS CHARACTER);
+			SET val.TIMETYPEVALUE = result.ORELAV;
+			CREATE NEXTSIBLING OF val AS val REPEAT;
+			END FOR;
+		DELETE FIELD val;
+		RETURN TRUE;
+	END;
+
+END MODULE;

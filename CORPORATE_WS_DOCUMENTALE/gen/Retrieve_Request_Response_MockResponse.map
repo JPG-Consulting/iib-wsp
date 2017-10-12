@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="gen" version="8.0.5.0" xmlns:map="gen">
+    <input path="/CORPORATE_DOCUMENTALE.xsd"/>
+    <output path="/CORPORATE_DOCUMENTALE.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="io" uri="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE"/>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="Retrieve_Request_Response_MockResponse">
+        <input namespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" path="mb:msg(Retrieve,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Retrieve"/>
+        <output namespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" path="mb:msg(RetrieveResponse,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_RetrieveResponse"/>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Properties"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/Properties"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/tipoDocumento"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/tipoDocumento"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/nomeFile"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/nomeFile"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/descrizione"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/descrizione"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/provenienza"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/provenienza"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/operatore"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/operatore"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/contentType"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/contentType"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/proprieta"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/proprieta"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/path"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/path"/>
+        </move>
+        <function ref="fn:concat">
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/path" var="path"/>
+            <input path="$ComIbmMessageAssembly_Retrieve/Retrieve/query/nomeFile" var="nomeFile"/>
+            <output path="$ComIbmMessageAssembly_RetrieveResponse/RetrieveResponse/files/URL"/>
+            <param name="string3" value="'http://ibmsvlib01:7800/sys/download?filename='"/>
+            <param name="string2" value="$path"/>
+            <param name="string31" value="'/'"/>
+            <param name="string4" value="$nomeFile"/>
+        </function>
+    </mappingDeclaration>
+</mappingRoot>

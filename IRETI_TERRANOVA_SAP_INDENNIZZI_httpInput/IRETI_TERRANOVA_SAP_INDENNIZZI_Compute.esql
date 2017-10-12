@@ -1,0 +1,90 @@
+
+
+CREATE COMPUTE MODULE IRETI_TERRANOVA_SAP_INDENNIZZI_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		-- CALL CopyMessageHeaders();
+		-- CALL CopyEntireMessage();
+
+		DECLARE dataacq CHARACTER; -- varchar12 -- verificare tipo dato aaaammgghhmm
+		DECLARE erdat CHARACTER;
+		DECLARE ertim CHARACTER;
+
+		SET erdat = CAST (CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMdd');
+		SET ertim = CAST (CURRENT_TIMESTAMP AS CHARACTER FORMAT 'HHmm');
+		-- A scopo debug "select top 2 "
+		SET Environment.result[] = PASSTHRU ('
+		select
+		t.mandt,
+		t.id,
+		t.pdp,
+		t.cf,
+		t.piva,
+		t.rag,
+		t.datasap,
+		t.codpra,
+		t.codca,
+		t.imp,
+		t.datada,
+		t.dataa,
+		t.flq,
+		t.typapp,
+		t.dataapp,
+		t.oraapp,
+		t.contratto,
+		t.tiporiga,
+		t.numdoc,
+		t.stato,
+		t.note,
+		t.datafatt,
+		t.datains,
+		t.dataacq,
+		t.stato_processo,
+		t.docstampa,
+		t.imp_cor
+		from SAPR3_ZINDH20 as t
+		where t.STATO_PROCESSO=? ' values('I') ); -- VERSIONE DEFINITIVA
+		--where t.STATO_PROCESSO=? and t.id in (?,?)' values('I','493','495') );     -- TEST  su IRENTEST (2 record processati , id 116 e 117) in data 16.3  , 2 record :'493','495'		
+		
+
+		DECLARE nrecTotTRN INTEGER CARDINALITY (Environment.result[]);
+		SET Environment.Variables.count = nrecTotTRN;
+		IF Environment.Variables.Ins IS NULL THEN
+			CREATE FIELD Environment.Variables.Ins VALUE 0;
+		ELSE
+			SET Environment.Variables.Ins = 0;
+		END IF;
+		-- Messaggio in pagina in caso di nessun record da elaborare ( ESCI SUBITO )
+		IF (nrecTotTRN = 0)
+			THEN
+			SET OutputRoot.XMLNSC.Status = 'Non ci sono record su Terranova da processare';
+
+			PROPAGATE TO TERMINAL 'out1';
+
+			RETURN FALSE;
+
+		END IF;	
+
+		SET dataacq = CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMddhhmm');
+		--importanti per il successivo nodo upd_TERRANOVAH2O.esql
+		SET Environment.Variables.dataacq = dataacq;--THE(SELECT ITEM R.DATAACQ FROM Database.SAPR3_ZINDH20 AS R WHERE R.ID= id );
+		SET Environment.Variables.erdat = erdat;
+
+		
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

@@ -1,0 +1,24 @@
+DECLARE ns26 NAMESPACE 'www.gruppoiren.it/schemas';
+
+CREATE COMPUTE MODULE setResponse
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF InputLocalEnvironment.Variables.Count IS NOT NULL THEN
+			
+			IF Environment.Variables.OK = InputLocalEnvironment.Variables.Count THEN
+				CREATE FIELD OutputRoot.XMLNSC.ns26:Response;
+				SET OutputRoot.XMLNSC.ns26:Response.ns26:return.ns26:codice = 0;
+				SET OutputRoot.XMLNSC.ns26:Response.ns26:return.ns26:descrizione = 'Importati '||CAST(InputLocalEnvironment.Variables.Count AS CHARACTER)||' oggetti';
+				RETURN TRUE;
+			ELSE
+				PROPAGATE TO TERMINAL 'out1';
+			END IF;
+		ELSE
+			IF InputRoot.SOAP.Body.ns3:importOutput.returnCode = 0 THEN
+				SET Environment.Variables.OK = COALESCE(Environment.Variables.OK, 0) + 1;
+			END IF;
+		END IF;
+		RETURN FALSE;
+	END;
+
+END MODULE;

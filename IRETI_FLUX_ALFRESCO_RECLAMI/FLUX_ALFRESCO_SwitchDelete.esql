@@ -1,0 +1,51 @@
+
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_SwitchDelete
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		/*
+		  verifico il  la proprietà NOME_FILE , se non è nullo , 
+		  imposto i parametri necessari per la chiamata al Wservice e lancio la propagate sul nodo di out1!
+		  altrimenti procedo come da flusso.
+		*/
+		
+	    -- LANCIO LA PROPAGATE SUL OUT1 Sè IL NOME_FILE NON è NULLO , SETTANDO I PARAMETRI di cancellazione PER IL WService
+	    -- ESEMPIO DI PARAMETRO OPZIONALE <URL*>*URL*<URL/> NELLA CHIAMATA AL WS.
+	    
+	    --||LOG TABELLA RICHIESTE ALFRESCO
+	    UPDATE Database.IIB_FLUX_DOCUMENTALE AS T
+	    SET RISPOSTA = ASBITSTREAM(InputRoot.SOAP),
+	    ESITO = InputRoot.SOAP.Body.ns6:RetrieveResponse.status.status,
+	    DESCRIZIONE_ESITO = InputRoot.SOAP.Body.ns6:RetrieveResponse.status.ID || ' - ' || InputRoot.SOAP.Body.ns6:RetrieveResponse.status.descrizione,
+	    TMS_RISPOSTA = CURRENT_TIMESTAMP
+	    WHERE
+	    T.ID_RICHIESTA = Environment.Variables.idRichiesta 
+	    AND T.ID_FLUX = Environment.Variables.idFlux;
+		PASSTHRU('COMMIT');
+		IF InputRoot.SOAP.Body.ns6:RetrieveResponse.files.nomeFile = 'numprot_'||Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo AND (Environment.Variabili.XMLNSC.ns:documenti.operazione = 'MODIFICA' OR Environment.Variabili.XMLNSC.ns:documenti.operazione = 'INSERIMENTO' OR Environment.Variabili.XMLNSC.ns:documenti.operazione = 'CANCELLAZIONE') THEN
+			
+				SET OutputRoot.SOAP.Body.ns6:Delete.ns6:Authorization.username ='ftp_bis';
+				SET OutputRoot.SOAP.Body.ns6:Delete.ns6:Authorization.password ='Password1FTP';
+				
+				SET OutputRoot.SOAP.Body.ns6:Delete.metadata.ID  = InputRoot.SOAP.Body.ns6:RetrieveResponse.files.ID;
+				SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'FLUX_ALFRESCO' AND T.VARIABILE = 'ENDPOINT_ALFRESCO');
+
+				SET Environment.Variables.idRichiesta = UUIDASCHAR;
+				--||LOG DELETE REQUEST
+				INSERT INTO Database.IIB_FLUX_DOCUMENTALE 
+				(ID_RICHIESTA, ID_FLUX, NUMERO_PROTOCOLLO, RICHIESTA, DESCRIZIONE_RICHIESTA, TMS_RICHIESTA)
+				VALUES
+				(Environment.Variables.idRichiesta, Environment.Variables.idFlux, Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo, ASBITSTREAM(OutputRoot.SOAP), 'Cancellazione cartella noderef '||OutputRoot.SOAP.Body.ns6:Delete.metadata.ID, CURRENT_TIMESTAMP);
+				PASSTHRU('COMMIT');
+		
+		        PROPAGATE TO TERMINAL 'out1' DELETE NONE;
+		        RETURN FALSE;
+		        
+		ELSE 
+
+                RETURN TRUE; 
+		END IF;
+		
+	END;
+ 
+END MODULE;

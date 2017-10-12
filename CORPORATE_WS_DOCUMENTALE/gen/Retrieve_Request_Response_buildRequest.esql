@@ -1,0 +1,54 @@
+BROKER SCHEMA gen
+
+
+CREATE COMPUTE MODULE Retrieve_Request_Response_buildRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE inCCSID INT InputProperties.CodedCharSetId;                     
+		DECLARE inEncoding INT InputProperties.Encoding;
+		
+		DECLARE path CHARACTER COALESCE(InputRoot.XMLNSC.ns:Retrieve.query.path, '');
+		IF STARTSWITH(path, '/') THEN
+			SET path = SUBSTRING(InputRoot.XMLNSC.ns:Retrieve.query.path AFTER '/');
+		END IF;
+		
+		SET OutputRoot.HTTPRequestHeader.Authorization = 'Basic '||BASE64ENCODE(InputRoot.XMLNSC.ns:Retrieve.ns:Authorization.username||':'||InputRoot.XMLNSC.ns:Retrieve.ns:Authorization.password);
+		SET OutputLocalEnvironment.Destination.HTTP.RequestURL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'DOCUMENTALE_RETRIEVE' AND T.VARIABILE = 'ENDPOINT_ALFRESCO');
+		
+		IF LENGTH(InputRoot.XMLNSC.ns:Retrieve.query.proprieta) > 0 THEN
+			CREATE LASTCHILD OF Environment.Variables DOMAIN('JSON')                            
+       		PARSE(InputRoot.XMLNSC.ns:Retrieve.query.proprieta, inEncoding, inCCSID);
+       	END IF;
+		
+		--in caso di proprietà di tipo testo, se NULL vengono interpretate come Object vuoto, devono invece essere passate come stringa vuota
+		SET OutputRoot.JSON.Data.site = CoalesceString(SUBSTRING(path BEFORE '/'), path);
+		SET OutputRoot.JSON.Data.path = CoalesceString(SUBSTRING(path AFTER '/'), '');
+		SET OutputRoot.JSON.Data.type = CoalesceString(COALESCE(InputRoot.XMLNSC.ns:Retrieve.query.tipoDocumento, ''),'');
+		SET OutputRoot.JSON.Data.properties = Environment.Variables.JSON.Data.properties;
+		IF LENGTH(InputRoot.XMLNSC.ns:Retrieve.query.nomeFile) > 0 THEN
+			SET OutputRoot.JSON.Data.properties."cm:name" = InputRoot.XMLNSC.ns:Retrieve.query.nomeFile;
+		END IF;
+       	SET OutputRoot.JSON.Data.associations = Environment.Variables.JSON.Data.associations;
+       	SET OutputRoot.JSON.Data.permissions = Environment.Variables.JSON.Data.permissions;
+       	SET OutputRoot.JSON.Data.categories = Environment.Variables.JSON.Data.categories;
+		
+		
+		
+		RETURN TRUE;
+		
+	END;
+	
+	CREATE PROCEDURE CoalesceString (IN arg1 CHARACTER, IN arg2 CHARACTER) RETURNS CHARACTER
+	BEGIN
+		IF LENGTH(arg1)>0 THEN
+			RETURN arg1;
+		ELSE
+			IF LENGTH(arg2)>0 THEN
+				RETURN arg2;
+			ELSE
+				RETURN '';
+			END IF;
+		END IF;
+	END;
+
+END MODULE;

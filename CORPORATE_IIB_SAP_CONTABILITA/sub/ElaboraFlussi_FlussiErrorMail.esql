@@ -1,0 +1,36 @@
+BROKER SCHEMA sub
+
+
+CREATE COMPUTE MODULE ElaboraFlussi_FlussiErrorMail
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE db CHARACTER COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.sistema, InputLocalEnvironment.HTTP.Input.QueryString.societa);
+		DECLARE sistema CHARACTER;
+		CASE db
+		WHEN 'C1' THEN
+			SET sistema = 'CNRG IME MAGGIORE TUTELA';
+		WHEN 'C2' THEN
+			SET sistema = 'CNRG IME LIBERO';
+		WHEN 'C3' THEN
+			SET sistema = 'CNRG AEMD';
+		WHEN 'N1' THEN
+			SET sistema = 'NETA GRGDIS';
+		WHEN 'N2' THEN
+			SET sistema = 'NETA IDRICO';
+		WHEN 'N3' THEN
+			SET sistema = 'NETA LIBERO';
+		WHEN 'I1' THEN
+			SET sistema = 'IGE FATTURE ATTIVE';
+		ELSE
+			SET sistema = '';
+		END CASE;
+		
+		SET OutputRoot.XMLNSC.ns1:Params.flusso = 'CONTABILE_BLOCCA_FLUSSI_ERRORE';
+		SET OutputRoot.XMLNSC.ns1:Params.body1  =  sistema;
+		SET OutputRoot.XMLNSC.ns1:Params.body2  =  InputRoot.XMLNSC.ns:lancio.id_lancio;
+		SET OutputRoot.XMLNSC.ns1:Params.body3  =  InputRoot.XMLNSC.ns:lancio.soc_sap;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

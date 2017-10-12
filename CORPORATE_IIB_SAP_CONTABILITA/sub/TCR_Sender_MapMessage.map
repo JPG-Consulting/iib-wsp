@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="sub" version="8.0.5.0" xmlns:map="sub">
+    <input path="/TCR.xsd" var="var1"/>
+    <output path="/TCRMessage.xsd"/>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="TCR_Sender_MapMessage">
+        <input namespace="http://www.gruppoiren.it/schemas/tcr" path="$var1/mb:msg(TCR,assembly,DFDL,LocalEnvironment,Properties)" var="MessageAssembly"/>
+        <output namespace="http://www.gruppoiren.it/schemas/tcr" path="mb:msg(TCRMessage,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly1/Properties"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/TCR"/>
+            <output path="$MessageAssembly1/TCRMessage/TCR"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/LocalEnvironment/File/Read/Name"/>
+            <output path="$MessageAssembly1/TCRMessage/fileName"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

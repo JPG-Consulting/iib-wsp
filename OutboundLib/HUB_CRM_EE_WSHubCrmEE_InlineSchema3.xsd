@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://HUB_CRM_EE/CRM_BO" xmlns:bons1="http://HUB_CRM_EE/crm_dati" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://HUB_CRM_EE/IHubCrmEE" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <xsd:complexType name="Residenza">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="residenza" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="dataValidita" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+    </xsd:schema>

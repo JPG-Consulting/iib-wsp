@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="AnagraficheCO" targetNamespace="http://www.gruppoiren.it/AnagraficheCO/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.gruppoiren.it/AnagraficheCO/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://www.gruppoiren.it/AnagraficheCO/">
+  <wsdl:documentation>
+    <wsdl:appinfo source="WMQI_APPINFO">
+      <MRWSDLAppInfo imported="true">
+        <generatedXSD location="AnagraficheCO_InlineSchema.xsd"/>
+        <binding hasEncoding="false" imported="true" name="AnagraficheCOSOAP" originalBindingStyle="document"/>
+      </MRWSDLAppInfo>
+    </wsdl:appinfo>
+  </wsdl:documentation>
+  
+  
+  <wsdl:types>
+
+    <xsd:schema targetNamespace="http://www.gruppoiren.it/AnagraficheCO/" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:xsd1="www.gruppoiren.it">
+      <xsd:include schemaLocation="AnagraficheCO_InlineSchema.xsd"/>
+    </xsd:schema>
+   </wsdl:types>
+  
+  <wsdl:message name="Request">
+    <wsdl:part element="tns:Input" name="Input"/>
+  </wsdl:message>
+  <wsdl:message name="Response">
+    <wsdl:part element="tns:Output" name="Output"/>
+  </wsdl:message>
+  <wsdl:portType name="AnagraficheCO">
+    <wsdl:operation name="Get">
+      <wsdl:input message="tns:Request"/>
+      <wsdl:output message="tns:Response"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="AnagraficheCOSOAP" type="tns:AnagraficheCO">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Get">
+      <soap:operation soapAction="http://www.gruppoiren.it/AnagraficheCO/GetList"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="AnagraficheCO">
+    <wsdl:port binding="tns:AnagraficheCOSOAP" name="AnagraficheCOSOAP">
+      <soap:address location="http://localhost:7800/corporate/SOAP/anagraficheCO"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

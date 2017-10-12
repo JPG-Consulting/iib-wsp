@@ -1,0 +1,87 @@
+CREATE COMPUTE MODULE AMBIENTE_ECOS_SAP_CONFERIMENTI_UPSERT_SAP_200
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE recordSAP REFERENCE TO InputRoot.XMLNSC.zsea_dati_ecos[1];
+		SET Environment.Variables.Count = CARDINALITY(Environment.Query.Result[]);
+		IF Environment.Variables.Count <> 0 THEN
+			WHILE LASTMOVE(recordSAP) = TRUE DO
+				DECLARE exists BOOLEAN (
+				SELECT COUNT(*) FROM Database.SAPR3.ZSEA_DATI_ECOS as t
+		          	where t.MANDT = recordSAP.MANDT 
+		          	and t.TIPO_RECORD = recordSAP.TIPO_RECORD 
+		          	and t.CITY_CODE = recordSAP.CITY_CODE
+		          	and t.PARTNER = recordSAP.PARTNER
+		          	and t.VERTRAG = recordSAP.VERTRAG 
+		          	and t.ANLAGE = recordSAP.ANLAGE
+		          	and t.DATA_INIZIO = recordSAP.DATA_INIZIO
+		          	and t.DATA_FINE = recordSAP.DATA_FINE) > 0;
+				
+				IF exists = TRUE THEN
+					UPDATE Database.SAPR3.ZSEA_DATI_ECOS AS t
+					SET Codice_cer = recordSAP.Codice_cer, --CHIEDERE VALORIZZAZIONE
+						CHILI_CONFERITI = recordSAP.CHILI_CONFERITI, --CHIEDERE VALORIZZAZIONE
+						PUNTI_RACCOLTI = recordSAP.PUNTI_RACCOLTI, --CHIEDERE VALORIZZAZIONE
+						DATA_IMPORTAZIONE = recordSAP.DATA_IMPORTAZIONE,
+						UTENTE_IMPORTAZIONE = recordSAP.UTENTE_IMPORTAZIONE,
+						NOME_FILE_IMPORTAZIONE = recordSAP.NOME_FILE_IMPORTAZIONE
+					where t.MANDT = recordSAP.MANDT 
+		          	and t.TIPO_RECORD = recordSAP.TIPO_RECORD 
+		          	and t.CITY_CODE = recordSAP.CITY_CODE
+		          	and t.PARTNER = recordSAP.PARTNER
+		          	and t.VERTRAG = recordSAP.VERTRAG 
+		          	and t.ANLAGE = recordSAP.ANLAGE
+		          	and t.DATA_INIZIO = recordSAP.DATA_INIZIO
+		          	and t.DATA_FINE = recordSAP.DATA_FINE;
+					
+					 --aggiorno il contatore degli UPDATE:
+		        	SET Environment.Variables.Upd = Environment.Variables.Upd + 1;
+				ELSE
+					INSERT INTO Database.SAPR3.ZSEA_DATI_ECOS 
+					 (	MANDT                 ,
+						TIPO_RECORD           ,
+						CITY_CODE             ,
+						PARTNER               ,
+						VERTRAG               ,
+						ANLAGE                ,
+						DATA_INIZIO           ,
+						DATA_FINE             ,
+						Codice_cer            ,
+						CHILI_CONFERITI       ,
+						PUNTI_RACCOLTI        ,
+						DATA_IMPORTAZIONE     ,
+						UTENTE_IMPORTAZIONE   ,
+						NOME_FILE_IMPORTAZIONE,
+						ANOMALIA_CARICAMENTO  ,
+						DATA_CARICAMENTO      ,
+						UTENTE_CARICAMENTO   
+					 ) 
+					VALUES 
+					 (	recordSAP.MANDT                 ,
+						recordSAP.TIPO_RECORD           ,
+						recordSAP.CITY_CODE             ,
+						recordSAP.PARTNER               ,
+						recordSAP.VERTRAG               ,
+						recordSAP.ANLAGE                ,
+						recordSAP.DATA_INIZIO           ,
+						recordSAP.DATA_FINE             ,
+						recordSAP.Codice_cer            ,
+						recordSAP.CHILI_CONFERITI       ,
+						recordSAP.PUNTI_RACCOLTI        ,
+						recordSAP.DATA_IMPORTAZIONE     ,
+						recordSAP.UTENTE_IMPORTAZIONE   ,
+						recordSAP.NOME_FILE_IMPORTAZIONE,
+						recordSAP.ANOMALIA_CARICAMENTO  ,
+						recordSAP.DATA_CARICAMENTO      ,
+						recordSAP.UTENTE_CARICAMENTO    
+					 );
+		        	--aggiorno il contatore degli INSERT:
+		        	SET Environment.Variables.Ins = Environment.Variables.Ins + 1;
+				END IF;
+				
+				MOVE recordSAP NEXTSIBLING REPEAT TYPE NAME;
+			END WHILE;
+		END IF;
+		RETURN TRUE;
+	END;
+
+END MODULE;

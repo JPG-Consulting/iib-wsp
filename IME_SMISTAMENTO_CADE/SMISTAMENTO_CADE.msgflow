@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmDatabaseInput.msgnode="ComIbmDatabaseInput.msgnode" xmlns:ComIbmFileOutput.msgnode="ComIbmFileOutput.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="SMISTAMENTO_CADE.msgflow" nsPrefix="SMISTAMENTO_CADE.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="SMISTAMENTO_CADE" bundleName="SMISTAMENTO_CADE" pluginId="IME_SMISTAMENTO_CADE"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_SMISTAMENTO_CADE/icons/full/obj16/SMISTAMENTO_CADE.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_SMISTAMENTO_CADE/icons/full/obj30/SMISTAMENTO_CADE.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmDatabaseInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="35,51" dataSource="HUB_EAI" databaseInputExpression="esql://routine/#SMISTAMENTO_CADE_Database_Input" waitInterval="60" retryMechanism="shortRetry" retryThreshold="2" shortRetryInterval="300" longRetryInterval="30">
+        <translation xmi:type="utility:ConstantString" string="Database Input"/>
+        <nsMappingTable nsPrefix="tho" namespace="http://thor_fat/thor_fat"/>
+        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="Database Input.terminal.out" eventIdentity="Processamento file CADE iniziato">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/tho:CADE_FILE_OUT/ID_FILE_OUTPUT" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tho" nsURI="http://thor_fat/thor_fat"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Processamento file CADE iniziato"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tho" nsURI="http://thor_fat/thor_fat"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="Database Input.terminal.failure" eventIdentity="Processamento file CADE fallito">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/tho:CADE_FILE_OUT/ID_FILE_OUTPUT" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tho" nsURI="http://thor_fat/thor_fat"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tho" nsURI="http://thor_fat/thor_fat"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName literal="Processamento file CADE fallito"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tho" nsURI="http://thor_fat/thor_fat"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="246,94" dataSource="HUB_EAI" computeExpression="esql://routine/#SMISTAMENTO_CADE_SmistaCADE.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="SmistaCADE"/>
+      </nodes>
+      <nodes xmi:type="ComIbmFileOutput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="366,98" writeMode="writeInPlace">
+        <translation xmi:type="utility:ConstantString" string="File Output"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="249,14" dataSource="HUB_EAI" computeExpression="esql://routine/#SMISTAMENTO_CADE_UpdateFail.Main">
+        <translation xmi:type="utility:ConstantString" string="UpdateFail"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard>
+      <stickyNote location="25,163" association="FCMComposite_1_2">
+        <body xmi:type="utility:ConstantString" string="THOR_FAT : GRANT SELECT, UPDATE ON CADE_FILE_OUT TO HUB_EAI&#xA;THOR_OUT : GRANT SELECT ON FILE_OUTPUT TO HUB_EAI"/>
+      </stickyNote>
+    </stickyBoard>
+  </eClassifiers>
+</ecore:EPackage>

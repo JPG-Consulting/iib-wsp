@@ -1,0 +1,107 @@
+DECLARE ns4 NAMESPACE 'http://HUB_CRM_EE/IHubCrmEE';
+DECLARE codPraticaSii_Out CHARACTER; 
+DECLARE amm_esito_out       CHARACTER;
+DECLARE amm_causale_out     CHARACTER; 
+DECLARE amm_motivazione_out CHARACTER;
+DECLARE amm_data_out CHARACTER;
+DECLARE patternDate CHARACTER 'dd/MM/yyyy';
+DECLARE amm_data_out_date   DATE;
+DECLARE codiceAuthorityDl   CHARACTER;
+DECLARE canaleComunicazione CHARACTER;
+DECLARE esito CHARACTER;
+DECLARE cod_causale CHARACTER;
+DECLARE motivazione CHARACTER;
+DECLARE dataesecuzione DATE;
+
+CREATE DATABASE MODULE InsertResponseIntoDB
+	CREATE FUNCTION Main() RETURNS BOOLEAN	
+	BEGIN
+	 -- codicePraticaSII
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.tracking.codicePraticaDistributore is not null) then
+	 	SET codPraticaSii_Out=Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.tracking.codicePraticaDistributore;
+	 else
+	 	SET codPraticaSii_Out = null;
+	 end if;		 
+	 -- ammissibilita.esito	 
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.ammissibilita.esito is not null) then
+	 	SET amm_esito_out =  Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.ammissibilita.esito;
+	 else
+	 	SET amm_esito_out = NULL;	
+	 end if;	
+	 -- ammissibilita.causale
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.ammissibilita.causale is not null) then
+	 	SET amm_causale_out =  Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.ammissibilita.causale;
+	 else
+	 	SET amm_causale_out = null;	
+	 end if;	
+	 -- ammissibilita.motivazione
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.ammissibilita.motivazione is not null) then
+	 	SET amm_motivazione_out =  Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.ammissibilita.motivazione;
+	 else
+	 	SET amm_motivazione_out = null;	
+	 end if;
+	 -- ammissibilita.data	
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.ammissibilita.dataAmmissibilita is not null) then	 	
+	 	SET amm_data_out = CAST(Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.ammissibilita.dataAmmissibilita AS DATE FORMAT patternDate);
+	 else
+	 	SET amm_data_out = null;	
+	 end if;	
+	 -- codiceAuthorityDl	 
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.codiceAuthorityDL is not null)  then
+	    SET codiceAuthorityDl = Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.codiceAuthorityDL;
+	 else
+	 	set codiceAuthorityDl = null;
+	 end if;	
+	 -- canaleComunicazione
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.canaleComunicazione is not null)  then
+	    SET canaleComunicazione = Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.canaleComunicazione;
+	 else
+	 	set canaleComunicazione = null;
+	 end if;
+	 -- esito
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.esito.esito is not null)  then
+	    SET esito = Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.esito.esito;
+	 else
+	 	set esito = null;
+	 end if;
+	 -- cod_causale
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.esito.codice is not null)  then
+	    SET cod_causale = Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.esito.codice;
+	 else
+	 	set cod_causale = null;
+	 end if;
+	 -- motivazione
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.esito.motivazione is not null)  then
+	    SET motivazione = Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.esito.motivazione;
+	 else
+	 	set motivazione = null;
+	 end if;	
+	 -- dataesecuzione
+	 if (Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.esito.dataEsecuzione is not null)  then
+	    SET dataesecuzione = CAST(Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.esito.dataEsecuzione AS DATE FORMAT patternDate);
+	 else
+	 	set dataesecuzione = null;
+	 end if;
+	 UPDATE Database.AAGGREGA.MAC070_SWITCH_SII AS SP
+	  SET MAC070_COD_FLUSSO_RES      = Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.tracking.codiceFlusso
+	 	, MAC070_COD_PRATICA_HUB 	  = Root.XMLNSC.ns4:SendRequestEEResponse.outboundResponse.tracking.codicePratica
+	    , MAC070_COD_PRATICA_SII 	  = codPraticaSii_Out		
+	    , MAC070_AMM_ESITO  	 	  = amm_esito_out		    		     
+	    , MAC070_AMM_COD_CAUSALE 	  = amm_causale_out
+	    , MAC070_AMM_MOTIVAZIONE 	  = amm_motivazione_out
+	    , MAC070_AMM_DATA	          = amm_data_out		
+	    , MAC070_CODICEAUTHORITYDL    = codiceAuthorityDl 
+	    , MAC070_CANALECOMUNICAZIONE  = canaleComunicazione	
+	    , MAC070_ESITO	     	      = esito
+	    , MAC070_COD_CAUSALE		  = cod_causale
+	    , MAC070_MOTIVAZIONE 	      = motivazione
+	    , MAC070_DATAESECUZIONE	      = dataesecuzione
+	 	, MAC070_FLG_IN		     = 'X'
+	 	, MAC070_DATA_IN 	     = CURRENT_TIMESTAMP	
+	 	, MAC070_TMS_UPDATED	 = CURRENT_TIMESTAMP	 	
+	 WHERE SP.MAC070_PKEY_SEQ = LocalEnvironment.Database.Input.Event.Usr.MAC070_PKEY_SEQ;
+	  --AND SP.MAC070_AMM_ESITO IS NULL; 
+	RETURN FALSE;		
+	END;
+
+END MODULE;

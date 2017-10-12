@@ -1,0 +1,19 @@
+
+
+CREATE COMPUTE MODULE replyHTTP
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE response CHARACTER;
+		SET response ='File creato:'|| Environment.FileName;
+		SET OutputRoot.XMLNSC.Status = response;  
+    	RETURN TRUE;
+    	
+    	CREATE FIELD OutputRoot.XMLNSC.ns:Params;
+		DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns:Params;		
+		SET param.obj1   = Environment.FileName; --OGGETTO E-MAIL
+		SET param.body1  = Environment.FileName; --BODY E-MAIL		
+		SET param.flusso = 'IME_EE_CNRG_ML_AE1_OK';		
+		PROPAGATE TO TERMINAL 'out1';				
+	END;
+	
+END MODULE;

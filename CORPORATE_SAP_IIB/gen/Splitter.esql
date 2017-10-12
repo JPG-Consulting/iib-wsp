@@ -1,0 +1,108 @@
+BROKER SCHEMA gen
+DECLARE ns567 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapaleaud01';
+DECLARE ns1 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzcocsksz';
+
+
+CREATE COMPUTE MODULE Splitter_ZPRPS_WBS
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET Environment.Variables.idocNum = InputRoot.DataObject.ns7:SapZprpsWbs.SapZprpsWbsIDocBO.SapIDocControlRecord.DOCNUM;
+		DECLARE idocData REFERENCE TO InputRoot.DataObject.ns7:SapZprpsWbs.SapZprpsWbsIDocBO.SapZprpsWbsDataRecord.SapZprpsWbsZcosprpsWbs000[1];
+		DECLARE count INTEGER;
+		SET count = 0;
+
+		
+		IF Environment.Variables.Count_ZPRPS_WBS IS NULL THEN
+			CREATE FIELD Environment.Variables.Count_ZPRPS_WBS VALUE 0;
+		ELSE
+			SET Environment.Variables.Count_ZPRPS_WBS = 0;
+		END IF;
+		
+		IF Environment.Variables.Ins_ZPRPS_WBS IS NULL THEN
+			CREATE FIELD Environment.Variables.Ins_ZPRPS_WBS VALUE 0;
+		ELSE
+			SET Environment.Variables.Ins_ZPRPS_WBS = 0;
+		END IF;
+		
+		SET count = SELECT COUNT(*)
+					FROM  Database.S1_QUAD_WBS 
+					WHERE S1_QUAD_WBS.SOCIETA = idocData.PBUKR;
+		SET Environment.Variables.Count_ZPRPS_WBS = CARDINALITY(InputRoot.DataObject.ns7:SapZprpsWbs.SapZprpsWbsIDocBO.SapZprpsWbsDataRecord.SapZprpsWbsZcosprpsWbs000[]);
+		
+		DELETE FROM  Database.S1_QUAD_WBS 
+		WHERE S1_QUAD_WBS.SOCIETA = idocData.PBUKR;
+		
+		WHILE LASTMOVE(idocData)=TRUE DO
+			SET OutputRoot.Properties = InputRoot.Properties;
+			SET OutputRoot.DataObject.ns7:SapZprpsWbs.SapZprpsWbsIDocBO.SapZprpsWbsDataRecord.SapZprpsWbsZcosprpsWbs000 = idocData;
+			PROPAGATE;
+			
+			MOVE idocData NEXTSIBLING NAME 'SapZprpsWbsZcosprpsWbs000';
+		
+		END WHILE;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;
+
+
+CREATE COMPUTE MODULE Splitter_ZCOCSKSZ
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET Environment.Variables.idocNum = InputRoot.DataObject.ns1:SapZcocsksz.SapZcocskszIDocBO.SapIDocControlRecord.DOCNUM;
+		DECLARE idocData REFERENCE TO InputRoot.DataObject.ns1:SapZcocsksz.SapZcocskszIDocBO.SapZcocskszDataRecord.SapZcocskszZcoscsksz000[1];
+		DECLARE count INTEGER;
+		SET count = 0;
+		
+		IF Environment.Variables.Count_ZCOCSKSZ IS NULL THEN
+			CREATE FIELD Environment.Variables.Count_ZCOCSKSZ VALUE 0;
+		ELSE
+			SET Environment.Variables.Count_ZCOCSKSZ = 0;
+		END IF;
+		
+		IF Environment.Variables.Ins_ZCOCSKSZ IS NULL THEN
+			CREATE FIELD Environment.Variables.Ins_ZCOCSKSZ VALUE 0;
+		ELSE
+			SET Environment.Variables.Ins_ZCOCSKSZ = 0;
+		END IF;
+		
+		SET count = SELECT COUNT(*)
+					FROM  Database.S1_QUAD_CDC_SAP_ALL 
+					WHERE S1_QUAD_CDC_SAP_ALL.SOCIETÀ = idocData.BUKRS;
+		SET Environment.Variables.Count_ZCOCSKSZ = CARDINALITY(InputRoot.DataObject.ns1:SapZcocsksz.SapZcocskszIDocBO.SapZcocskszDataRecord.SapZcocskszZcoscsksz000[]);
+		
+		DELETE FROM  Database.S1_QUAD_CDC_SAP_ALL 
+		WHERE S1_QUAD_CDC_SAP_ALL.SOCIETÀ = idocData.BUKRS;
+		
+		WHILE LASTMOVE(idocData)=TRUE DO
+			SET OutputRoot.Properties = InputRoot.Properties;
+			SET OutputRoot.DataObject.ns1:SapZcocsksz.SapZcocskszIDocBO.SapZcocskszDataRecord.SapZcocskszZcoscsksz000 = idocData;
+			PROPAGATE;
+			MOVE idocData NEXTSIBLING NAME 'SapZcocskszZcoscsksz000';
+		
+		END WHILE;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;
+
+CREATE COMPUTE MODULE Splitter_ALEAUD
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET Environment.Variables.idocNum = InputRoot.DataObject.ns567:SapAleaud01.SapAleaud01IDocBO.SapIDocControlRecord.DOCNUM;
+		DECLARE idocData REFERENCE TO InputRoot.DataObject.ns567:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001[1];
+		
+		WHILE LASTMOVE(idocData)=TRUE DO
+			SET OutputRoot.Properties = InputRoot.Properties;
+			SET OutputRoot.XMLNSC.ns567:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001 = idocData;
+			PROPAGATE;
+			MOVE idocData NEXTSIBLING REPEAT TYPE NAME;
+		
+		END WHILE;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;

@@ -1,0 +1,40 @@
+DECLARE ns1 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapimessagegetdetail';
+DECLARE ns2 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzidocreadcompletely';
+
+CREATE COMPUTE MODULE Sort_GetDetailBuild
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE status REFERENCE TO InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIntEdids[1];
+		DECLARE total INTEGER;
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET total = CARDINALITY(InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIntEdids[]);
+		SET Environment.Variables.Count = 0;
+		SET Environment.Variables.String = '';
+		--SET Environment.Variables.IdFlusso = InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIdocControl.ARCKEY;
+		SET Environment.Variables.IdocNum = InputRoot.DataObject.ns2:SapZIdocReadCompletely.SapIdocControl.DOCNUM;
+		WHILE LASTMOVE(status) = TRUE DO
+			
+			
+			SET OutputLocalEnvironment.Variables.Total = total;
+			SET OutputLocalEnvironment.Adapter.MethodName = 'executeSapBapiMessageGetdetail';
+			SET OutputRoot.DataObject.ns1:SapBapiMessageGetdetail.ID = COALESCE(status.STAMID, '');
+			SET OutputRoot.DataObject.ns1:SapBapiMessageGetdetail.LANGUAGE_ISO = 'IT';
+			SET OutputRoot.DataObject.ns1:SapBapiMessageGetdetail.MESSAGE_V1 = status.STAPA1;
+			SET OutputRoot.DataObject.ns1:SapBapiMessageGetdetail.MESSAGE_V2 = status.STAPA2;
+			SET OutputRoot.DataObject.ns1:SapBapiMessageGetdetail.MESSAGE_V3 = status.STAPA3;
+			SET OutputRoot.DataObject.ns1:SapBapiMessageGetdetail.MESSAGE_V4 = status.STAPA4;
+			SET OutputRoot.DataObject.ns1:SapBapiMessageGetdetail.NUMBER = status.STAMNO;
+			SET OutputRoot.DataObject.ns1:SapBapiMessageGetdetail.TEXTFORMAT = 'ASC';
+			IF status.STAMID IS NULL THEN
+				SET total = total - 1;
+			ELSE
+				PROPAGATE;
+			END IF;
+			
+			MOVE status NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;

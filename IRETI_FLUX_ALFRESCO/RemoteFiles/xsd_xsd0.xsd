@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><!--File CORPORATE_DOCUMENTALE.xsd, application CORPORATE_WS_DOCUMENTALE--><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" xmlns:Q1="http://www.gruppoiren.it/CORPORATE_DOCUMENTALE" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://CORPORATE_DOCUMENTALE" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <xsd:include schemaLocation="xsd_xsd1.xsd"/>
+    <xsd:include schemaLocation="xsd_xsd2.xsd"/>
+	<xsd:include schemaLocation="xsd_xsd3.xsd"/>
+	<xsd:include schemaLocation="xsd_xsd4.xsd"/>
+	<xsd:include schemaLocation="xsd_xsd5.xsd"/>
+	<xsd:element ibmSchExtn:docRoot="true" name="Create" type="Q1:CreateType">
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="CreateResponse" type="Q1:CreateResponseType">
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="Retrieve" type="Q1:RetrieveType">
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="RetrieveResponse" type="Q1:RetrieveResponseType">
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="Update" type="Q1:UpdateType">
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="UpdateResponse" type="Q1:UpdateResponseType">
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="Delete" type="Q1:DeleteType">
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="DeleteResponse" type="Q1:DeleteResponseType">
+	</xsd:element>
+
+	<xsd:element name="Authorization" type="Q1:AuthorizationType"/>
+</xsd:schema>

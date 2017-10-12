@@ -1,0 +1,40 @@
+DECLARE ns150 NAMESPACE 'http://db/aaggrega';
+
+
+CREATE COMPUTE MODULE MapOutbound
+	
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE inp REFERENCE TO InputRoot.DataObject.ns150:MAC070_SWITCH_SII;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.idMessaggio = CAST(CAST(inp.MAC070_PKEY_SEQ AS INTEGER) AS CHARACTER);
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.servizio = inp.MAC070_SERVIZIO;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.codiceFlusso = inp.MAC070_COD_FLUSSO_REQ;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.societaVendita = inp.MAC070_TRACKSOCIETAVENDITA;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.segmentoCliente = inp.MAC070_TRACKSEGMENTOCLIENTE;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.sistemaFatturazione = inp.MAC070_TRACKSISTEMAFATTURAZ;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.sistemaOrigine = inp.MAC070_TRACKSISTEMAORIGINE;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.codicePraticaOrigine = CAST(CAST(inp.MAC070_PKEY_SEQ AS INTEGER) AS CHARACTER);
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.tracking.codicePratica = inp.MAC070_COD_PRATICA_HUB;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.contrattoDispacciamento = inp.MAC070_CONTRATTODISPACCIAMENTO;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.anagraficaCliente.nome = inp.MAC070_NOME_CLIENTE_MAC;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.anagraficaCliente.cognome = inp.MAC070_COGNOME_CLIENTE_MAC;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.anagraficaCliente.ragioneSociale = inp.MAC070_RAG_SOCIALE_CLIENTE_MAC;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.anagraficaCliente.cdFiscale = inp.MAC070_CDFISCALE_CLIENTE_MAC;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.anagraficaCliente.ptIva = inp.MAC070_PTIVA_CLIENTE_MAC;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.anagraficaCliente.cfStraniero = inp.MAC070_CFSTRANIERO_CLIENTE_MAC;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.indirizzoFornitura.istat = inp.MAC070_CODISTAT_FORNITURA;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.pod = inp.MAC070_POD;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.dataDecorrenza = CAST(inp.MAC070_DATADECORRENZA AS CHARACTER FORMAT 'dd/MM/yyyy');
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.annullamento.dataRichiesta = CAST(inp.MAC070_DATARICHIESTA_ANNULL AS CHARACTER FORMAT 'dd/MM/yyyy');
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.annullamento.causale = inp.MAC070_CAUSALE_ANNULL;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.autocertificazioni.autocertContrConnessione = inp.MAC070_AUTOCERTCONTRCONN;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.dataContratto = CAST(inp.MAC070_DATAFIRMCONTRATTO AS CHARACTER FORMAT 'dd/MM/yyyy');
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.acquistoCreditoSalvaguardia = inp.MAC070_ACQUISTOCREDITOSALVAG;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.revoca = inp.MAC070_REVOCA;
+		SET OutputRoot.SOAP.Body.ns34:SendRequestEE.outboundRequest.richiestaDatiTimoe = inp.MAC070_RICHIESTADATI_TIMOE;
+		
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

@@ -1,0 +1,26 @@
+
+
+CREATE COMPUTE MODULE EXPORT_SAL_UpdateTable
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--SCRITTURA TABELLA DI LOG
+		DECLARE exist INTEGER SELECT COUNT(*) FROM Database.STRVISION.BUFF_SAP_STR_CONSUNTIVO_LOG AS T WHERE T.CONTRATTO = InputLocalEnvironment.HTTP.Input.QueryString.contratto AND T.SAL_NUMERO = InputLocalEnvironment.HTTP.Input.QueryString.sal_numero;
+		
+		IF exist > 0 THEN
+			UPDATE Database.STRVISION.BUFF_SAP_STR_CONSUNTIVO_LOG AS T
+			SET DATA_TRASFERIMENTO = CURRENT_DATE
+			WHERE T.CONTRATTO = InputLocalEnvironment.HTTP.Input.QueryString.contratto
+			AND   T.SAL_NUMERO = InputLocalEnvironment.HTTP.Input.QueryString.sal_numero;
+		ELSE
+			INSERT INTO Database.STRVISION.BUFF_SAP_STR_CONSUNTIVO_LOG
+			(SOCIETA, CONTRATTO, SAL_NUMERO, DATA_TRASFERIMENTO)
+			VALUES
+			(InputLocalEnvironment.HTTP.Input.QueryString.societa,
+			 InputLocalEnvironment.HTTP.Input.QueryString.contratto,
+			 InputLocalEnvironment.HTTP.Input.QueryString.sal_numero,
+			 CURRENT_DATE);
+		END IF;
+		RETURN TRUE;
+	END;
+
+END MODULE;

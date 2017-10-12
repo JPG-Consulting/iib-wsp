@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="IHubCrmEE" targetNamespace="http://HUB_CRM_EE/IHubCrmEE" xmlns:bons1="http://HUB_CRM_EE/crm_dati" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://HUB_CRM_EE/IHubCrmEE" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:documentation>
+    <wsdl:appinfo source="WMQI_APPINFO">
+      <MRWSDLAppInfo imported="true">
+        <generatedXSD location="HUB_CRM_EE_WSHubCrmEE_InlineSchema3.xsd"/>
+        <generatedXSD location="HUB_CRM_EE_WSHubCrmEE_InlineSchema2.xsd"/>
+        <generatedXSD location="HUB_CRM_EE_WSHubCrmEE_InlineSchema1.xsd"/>
+        <binding hasEncoding="false" imported="true" name="WSHubCrmEE_IHubCrmEEHttpBinding" originalBindingStyle="document"/>
+      </MRWSDLAppInfo>
+    </wsdl:appinfo>
+  </wsdl:documentation>
+    <wsdl:types>
+    
+        
+        
+            <xsd:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://HUB_CRM_EE/CRM_BO">
+<xsd:include schemaLocation="HUB_CRM_EE_WSHubCrmEE_InlineSchema3.xsd"/>
+    </xsd:schema>
+        <xsd:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:bons0="http://HUB_CRM_EE/crm_dati" xmlns:bons1="http://HUB_CRM_EE/CRM_BO">
+<xsd:import namespace="http://HUB_CRM_EE/CRM_BO" schemaLocation="HUB_CRM_EE_WSHubCrmEE_InlineSchema3.xsd"/>
+<xsd:include schemaLocation="HUB_CRM_EE_WSHubCrmEE_InlineSchema2.xsd"/>
+    </xsd:schema>
+        <xsd:schema targetNamespace="http://HUB_CRM_EE/IHubCrmEE" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+<xsd:import namespace="http://HUB_CRM_EE/crm_dati" schemaLocation="HUB_CRM_EE_WSHubCrmEE_InlineSchema2.xsd"/>
+<xsd:include schemaLocation="HUB_CRM_EE_WSHubCrmEE_InlineSchema1.xsd"/>
+    </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="SendRequestEERequestMsg">
+    <wsdl:part element="tns:SendRequestEE" name="SendRequestEEParameters"/>
+  </wsdl:message>
+    <wsdl:message name="SendRequestEEResponseMsg">
+    <wsdl:part element="tns:SendRequestEEResponse" name="SendRequestEEResult"/>
+  </wsdl:message>
+    <wsdl:portType name="IHubCrmEE">
+    <wsdl:operation name="SendRequestEE">
+      <wsdl:input message="tns:SendRequestEERequestMsg" name="SendRequestEERequest"/>
+      <wsdl:output message="tns:SendRequestEEResponseMsg" name="SendRequestEEResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+    <wsdl:binding name="WSHubCrmEE_IHubCrmEEHttpBinding" type="tns:IHubCrmEE">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="SendRequestEE">
+      <soap:operation soapAction=""/>
+      <wsdl:input name="SendRequestEERequest">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SendRequestEEResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+    <wsdl:service name="WSHubCrmEE_IHubCrmEEHttpService">
+    <wsdl:port binding="tns:WSHubCrmEE_IHubCrmEEHttpBinding" name="WSHubCrmEE_IHubCrmEEHttpPort">
+      <soap:address location="http://ibmpcbpm01.master.local/HUB_CRM_EEWeb/sca/WSHubCrmEE"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

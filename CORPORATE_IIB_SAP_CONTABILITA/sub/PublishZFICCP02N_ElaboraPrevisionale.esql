@@ -1,0 +1,128 @@
+BROKER SCHEMA sub
+DECLARE ns4 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcmsend01';
+
+
+CREATE COMPUTE MODULE PublishZFICCP02N_ElaboraPrevisionale
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET OutputLocalEnvironment.Adapter.MethodName = 'executeSapCmsend01';
+		
+		DECLARE prev CHARACTER;
+		DECLARE GRUPP CHARACTER;
+		DECLARE inviare CHARACTER '';
+		DECLARE count INTEGER 0;
+		DECLARE separatore CHARACTER '-';
+		DECLARE padding CHARACTER '000000000000000';
+		DECLARE testata REFERENCE TO InputLocalEnvironment.Variables.ns:lancio.ns:testata[1];
+		DECLARE dbOrigine REFERENCE TO InputLocalEnvironment.Variables.dbOrigine;
+		
+		SET prev = THE(SELECT ITEM T.VALORE
+							FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+							WHERE T.FLUSSO = 'CONTABILE' 
+							AND T.VARIABILE = 'PREVISIONALE');
+		IF prev = 'S' AND testata.tipo_flusso <> 'F' AND testata.tipo_flusso <> 'X' THEN
+			
+			CREATE FIELD OutputRoot.DataObject.ns4:SapCmsend01.SapCmsend01IDocBO.SapIDocControlRecord;
+			CREATE FIELD OutputRoot.DataObject.ns4:SapCmsend01.SapCmsend01IDocBO.SapCmsend01DataRecord.SapCmsend01E2cmdsr001;
+			DECLARE controlRecord REFERENCE TO OutputRoot.DataObject.ns4:SapCmsend01.SapCmsend01IDocBO.SapIDocControlRecord;
+			DECLARE dataRecord REFERENCE TO OutputRoot.DataObject.ns4:SapCmsend01.SapCmsend01IDocBO.SapCmsend01DataRecord.SapCmsend01E2cmdsr001;
+			WHILE LASTMOVE(testata) = TRUE DO
+				DECLARE riga_coge REFERENCE TO testata.ns:rigaCoge[1];
+				IF LENGTH(TRIM(testata.intercompany))>0 THEN
+					IF dbOrigine IN ('C1','C2','C3') THEN
+						SET Environment.result[] = SELECT T.COD_CASH_MG
+										   		FROM Database.S1_DEC_INTERCOMPANY_PREV AS T
+										   		WHERE T.COD_INTERCOMPANY_CNRG = testata.intercompany
+										   		AND T.SOC_SAP = InputLocalEnvironment.Variables.ns:lancio.soc_sap;				   		
+						SET GRUPP = COALESCE(Environment.result[1].COD_CASH_MG, 'E01');
+					ELSE IF dbOrigine IN ('N1','N2','N3') THEN
+							SET Environment.result[] = SELECT T.COD_CASH_MG
+										   			FROM Database.S1_DEC_INTERCOMPANY_PREV AS T
+										   			WHERE T.COD_INTERCOMPANY_NETA = testata.intercompany
+										   			AND T.SOC_SAP = InputLocalEnvironment.Variables.ns:lancio.soc_sap;
+							SET GRUPP = COALESCE(Environment.result[1].COD_CASH_MG, 'E01');
+						ELSE 
+							SET GRUPP = '';
+						END IF;
+					END IF;
+				ELSE
+					SET GRUPP = 'E01';
+				END IF;
+				
+				WHILE LASTMOVE(riga_coge) = TRUE DO
+					IF riga_coge.wbs IS NULL AND riga_coge.centro_costo IS NULL THEN
+						SET count = SELECT COUNT(*) 
+									FROM Database.S1_DEC_COGE_PREVISIONALI AS T
+									WHERE T.COD_CONTO_COGE = riga_coge.conto_coge AND T.SOC_SAP = InputLocalEnvironment.Variables.ns:lancio.soc_sap;
+						IF count>0 THEN
+							SET dataRecord.BUKRS = InputLocalEnvironment.Variables.ns:lancio.soc_sap;
+							SET dataRecord.GRUPP = GRUPP;
+							SET dataRecord.EBENE = 'F1';
+							SET dataRecord.DISPW = 'EUR';
+						
+							IF testata.tipo_flusso = 'E' THEN
+								IF testata.data_scad IS NULL THEN
+									 SET dataRecord.DATUM = '';
+								ELSE
+									SET dataRecord.DATUM = CAST(testata.data_scad AS CHARACTER FORMAT 'yyyyMMdd');
+								END IF;
+							ELSE
+								SET dataRecord.DATUM = CAST(riga_coge.data_valuta AS CHARACTER FORMAT 'yyyyMMdd');
+							END IF;
+						
+							SET dataRecord.AVDAT = '00000000';
+							SET dataRecord.GSBER = '';
+							SET dataRecord.WRSHB = riga_coge.importo;
+							SET dataRecord.DMSHB = riga_coge.importo;
+							SET dataRecord.HWAER = 'EUR';
+							SET dataRecord.RESERVE = dbOrigine;
+							SET inviare = 'Y';
+							CREATE NEXTSIBLING OF dataRecord AS dataRecord REPEAT;
+						END IF;
+					END IF;
+					
+					
+					MOVE riga_coge NEXTSIBLING REPEAT TYPE NAME;
+				END WHILE;
+						
+				MOVE testata NEXTSIBLING REPEAT TYPE NAME;
+			END WHILE;
+			SET controlRecord.TABNAM = 'EDI_DC40';
+			SET controlRecord.MANDT = '500';
+			SET controlRecord.IDOCTYP = 'CMSEND01';
+			SET controlRecord.MESTYP = 'ZCMSEND';
+			IF dbOrigine IN ('C1','C2','C3') THEN
+				SET controlRecord.MESCOD = 'CNR';
+			ELSE IF dbOrigine IN ('N1','N2','N3') THEN
+					SET controlRecord.MESCOD = 'NET';
+				ELSE SET controlRecord.MESCOD = '';
+				END IF;
+			END IF;
+			SET controlRecord.RCVPRT = 'LS';
+			SET controlRecord.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+			SET controlRecord.SNDPRT = 'LS';
+			SET controlRecord.SNDPRN = 'WEBSPHERE';
+			SET controlRecord.SNDPOR = 'TRFC';
+			SET controlRecord.ARCKEY = dbOrigine||separatore||InputLocalEnvironment.Variables.ns:lancio.soc_sap||separatore||testata.tipo_flusso||separatore||SUBSTRING(padding FROM 1 FOR LENGTH(padding)-LENGTH(CAST(testata.id_lancio AS CHARACTER))) ||CAST(testata.id_lancio AS CHARACTER);
+			
+			DELETE FIELD dataRecord;
+			IF inviare = 'Y' THEN
+				PROPAGATE TO TERMINAL 'out1';
+				RETURN FALSE;
+			ELSE
+				SET OutputRoot = InputRoot;
+				RETURN TRUE;
+			END IF;
+			
+		ELSE
+			SET OutputRoot = InputRoot;		
+			RETURN TRUE;
+		END IF;
+		
+	END;
+
+END MODULE;

@@ -1,0 +1,43 @@
+
+
+CREATE COMPUTE MODULE CARICA_MISURE_insert_riga_file
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+    DECLARE VAR_ID_CARICAMENTO integer;	
+		
+		SET OutputRoot = InputRoot;
+		
+		 
+		SET Environment.Variables.chiamante = NodeLabel;  -- recupera il nodme del nodo attuale CARICA_MISURE_insert_riga_file';
+		-- in ogni nodo elaborativo setto il nome affinche nella logica di trace possa sapere da chi arriva la chiamata.
+		
+		SET VAR_ID_CARICAMENTO = THE (SELECT MAX(T.LP410_ID_CARICAMENTO)
+														      		 FROM Database.LP410_00_AGGR_ORARIO_XML AS T);
+		IF(VAR_ID_CARICAMENTO IS NULL) THEN
+		    SET VAR_ID_CARICAMENTO =1;
+	    ELSE
+		    SET VAR_ID_CARICAMENTO = VAR_ID_CARICAMENTO + 1;
+		
+	    END IF ;
+	    
+	    SET OutputRoot.XMLNSC.File.id_caricamento = VAR_ID_CARICAMENTO;  -- aggiungiamo nel message flow l'id caricamrnto !
+	
+		INSERT INTO Database.LP410_00_AGGR_ORARIO_XML 
+					  (LP410_ID_CARICAMENTO,
+		              LP410_NOME_FILE,
+		              LP410_CONTENUTO_FILE,
+		              LP410_DAT_INSERIMENTO
+		              ) VALUES (
+		              VAR_ID_CARICAMENTO,
+		              InputRoot.XMLNSC.File.Name,
+		              InputRoot.XMLNSC.File.CLOB,
+		              CURRENT_TIMESTAMP
+		              		              
+		              );
+		
+		RETURN TRUE;
+	END;
+
+	 
+END MODULE;

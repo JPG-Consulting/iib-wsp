@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="DIPENDENTE">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="CID"/>
+        <xsd:element ref="COGNOME"/>
+        <xsd:element ref="NOME"/>
+        <xsd:element ref="CODICE_UO"/>
+        <xsd:element ref="DESCRIZIONE_UO"/>
+        <xsd:element ref="CENTRO_COSTO"/>
+        <xsd:element ref="CODICE_SOCIETA"/>
+        <xsd:element ref="DESCRIZIONE_SOCIETA"/>
+        <xsd:element ref="CODICE_FISCALE"/>
+        <xsd:element ref="DATA_ASSUNZIONE"/>
+        <xsd:element ref="SESSO"/>
+        <xsd:element ref="MANSIONE"/>
+        <xsd:element ref="DESCRIZIONE_SEDE"/>
+        <xsd:element ref="POSIZIONE_AZIENDALE"/>
+        <xsd:element ref="DATA_NASCITA"/>
+        <xsd:element ref="LUOGO_NASCITA"/>
+        <xsd:element ref="PROVINCIA_NASCITA"/>
+        <xsd:element ref="ETA"/>
+        <xsd:element ref="TIPO_DIPENDENTE"/>
+        <xsd:element ref="COD_FISCALE_RESPONSABILE"/>
+        <xsd:element ref="DATA_AGGIORNAMENTO"/>
+        <xsd:element ref="DATA_PRIMA_ASSUNZIONE"/>
+        <xsd:element ref="STATO_DIPENDENTE"/>
+        <xsd:element ref="ACCOUNTID"/>
+        <xsd:element ref="EMAIL"/>
+        <xsd:element ref="TELEFONO"/>
+        <xsd:element ref="TELEFONO_BREVE"/>
+        <xsd:element ref="CELLULARE"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="DATA_ASSUNZIONE" type="xsd:string"/>
+  <xsd:element name="DIPENDENTI">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="DIPENDENTE"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="COD_FISCALE_RESPONSABILE" type="xsd:string"/>
+  <xsd:element name="TIPO_DIPENDENTE" type="xsd:string"/>
+  <xsd:element name="CODICE_UO" type="xsd:string"/>
+  <xsd:element name="SESSO" type="xsd:string"/>
+  <xsd:element name="NOME" type="xsd:string"/>
+  <xsd:element name="CID" type="xsd:string"/>
+  <xsd:element name="PROVINCIA_NASCITA" type="xsd:string"/>
+  <xsd:element name="CODICE_SOCIETA" type="xsd:string"/>
+  <xsd:element name="DATA_AGGIORNAMENTO" type="xsd:string"/>
+  <xsd:element name="DATA_PRIMA_ASSUNZIONE" type="xsd:string"/>
+  <xsd:element name="CENTRO_COSTO" type="xsd:string"/>
+  <xsd:element name="EMAIL" type="xsd:string"/>
+  <xsd:element name="LUOGO_NASCITA" type="xsd:string"/>
+  <xsd:element name="STATO_DIPENDENTE" type="xsd:string"/>
+  <xsd:element name="TELEFONO_BREVE" type="xsd:string"/>
+  <xsd:element name="DESCRIZIONE_UO" type="xsd:string"/>
+  <xsd:element name="TELEFONO" type="xsd:string"/>
+  <xsd:element name="COGNOME" type="xsd:string"/>
+  <xsd:element name="ETA" type="xsd:string"/>
+  <xsd:element name="ACCOUNTID" type="xsd:string"/>
+  <xsd:element name="CELLULARE" type="xsd:string"/>
+  <xsd:element name="MANSIONE" type="xsd:string"/>
+  <xsd:element name="POSIZIONE_AZIENDALE" type="xsd:string"/>
+  <xsd:element name="CODICE_FISCALE" type="xsd:string"/>
+  <xsd:element name="DESCRIZIONE_SOCIETA" type="xsd:string"/>
+  <xsd:element name="DATA_NASCITA" type="xsd:string"/>
+  <xsd:element name="DESCRIZIONE_SEDE" type="xsd:string"/>
+</xsd:schema>

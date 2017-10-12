@@ -1,0 +1,193 @@
+BROKER SCHEMA sub
+DECLARE ns9 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfidccp02n';
+
+CREATE COMPUTE MODULE EDI_Receiver_BuildIDoc
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE CRLF CHARACTER CAST(X'0D0A' AS CHARACTER CCSID 1208);
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET OutputLocalEnvironment.Adapter.MethodName = 'executeSapZfidccp02N';
+		SET OutputLocalEnvironment.Variables.ListaFatture = '';
+		SET OutputLocalEnvironment.Variables.NumeroFatture = 0;
+		
+		DECLARE blart CHARACTER;
+		DECLARE fornitore CHARACTER;
+		DECLARE bukrs CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'EDI_BUKRS');
+		DECLARE kostl CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'EDI_KOSTL');
+		DECLARE prctr CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'EDI_PRCTR');
+		DECLARE zterm CHARACTER THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'EDI_ZTERM');
+		DECLARE dataRegistrazione CHARACTER;
+		SET dataRegistrazione = InputLocalEnvironment.Variables.dataRegistrazione;
+		IF InputLocalEnvironment.Variables.societa = 'ENEL' THEN
+			SET blart = THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'EDI_BLART_ENEL');
+			SET fornitore = THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'EDI_FORNITORE_ENEL');
+		ELSE
+			SET blart = THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'EDI_BLART_SELNET');
+			SET fornitore = THE(SELECT ITEM T.VALORE FROM Database.INT_ENGINE.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'CONTABILE' AND T.VARIABILE = 'EDI_FORNITORE_SELNET');
+		END IF;
+		
+		CREATE FIELD OutputRoot.DataObject.ns9:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns9:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns9:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		DECLARE outputTestata REFERENCE TO OutputRoot.DataObject.ns9:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007[1];
+		DECLARE ibgm REFERENCE TO InputRoot.XMLNSC.ns:EDI.ns:IBGM[1];
+		SET OutputLocalEnvironment.Variables.IDFlusso = ibgm.IRF1[1].idFlusso;
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZFIDCCP02_N';
+		SET outputCR.MESTYP = 'ZFIDCC2_N';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		SET outputCR.ARCKEY = blart || '-' || ibgm.IRF1[1].idFlusso;
+		
+		
+		
+		WHILE LASTMOVE(ibgm) = TRUE DO
+			IF ibgm.IMO3[1].importo <> '000000000000000000'THEN
+				
+				DECLARE totale DECIMAL 0;
+				DECLARE addebito REFERENCE TO ibgm.ILIN[1];
+				DECLARE iva REFERENCE TO ibgm.ITA2[1];
+				
+				
+				SET outputTestata.BUKRS = bukrs;
+				SET outputTestata.GJAHR = SUBSTRING(dataRegistrazione FROM 7 FOR 4);
+				SET outputTestata.BLART = blart;
+				SET outputTestata.BLDAT = ibgm.IDT1[1].dataFattura;
+				SET outputTestata.BUDAT = RIGHT(dataRegistrazione, 4)||SUBSTRING(dataRegistrazione FROM 4 FOR 2)||LEFT(dataRegistrazione, 2);
+				SET outputTestata.XBLNR = ibgm.numeroFattura;
+				SET outputTestata.BKTXT = blart || '-' || SUBSTRING(dataRegistrazione FROM 7 FOR 4)||'-' || ibgm.numeroFattura;
+				SET outputTestata.WAERS = 'EUR';
+				SET outputTestata.LDGRP = '0L';
+				
+				CREATE FIELD outputTestata.SapZfidccp02NE2fiseg006;
+				DECLARE outputAddebito REFERENCE TO outputTestata.SapZfidccp02NE2fiseg006[<];
+				
+				-------------------RIGA FORNITORE---------------------------------
+				IF ibgm.IMO3[1].segno = '+' THEN
+					SET outputAddebito.BSCHL = '31';
+				ELSE
+					SET outputAddebito.BSCHL = '21';
+				END IF;
+				SET outputAddebito.WRBTR = CAST(LEFT(ibgm.IMO3[1].importo, 16)||'.'||RIGHT(ibgm.IMO3[1].importo, 2) AS DECIMAL);
+				SET outputAddebito.ZUONR = ibgm.numeroFattura;
+				SET outputAddebito.SGTXT = ibgm.numeroFattura;
+				SET outputAddebito.PRCTR = prctr;
+				SET outputAddebito.SapZfidccp02NE2finbu007.ZFBDT = RIGHT(dataRegistrazione, 4)||SUBSTRING(dataRegistrazione FROM 4 FOR 2)||LEFT(dataRegistrazione, 2);
+				SET outputAddebito.SapZfidccp02NE2finbu007.ZTERM = zterm;
+				SET outputAddebito.SapZfidccp02NE2finbu007.LIFNR = fornitore;
+				CREATE NEXTSIBLING OF outputAddebito AS outputAddebito REPEAT;
+				
+				WHILE LASTMOVE(addebito) = TRUE DO
+					IF(addebito.tipoIlin = '4' OR addebito.tipoIlin = '5') THEN
+					--DECLARE tipoIlin CHARACTER addebito.tipoIlin;
+					/*WHILE (addebito.tipoIlin <> '4' OR addebito.tipoIlin <> '5') DO
+						MOVE addebito NEXTSIBLING REPEAT TYPE NAME;
+					END WHILE;*/
+						
+						DECLARE codiceAddebito CHARACTER;
+						IF addebito.IMO1[1].segno = '+' THEN
+							SET outputAddebito.BSCHL = '40';
+						ELSE
+							SET outputAddebito.BSCHL = '50';
+						END IF;
+						SET Environment.result[] = SELECT T.CODICE_IVA_SAP, T.CONTO_COGE_IVA_SAP 
+											FROM Database.S1_DEC_TIB_026_CODICI_IVA AS T 
+											WHERE T.CODICE_IVA_EDI = SUBSTRING(addebito.ITA1[1].codiceIVA FROM 1 FOR 50);
+						SET outputAddebito.MWSKZ = Environment.result[1].CODICE_IVA_SAP;
+						SET outputAddebito.WRBTR = CAST(LEFT(addebito.IMO1[1].importo, 16)||'.'||RIGHT(addebito.IMO1[1].importo, 2) AS DECIMAL);
+						
+						IF addebito.tipoIlin = '5' THEN
+							IF addebito.IMO1[1].codiceAddebito = '38' THEN
+								SET codiceAddebito = 'I38';
+							END IF;
+							CASE SUBSTRING(addebito.IFT3[1].row FROM 15 FOR 13) 
+								WHEN 'BONUS SOCIALE' THEN
+									SET codiceAddebito = SUBSTRING(addebito.IFT3[1].row FROM 60 FOR 17);
+								WHEN 'Disagio Economico' THEN
+									SET codiceAddebito = '400';
+								WHEN 'Disagio Fisico' THEN
+									SET codiceAddebito = '401';
+								WHEN 'Carta Acquisti' THEN
+									SET codiceAddebito = '402';
+							ELSE
+								SET codiceAddebito = '133';
+							END CASE;
+							
+						ELSE
+							IF addebito.IMO1[1].codiceAddebito = '38' THEN
+								SET codiceAddebito = 'I38';
+							ELSE
+								SET codiceAddebito = 'IL4';
+							END IF;
+						END IF;
+						SET outputAddebito.SGTXT = ibgm.numeroFattura|| '-add origine: ' || codiceAddebito;
+						SET Environment.result[] = PASSTHRU('SELECT T.CONTO_DESTINAZIONE, T.TIPO_CONTO 
+													FROM S1_DEC_TIB_026_ADDEBITI T
+													WHERE trim(T.CODICE_ADDEBITO_EDI) = '''||codiceAddebito||''' ');
+						IF Environment.result[1].TIPO_CONTO = 'EC' THEN
+							SET outputAddebito.KOSTL = kostl;
+						END IF;
+						SET outputAddebito.HKONT = Environment.result[1].CONTO_DESTINAZIONE;
+						SET outputAddebito.PRCTR = prctr;
+					
+						CREATE NEXTSIBLING OF outputAddebito AS outputAddebito REPEAT;
+					END IF;
+					
+					MOVE addebito NEXTSIBLING REPEAT TYPE NAME;
+						
+					
+				END WHILE;
+				DELETE FIELD outputAddebito;
+				
+				CREATE FIELD outputTestata.SapZfidccp02NE2fiset003;
+				DECLARE outputIva REFERENCE TO outputTestata.SapZfidccp02NE2fiset003[<];
+				
+				WHILE LASTMOVE(iva) = TRUE DO
+					SET Environment.result[] = SELECT T.CODICE_IVA_SAP, T.CONTO_COGE_IVA_SAP 
+										FROM Database.S1_DEC_TIB_026_CODICI_IVA AS T 
+										WHERE T.CODICE_IVA_EDI = SUBSTRING(iva.codiceIVA1 FROM 1 FOR 50);
+					SET outputIva.MWSKZ = Environment.result[1].CODICE_IVA_SAP;
+					IF iva.segnoImponibile = '+' THEN
+						SET outputIva.SHKZG = 'S';
+					ELSE
+						SET outputIva.SHKZG = 'H';
+					END IF;
+					SET outputIva.FWBAS = CAST(LEFT(iva.imponibile, 16)||'.'||RIGHT(iva.imponibile, 2) AS DECIMAL);
+					SET outputIva.FWSTE = CAST(LEFT(iva.importoIVA, 16)||'.'||RIGHT(iva.importoIVA, 2) AS DECIMAL);
+					
+					MOVE iva NEXTSIBLING REPEAT TYPE NAME;
+					CREATE NEXTSIBLING OF outputIva AS outputIva REPEAT;
+				END WHILE;
+				DELETE FIELD outputIva;
+				
+				CREATE NEXTSIBLING OF outputTestata AS outputTestata REPEAT;
+				SET OutputLocalEnvironment.Variables.ListaFatture = OutputLocalEnvironment.Variables.ListaFatture || ibgm.numeroFattura || CRLF ;
+				SET OutputLocalEnvironment.Variables.NumeroFatture = OutputLocalEnvironment.Variables.NumeroFatture + 1;
+			END IF;
+			--THROW USER EXCEPTION MESSAGE 2951 VALUES('DEBUG', NULL);
+
+			MOVE ibgm NEXTSIBLING REPEAT TYPE NAME;
+				
+		END WHILE;
+		
+		DELETE FIELD outputTestata;
+		
+		
+			
+		RETURN TRUE;
+	END;
+	
+END MODULE;

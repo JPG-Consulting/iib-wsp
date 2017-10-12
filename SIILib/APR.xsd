@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	targetNamespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"
+	xmlns:dat="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"
+	xmlns:sel="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3"
+	xmlns:sg="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5">
+
+	<xs:import
+		namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"
+		schemaLocation="StruttureGenerali_v1_5.xsd" />
+
+	<!-- ************** FLUSSI **************** -->
+
+	<!-- *************** 0050 ***************** -->
+
+	<xs:import></xs:import>
+	<xs:complexType name="FlussoAPR.0050Type">
+		<xs:complexContent>
+			<xs:extension base="sg:FlussoTypeAbstract">
+				<xs:sequence>
+					<xs:element name="IdentificativiRichiesta"
+						type="sg:IdentificativiRichiestaUtenteCPOpzGestoreCPOpzType" />
+					<xs:element name="DatiPratica"
+						type="sg:AnnullamentoDatiPraticaType" />
+					<xs:element name="DatiTecnici"
+						type="sg:DatiTecniciMinimaliType" />
+					<xs:element name="DatiAnnullamento"
+						type="sg:DatiAnnullamentoPraticaType" />
+				</xs:sequence>
+				<xs:attribute fixed="APR" name="COD_SERVIZIO"
+					use="required" />
+				<xs:attribute fixed="0050" name="COD_FLUSSO"
+					use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- *************** 0100 ***************** -->
+
+	<xs:complexType name="FlussoAPR.0100Type">
+		<xs:complexContent>
+			<xs:extension base="sg:FlussoTypeAbstract">
+				<xs:sequence>
+					<xs:element name="IdentificativiRichiesta"
+						type="sg:IdentificativiRichiestaUtenteCPOpzGestoreCPOpzType" />
+					<xs:element name="DatiPratica"
+						type="sg:AnnullamentoDatiPraticaBaseType" />
+					<xs:element name="Ammissibilita"
+						type="sg:AmmissibilitaBaseType" />
+					<xs:element minOccurs="0" ref="sg:NOTE" />
+				</xs:sequence>
+				<xs:attribute fixed="APR" name="COD_SERVIZIO"
+					use="required" />
+				<xs:attribute fixed="0100" name="COD_FLUSSO"
+					use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- *************** 0150 ***************** -->
+
+	<xs:complexType name="FlussoAPR.0150Type">
+		<xs:complexContent>
+			<xs:extension base="sg:FlussoTypeAbstract">
+				<xs:sequence>
+					<xs:element name="IdentificativiRichiesta"
+						type="sg:IdentificativiRichiestaUtenteCPOpzGestoreCPType" />
+					<xs:element name="DatiPratica"
+						type="sg:AnnullamentoDatiPraticaBaseType" />
+					<xs:element name="Esito" type="sg:EsitoBaseType" />
+					<xs:element minOccurs="0" ref="sg:NOTE" />
+				</xs:sequence>
+				<xs:attribute fixed="APR" name="COD_SERVIZIO"
+					use="required" />
+				<xs:attribute fixed="0150" name="COD_FLUSSO"
+					use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- *************** RESP ***************** -->
+
+	<xs:complexType name="FlussoAPR.RESPType">
+		<xs:complexContent>
+			<xs:extension base="sg:FlussoTypeAbstract">
+				<xs:sequence>
+					<xs:element name="IdentificativiRichiesta"
+						type="sg:IdentificativiRichiestaUtenteCPOpzGestoreCPType" />
+					<xs:element name="Esito" type="sg:DefaultEsitoType" />
+				</xs:sequence>
+				<xs:attribute fixed="APR" name="COD_SERVIZIO"
+					use="required" />
+				<xs:attribute fixed="RESP" name="COD_FLUSSO"
+					use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+
+	<xs:element name="FlussoAPR.0050Type"
+		type="dat:FlussoAPR.0050Type">
+	</xs:element>
+
+	<xs:element name="FlussoAPR.0100Type"
+		type="dat:FlussoAPR.0100Type">
+	</xs:element>
+
+
+
+	<xs:element name="FlussoAPR.0150Type"
+		type="dat:FlussoAPR.0150Type">
+	</xs:element>
+</xs:schema>

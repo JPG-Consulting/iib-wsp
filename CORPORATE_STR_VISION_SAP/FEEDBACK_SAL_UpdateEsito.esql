@@ -1,0 +1,41 @@
+DECLARE ns123 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessalout';
+
+
+CREATE COMPUTE MODULE FEEDBACK_SAL_UpdateEsito
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE FLAG INTEGER 1;
+		DECLARE ESITO CHARACTER 'OK';
+		DECLARE DESC CHARACTER;
+		
+		DECLARE inputStatus REFERENCE TO InputRoot.DataObject.ns123:SapZessalOut.SapZessalOutIDocBO.SapZessalOutDataRecord.SapZessalOutZessalTxtOut000.SapZessalOutZessalItemOut000;
+		
+		WHILE LASTMOVE(inputStatus)=TRUE DO
+			IF inputStatus.STATUS <> '53' THEN
+				SET FLAG = 3;
+				SET ESITO = 'KO';
+				SET DESC = inputStatus.STATXT;	
+			END IF;
+			MOVE inputStatus NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+		
+		DECLARE inputEsito REFERENCE TO InputRoot.DataObject.ns123:SapZessalOut.SapZessalOutIDocBO.SapZessalOutDataRecord.SapZessalOutZessalTxtOut000.SapZessalOutZessalItemOut000;
+		WHILE LASTMOVE(inputEsito)=TRUE DO			
+			UPDATE Database.STRVISION.BUFF_SAP_STR_CONSUNTIVO AS T
+				SET  FL_ACQ = FLAG 
+					,DATA_ACQUISIZIONE = CURRENT_DATE
+					,ESITO_TRASFERIMENTO=ESITO ||' ' || COALESCE(DESC, '')
+				WHERE T.SAL_NUMERO = inputEsito.ZNUM_SAL AND T.CODICE_ODL = inputEsito.EBELN AND T.CODICE_POSIZIONE_ODL = inputEsito.EBELN || inputEsito.EBELP AND T.CONTRATTO = inputEsito.KONNR;
+				
+				UPDATE Database.STRVISION.BUFF_SAP_STR_CONSUNTIVO_LOG AS T
+				SET  DATA_ACQUISIZIONE = CURRENT_DATE
+					,ESITO_TRASFERIMENTO=ESITO || ' ' || COALESCE(DESC, '')
+				WHERE T.SAL_NUMERO = inputEsito.ZNUM_SAL AND T.CONTRATTO = inputEsito.KONNR;
+				
+			MOVE inputEsito NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;

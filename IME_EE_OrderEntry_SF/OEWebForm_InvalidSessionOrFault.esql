@@ -1,0 +1,21 @@
+DECLARE ns221 NAMESPACE 'http://schemas.xmlsoap.org/soap/envelope/';
+
+CREATE COMPUTE MODULE OEWebForm_InvalidSessionOrFault
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE faultcode CHARACTER;
+		SET faultcode = InputRoot.SOAP.Body.ns221:Fault.faultcode;
+		IF faultcode = 'sf:INVALID_SESSION_ID' THEN
+			SET OutputRoot.SOAP.Body.ns20:login.ns20:username = THE(SELECT ITEM T.USERNAME
+																	FROM Database.SF_SESSION AS T);
+			SET OutputRoot.SOAP.Body.ns20:login.ns20:password = THE(SELECT ITEM T.PASSWORD
+																	FROM Database.SF_SESSION AS T);
+			PROPAGATE TO TERMINAL 'out1';
+		ELSE
+			RETURN TRUE;
+		END IF;
+		
+		RETURN FALSE;
+	END;
+	
+END MODULE;

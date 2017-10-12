@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:bons0="http://HUB_CRM_EE/crm_dati" xmlns:bons1="http://HUB_CRM_EE/CRM_BO" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://HUB_CRM_EE/IHubCrmEE" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <xsd:import namespace="http://HUB_CRM_EE/CRM_BO" schemaLocation="HUB_CRM_EE_WSHubCrmEE_InlineSchema3.xsd"/>
+      <xsd:complexType name="Tracking">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="idMessaggio" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="servizio" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="codiceFlusso" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="societaVendita" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="segmentoCliente" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="sistemaFatturazione" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="sistemaOrigine" type="xsd:string">
+			</xsd:element>
+
+			<xsd:element minOccurs="0" name="codicePraticaOrigine" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="codicePratica" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="codicePraticaDistributore" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="Indirizzo">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="toponimo" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="via" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="civico" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="cap" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="istat" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="comune" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="provincia" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="nazione" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="altro" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="numeroEstensione" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="OutboundRequest">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="tracking" type="bons0:Tracking">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="contrattoDispacciamento" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="anagraficaCliente" type="bons0:Cliente">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="anagraficaUscente" type="bons0:Cliente">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="anagraficaReferente" type="bons0:Cliente">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="indirizzoEsazione" type="bons0:Indirizzo">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="indirizzoSedeLegale" type="bons0:Indirizzo">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="indirizzoFornitura" type="bons0:Indirizzo">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="conferma" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="pod" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="dataRicezioneRichiesta" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="dataDecorrenza" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="note" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="annullamento" type="bons0:Annullamento">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="datiCommerciali" type="bons0:DatiCommerciali">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="tipologiaVoltura" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="categoriaCliente" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="tributi" type="bons0:Tributi">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="autocertificazioni" type="bons0:Autocertificazioni">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="dataContratto" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="acquistoCreditoSalvaguardia" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="revoca" type="xsd:string">
+			</xsd:element>
+
+			<xsd:element minOccurs="0" name="tipologiaRisoluzione" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="richiestaDatiTimoe" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="traderUscente" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="recesso" type="bons0:Recesso">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="venditaCanale" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="segmentazioneClienteFinale" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="modalitaSpedizione" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="dataInvioStampatore" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="dataInvioWelcome" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="dataConfirmationCall" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="residenzaCliente" type="bons1:Residenza">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="Recesso">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="recesso" type="xsd:string">
+			</xsd:element>
+
+			<xsd:element minOccurs="0" name="tempistica" type="xsd:string">
+			</xsd:element>
+
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="Autocertificazioni">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="autocertContrConnessione" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="Tributi">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="aliquotaIva" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="aliquotaAccise" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="addizProvinciale" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="addizComunale" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="altreInformazioni" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="DatiCommerciali">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="tipoContratto" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="settoreMerceologico" type="xsd:string">
+			</xsd:element>
+
+
+
+
+
+			<xsd:element minOccurs="0" name="servizioTutela" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="codiceUfficio" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="pagamentoIva" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="Annullamento">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="dataRichiesta" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="causale" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="motivazione" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="Cliente">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="nome" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="cognome" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="ragioneSociale" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="cdFiscale" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="ptIva" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="CFStraniero" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="email" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="telefono" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="OutboundResponse">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="tracking" type="bons0:Tracking">
+			</xsd:element>
+
+
+			<xsd:element minOccurs="0" name="pod" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="dataDecorrenza" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="ammissibilita" type="bons0:Ammissibilita">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="codiceAuthorityDL" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="canaleComunicazione" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="esito" type="bons0:Esito">
+			</xsd:element>
+
+
+
+
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="Esito">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="esito" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="codice" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="motivazione" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="dataEsecuzione" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+      <xsd:complexType name="Ammissibilita">
+		<xsd:sequence>
+			<xsd:element minOccurs="0" name="esito" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="causale" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="motivazione" type="xsd:string">
+			</xsd:element>
+			<xsd:element minOccurs="0" name="dataAmmissibilita" type="xsd:string">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+    </xsd:schema>

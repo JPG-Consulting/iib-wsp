@@ -1,0 +1,25 @@
+
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_LogFailure
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE exc REFERENCE TO InputExceptionList.RecoverableException;
+		WHILE LASTMOVE(exc) = TRUE DO
+			MOVE exc LASTCHILD NAME 'RecoverableException';
+		END WHILE;
+		
+		--||LOG TABELLA RICHIESTE ALFRESCO
+	    UPDATE Database.IIB_FLUX_DOCUMENTALE AS T
+	    SET RISPOSTA = parseToString(exc),
+	    ESITO = 'KO UPLOAD DOCUMENTO',
+	    DESCRIZIONE_ESITO = 'Fallimento upload documento su alfresco',
+	    TMS_RISPOSTA = CURRENT_TIMESTAMP
+	    WHERE
+	    T.ID_RICHIESTA = Environment.Variables.idRichiesta 
+	    AND T.ID_FLUX = Environment.Variables.idFlux;
+		PASSTHRU('COMMIT');
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

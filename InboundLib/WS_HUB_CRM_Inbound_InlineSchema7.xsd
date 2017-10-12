@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:bons1="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://WS_HUB_CRM_Inbound" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+      <xsd:complexType name="Timoe">
+        <xsd:sequence>
+          <xsd:element name="sospeso" type="xsd:string"/>
+          <xsd:element name="cmor_in_corso" type="xsd:string"/>
+          <xsd:element name="date_sospensione" type="xsd:string"/>
+          <xsd:element name="date_switch" type="xsd:string"/>
+          <xsd:element name="data_salvaguardia" type="xsd:string"/>
+          <xsd:element name="data_ultima_rich_sosp" type="xsd:string"/>
+          <xsd:element name="data_ultima_sosp" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>

@@ -1,0 +1,18 @@
+
+
+CREATE COMPUTE MODULE HTTP_StarterProcess_EDI_XML_route
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		CREATE FIELD OutputRoot.XMLNSC.Info.testo;
+		IF InputLocalEnvironment.HTTP.Input.QueryString.societa = 'AEMD' THEN
+			SET OutputRoot.XMLNSC.Info.testo = 'PROCESSO PER ELABORAZIONE XML AVVIATO CORRETTAMENTE';
+			PROPAGATE TO TERMINAL 'out1';
+			RETURN FALSE;
+		ELSE
+			SET OutputRoot.XMLNSC.Info.testo  = 'PROCESSO PER ELABORAZIONE EDI AVVIATO CORRETTAMENTE';
+			RETURN TRUE;
+		END IF;
+	END;
+
+END MODULE;

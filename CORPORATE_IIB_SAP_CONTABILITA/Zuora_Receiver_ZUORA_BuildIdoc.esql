@@ -1,0 +1,132 @@
+DECLARE ns5 NAMESPACE 'http://www.gruppoiren.it/schemas/zuora';
+DECLARE ns9 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzfidccp02n';
+
+CREATE COMPUTE MODULE Zuora_Receiver_ZUORA_BuildIdoc
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Variables.messageType = InputRoot.XMLNSC.ns5:ZuoraMessage.messageType;
+		SET OutputLocalEnvironment.Variables.fileName = InputRoot.XMLNSC.ns5:ZuoraMessage.fileName;
+		SET OutputLocalEnvironment.Variables.localPath = InputRoot.XMLNSC.ns5:ZuoraMessage.localPath;
+		
+		DECLARE inputTestata REFERENCE TO InputRoot.XMLNSC.ns5:ZuoraMessage.ns5:Zuora.testata;
+		DECLARE tipo CHARACTER InputRoot.XMLNSC.ns5:ZuoraMessage.messageType;
+		DECLARE numTestata INTEGER 1;
+		DECLARE numRiga INTEGER 1;
+		DECLARE numIva INTEGER 1;
+		DECLARE contoivaelim1 CHARACTER;
+		DECLARE contoivaelim2 CHARACTER;
+		SET contoivaelim1 = THE(SELECT ITEM T.VALORE
+									FROM Database.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CONTOIVAELIMINARE1');
+		SET contoivaelim2 = THE(SELECT ITEM T.VALORE
+									FROM Database.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'CONTOIVAELIMINARE2');
+		
+		--------------------------DEFINIZIONE TIPO MESSAGGIO E VARIABILI------------------------------------
+		IF UPPER(tipo) <> 'ESAZIONE' AND UPPER(tipo) <> 'FATTURAZIONE' THEN
+			THROW USER EXCEPTION MESSAGE 2951 VALUES('Tipo documento non corretto', UPPER(tipo));
+		END IF;
+		
+		DECLARE tipoArckey CHARACTER;
+		IF UPPER(tipo) = 'FATTURAZIONE' THEN
+			SET tipoArckey = 'E';
+		END IF;
+		
+		IF UPPER(tipo) = 'ESAZIONE' THEN
+			SET tipoArckey = 'I';
+		END IF;
+		
+		----------------CREAZIONE STRUTTURE E REFERENCE----------------------------------------------------
+		CREATE FIELD OutputRoot.DataObject.ns9:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		DECLARE outputCR REFERENCE to OutputRoot.DataObject.ns9:SapZfidccp02N.SapZfidccp02NIDocBO.SapIDocControlRecord;
+		CREATE FIELD OutputRoot.DataObject.ns9:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord.SapZfidccp02NE2fikpf007;
+		DECLARE output REFERENCE TO OutputRoot.DataObject.ns9:SapZfidccp02N.SapZfidccp02NIDocBO.SapZfidccp02NDataRecord;
+		
+		----------------------MAP RECORD DI CONTROLLO-----------------------------------------------
+		SET outputCR.TABNAM = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'TABNAM');
+		SET outputCR.MANDT = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'MANDT');
+		SET outputCR.IDOCTYP = 'ZFIDCCP02_N';
+		SET outputCR.MESTYP = 'ZFIDCC2_N';
+		SET outputCR.SNDPOR = 'TRFC';
+		SET outputCR.RCVPRT = 'LS';
+		SET outputCR.RCVPRN = THE(SELECT ITEM T.VALORE
+									FROM Database.INT_ENGINE.IIB_VAR_CFG AS T
+									WHERE T.FLUSSO = 'CONTABILE' 
+									AND T.VARIABILE = 'RCVPRN');
+		SET outputCR.SNDPRT = 'LS';
+		SET outputCR.SNDPRN = 'WEBSPHERE';
+		SET outputCR.ARCKEY = 'ZU-'||'9000'||'-'||tipoArckey||'-'||SUBSTRING(SUBSTRING(SUBSTRING(InputRoot.XMLNSC.ns5:ZuoraMessage.fileName BEFORE '.txt') AFTER '_') AFTER '_');
+		
+		WHILE LASTMOVE(inputTestata)=TRUE DO
+			SET numRiga = 1;
+			SET numIva = 1;
+			---------------------MAP TESTATA---------------------------------------------
+			SET output.SapZfidccp02NE2fikpf007[numTestata].BUKRS = '9000';
+			SET output.SapZfidccp02NE2fikpf007[numTestata].GJAHR = inputTestata.esercizio;
+			SET output.SapZfidccp02NE2fikpf007[numTestata].BLART = inputTestata.tipoDocumento;
+			SET output.SapZfidccp02NE2fikpf007[numTestata].BLDAT = RIGHT(inputTestata.dataRegistrazione, 4)||SUBSTRING(inputTestata.dataRegistrazione FROM 3 FOR 2)||LEFT(inputTestata.dataRegistrazione, 2);
+			SET output.SapZfidccp02NE2fikpf007[numTestata].BUDAT = RIGHT(inputTestata.dataDocumento, 4)||SUBSTRING(inputTestata.dataDocumento FROM 3 FOR 2)||LEFT(inputTestata.dataDocumento, 2);
+			SET output.SapZfidccp02NE2fikpf007[numTestata].WAERS = inputTestata.codiceValuta;
+			SET output.SapZfidccp02NE2fikpf007[numTestata].XBLNR = inputTestata.nRiferimento;
+			SET output.SapZfidccp02NE2fikpf007[numTestata].XBLNR_LONG = inputTestata.nRiferimento;
+			
+			DECLARE inputRiga REFERENCE TO inputTestata.righeCoge[>];
+			
+			WHILE LASTMOVE(inputRiga)=TRUE DO
+				IF (inputRiga.contoCoge NOT IN (contoivaelim1, contoivaelim2)) THEN
+				
+					SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiseg006[numRiga].HKONT = inputRiga.contoCoge;
+					SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiseg006[numRiga].WRBTR = CAST(inputRiga.importoFattura || '.' || inputRiga.decimaliImportoFattura AS DECIMAL);
+					SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiseg006[numRiga].BSCHL = inputRiga.chiaveContabile;
+					SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiseg006[numRiga].KOSTL = inputRiga.centroDiCosto;
+					SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiseg006[numRiga].PRCTR = inputRiga.profitCenter;
+					
+					IF inputRiga.codiceIVA <> '/' THEN
+						SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiseg006[numRiga].MWSKZ = inputRiga.codiceIVA;
+						
+						SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiset003[numIva].MWSKZ = inputRiga.codiceIVA;
+						SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiset003[numIva].FWBAS = CAST(inputRiga.importoFattura || '.' || inputRiga.decimaliImportoFattura AS DECIMAL);
+						IF TRIM(inputRiga.importoIVA) <> '/' THEN
+							SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiset003[numIva].FWSTE = CAST(inputRiga.importoIVA || '.' || inputRiga.decimaliImportoIVA AS DECIMAL);
+							IF inputRiga.chiaveContabile = '50' THEN
+								SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiset003[numIva].SHKZG = 'H';
+							ELSE
+								SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiset003[numIva].SHKZG = 'S';
+							END IF;
+						ELSE
+							SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiset003[numIva].FWSTE = 0;
+							IF inputRiga.chiaveContabile = '50' THEN
+								SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiset003[numIva].SHKZG = 'H';
+							ELSE
+								SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiset003[numIva].SHKZG = 'S';
+							END IF;
+						END IF;
+						
+						SET numIva = numIva + 1;
+					END IF;
+					
+					IF UPPER(tipo) = 'ESAZIONE' THEN
+						SET output.SapZfidccp02NE2fikpf007[numTestata].SapZfidccp02NE2fiseg006[numRiga].SGTXT = inputRiga.testoPosizione;
+					END IF;
+					
+					set numRiga = numRiga + 1;
+				END IF;
+				MOVE inputRiga NEXTSIBLING REPEAT TYPE NAME;
+			END WHILE;
+			
+			SET numTestata = numTestata + 1;
+			MOVE inputTestata NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

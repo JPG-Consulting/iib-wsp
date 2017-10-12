@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/schemas/zuora" xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" xmlns:fmt="http://www.ibm.com/dfdl/GeneralPurposeFormat" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:ns0="http://www.gruppoiren.it/schemas/zuora">
+    <xsd:import namespace="http://www.ibm.com/dfdl/GeneralPurposeFormat" schemaLocation="IBMdefined/GeneralPurposeFormat.xsd"/>
+        <xsd:element dfdl:lengthKind="implicit" ibmSchExtn:docRoot="true" name="ZuoraRecord">
+    <xsd:complexType>
+      <xsd:sequence dfdl:separator="">
+        <xsd:element dfdl:lengthKind="implicit" dfdl:occursCountKind="parsed" dfdl:terminator="" maxOccurs="unbounded" name="record" type="ns0:Record"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+    <xsd:complexType name="Record">
+      <xsd:sequence dfdl:separator="">
+        <xsd:element dfdl:length="4" dfdl:lengthKind="explicit" name="sistemaEsterno" type="xsd:string"/>
+        <xsd:element dfdl:length="4" dfdl:lengthKind="explicit" name="societa" type="xsd:string"/>
+        <xsd:element dfdl:length="4" dfdl:lengthKind="explicit" name="esercizio" type="xsd:string"/>
+        <xsd:element dfdl:length="10" dfdl:lengthKind="explicit" name="idFlusso" type="xsd:string"/>
+        <xsd:element dfdl:length="2" dfdl:lengthKind="explicit" name="tipoDocumento" type="xsd:string"/>
+        <xsd:element dfdl:length="10" dfdl:lengthKind="explicit" name="numDocEsterno" type="xsd:string"/>
+        <xsd:element dfdl:length="2" dfdl:lengthKind="explicit" name="filler" type="xsd:string"/>
+        <xsd:element dfdl:length="1" dfdl:lengthKind="explicit" name="tipoRecord" type="xsd:string"/>
+        <xsd:element dfdl:length="1" dfdl:lengthKind="explicit" name="tipoConto" type="xsd:string"/>
+        <xsd:element dfdl:length="1" dfdl:lengthKind="explicit" name="tipoRegistrazione" type="xsd:string"/>
+                  <xsd:element dfdl:lengthKind="delimited" dfdl:terminator="%NL;" name="dettaglio" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+      
+    <xsd:annotation>
+		<xsd:appinfo source="http://www.ogf.org/dfdl/">
+			<dfdl:format encoding="{$dfdl:encoding}" escapeSchemeRef="" ref="fmt:GeneralPurposeFormat"/>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+</xsd:schema>

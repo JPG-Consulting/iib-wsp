@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd" var="var1"/>
+    <input path="mbsharedlib://InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd" var="var"/>
+    <output path="mbsharedlib://SIILib/SE3_flusso.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://HUB_CRM_EE/crm_dati"/>
+        <namespace kind="supplement" prefix="in" uri="http://WS_HUB_CRM_Inbound"/>
+        <namespace kind="supplement" prefix="out3" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3"/>
+        <namespace kind="supplement" prefix="out2" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_SE3/v1"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="inbound_se30200">
+        <input path="$var1/mb:msg(SOAP_Domain_Msg,assembly,SOAP,Properties)">
+            <cast path="SOAP_Domain_Msg/Body/any" qualifier="{http://WS_HUB_CRM_Inbound}WSHubCrmInbound" ref="var"/>
+        </input>
+        <output path="mb:msg(FlussoSE3.0200Type,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
+        <assign value="0200">
+            <output path="$MessageAssembly1/FlussoSE3.0200Type/@COD_FLUSSO"/>
+        </assign>
+        <assign value="01178580997">
+            <output path="$MessageAssembly1/FlussoSE3.0200Type/IdentificativiRichiesta/PIVA_UTENTE"/>
+        </assign>
+        <assign value="05877611003">
+            <output path="$MessageAssembly1/FlussoSE3.0200Type/IdentificativiRichiesta/PIVA_GESTORE"/>
+        </assign>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/tracking/servizio"/>
+            <output path="$MessageAssembly1/FlussoSE3.0200Type/@COD_SERVIZIO"/>
+        </move>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/tracking/codicePraticaDistributore"/>
+            <output path="$MessageAssembly1/FlussoSE3.0200Type/IdentificativiRichiesta/CP_GESTORE"/>
+        </move>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/pod"/>
+            <output path="$MessageAssembly1/FlussoSE3.0200Type/DatiTecnici/COD_POD"/>
+        </move>
+        <move>
+            <input path="SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/dataDecorrenza"/>
+            <output path="$MessageAssembly1/FlussoSE3.0200Type/DatiSwitching/DATA_DECORRENZA"/>
+        </move>
+        <move>
+            <input path="Properties"/>
+            <output path="$MessageAssembly1/Properties"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://HUB_CRM_GAS/crm_dati" xmlns="http://HUB_CRM_GAS/crm_dati" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd1="http://HUB_CRM_GAS/crm_dati">
+    
+
+    <xsd:complexType name="Tracking">
+	    <xsd:sequence>
+	    	<xsd:element name="idMessaggio" type="xsd:string"/>
+	    	<xsd:element name="servizio" type="xsd:string"/>
+	    	<xsd:element name="codiceFlusso" type="xsd:string"/>
+	    	<xsd:element name="societaVendita" type="xsd:string"/>
+	    	<xsd:element name="segmentoCliente" type="xsd:string"/>
+	    	<xsd:element name="sistemaFatturazione" type="xsd:string"/>
+	    	<xsd:element name="sistemaOrigine" type="xsd:string"/>
+	    	<xsd:element name="contrattoDispacciamento" type="xsd:string"/>
+	    	<xsd:element name="codicePraticaOrigine" type="xsd:string"/>
+	    	<xsd:element name="codicePratica" type="xsd:string"/>
+	    	<xsd:element name="codicePraticaDistributore" type="xsd:string"/>
+	    	
+	    </xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="Cliente">
+        <xsd:sequence>
+          <xsd:element name="nome" type="xsd:string"/>
+          <xsd:element name="cognome" type="xsd:string"/>
+          <xsd:element name="ragioneSociale" type="xsd:string"/>
+          <xsd:element name="codiceFiscale" type="xsd:string"/>
+          <xsd:element name="partitaIva" type="xsd:string"/>
+          <xsd:element name="cfStraniero" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      
+      <xsd:complexType name="Ammissibilita">
+        <xsd:sequence>
+          <xsd:element name="esito" type="xsd:string"/>
+          <xsd:element name="causale" type="xsd:string"/>
+          <xsd:element name="motivazione" type="xsd:string"/>
+          <xsd:element name="dataAmmissibilita" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      
+      <xsd:complexType name="Esito">
+        <xsd:sequence>
+          <xsd:element name="esito" type="xsd:string"/>
+          <xsd:element name="codice" type="xsd:string"/>
+          <xsd:element name="motivazione" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      
+      <xsd:complexType name="Misuratore">
+        <xsd:sequence>
+          <xsd:element name="matricola" type="xsd:string"/>
+          <xsd:element name="lettura" type="xsd:string"/>
+          <xsd:element name="dataLettura" type="xsd:string"/>
+          <xsd:element name="tipoLettura" type="xsd:string"/>
+          <xsd:element name="coefficienteCorrettivo" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+      
+      <xsd:complexType name="Convertitore">
+        <xsd:sequence>
+          <xsd:element name="matricola" type="xsd:string"/>
+          <xsd:element name="lettura" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+    <xsd:element name="inboundRequest" type="InboundRequest"/>
+
+    <xsd:complexType name="InboundRequest">
+	    <xsd:sequence>
+	    	<xsd:element name="tracking" type="Tracking"/>
+	    	<xsd:element name="pdr" type="xsd:string"/>
+	    	<xsd:element name="codiceRemi" type="xsd:string"/>
+	    	<xsd:element name="dataDecorrenza" type="xsd:string"/>
+	    	<xsd:element name="ammissibilita" type="Ammissibilita"/>
+	    	<xsd:element name="codiceAuthorityDL" type="xsd:string"/>
+	    	<xsd:element name="canaleComunicazione" type="xsd:string"/>
+	    	<xsd:element name="esito" type="Esito"/>
+	    	<xsd:element name="dataEsecuzione" type="xsd:string"/>
+	    	<xsd:element name="misuratore" type="Misuratore"/>
+	    	<xsd:element name="convertitore" type="Convertitore"/>
+	    	<xsd:element name="note" type="xsd:string"/>
+	    	<xsd:element name="anagraficaCliente" type="Cliente"/>
+	    	<xsd:element name="fattibilitaTecnica" type="xsd:string"/>
+	    	<xsd:element name="stimaCosti" type="xsd:string"/>
+	    	<xsd:element name="numeroTentativi" type="xsd:string"/>
+	    </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="inboundResponse" type="InboundResponse"/>
+    
+    <xsd:complexType name="InboundResponse">
+    	<xsd:sequence>
+    		<xsd:element name="tracking" type="Tracking"/>
+    		<xsd:element name="esito" type="Esito"/>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+     <xsd:element ibmSchExtn:docRoot="true" name="WSHubCrmInbound">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="inboundRequest" nillable="true" type="InboundRequest"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element ibmSchExtn:docRoot="true" name="WSHubCrmInboundResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="inboundResponse" nillable="true" type="InboundResponse"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+</xsd:schema>

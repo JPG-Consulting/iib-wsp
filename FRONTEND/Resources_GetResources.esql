@@ -1,0 +1,31 @@
+
+
+CREATE COMPUTE MODULE Resources_GetResources
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET Environment.Variables.Resources[] = SELECT P.ID_RES, R.NAME, R.CATEGORY, R.DESCRIPTION, R.URL FROM Database.IIB_PERMISSIONS AS P, Database.IIB_RESOURCES AS R, Database.IIB_USERS AS U WHERE P.ID_USER = U.ID_USER AND P.ID_RES = R.ID_RES AND U.TOKEN = COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.user, '');
+		DECLARE elem REFERENCE TO Environment.Variables.Resources;
+		IF CARDINALITY(Environment.Variables.Resources[]) <> 0 THEN
+		FOR res AS Environment.Variables.Resources[] DO
+			CREATE LASTCHILD OF Environment.Variables.Categories.JSON.(JSON.Array)Data.(JSON.Array){res.CATEGORY} AS elem NAME 'Item';
+			SET elem.Name = res.NAME;
+			SET elem.URL = res.URL;
+			SET elem.Description = res.DESCRIPTION;
+		END FOR;
+		
+		DECLARE cat REFERENCE TO Environment.Variables.Categories.JSON.Data;
+		MOVE cat FIRSTCHILD;
+		
+		WHILE LASTMOVE(cat)=TRUE DO
+			CREATE LASTCHILD OF OutputRoot.JSON.(JSON.Array)Data AS elem NAME 'Item';
+			SET elem.(JSON.Array){FIELDNAME(cat)} = cat;
+			MOVE cat NEXTSIBLING;
+		END WHILE;
+		ELSE
+			CREATE FIELD OutputRoot.JSON.(JSON.Array)Data;
+		END IF;
+			
+		RETURN TRUE;
+	END;
+
+END MODULE;

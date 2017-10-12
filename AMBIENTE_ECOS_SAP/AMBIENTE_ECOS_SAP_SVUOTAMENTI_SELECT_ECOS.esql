@@ -1,0 +1,325 @@
+DECLARE ns NAMESPACE 'http://www.example.org/ZPAP_DATI_ECOS_schema';
+
+
+CREATE COMPUTE MODULE AMBIENTE_ECOS_SAP_SVUOTAMENTI_SELECT_ECOS
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		DECLARE sapexpv_cod CHARACTER;
+		---leggo  i parametri da input query string
+		SET sapexpv_cod = InputLocalEnvironment.HTTP.Input.QueryString.sapexpv_cod;
+		IF sapexpv_cod IS NULL THEN
+			RETURN FALSE;
+		END IF;	
+		
+		IF sapexpv_cod <> '' THEN
+			SET Environment.Variables.sapexpv_cod  = sapexpv_cod;
+		ELSE
+			RETURN FALSE;
+		END IF;
+		
+		--salvo i parametri che servono nel flusso dopo in Environment:
+		--SET Environment.Variables.sapexpv_cod = sapexpv_cod;
+		
+		CREATE FIELD Environment.Variables.DataInizio VALUE CURRENT_TIMESTAMP;
+		CREATE FIELD Environment.Variables.Profilo VALUE sapexpv_cod;
+
+		DECLARE idunico INTEGER;
+		SET Environment.LASTID[] = PASSTHRU('SELECT TOP 1 T.usersapbuslog_id AS idunico FROM usersapbuslog AS T ORDER BY T.usersapbuslog_id DESC');
+		SET idunico  = CAST(Environment.LASTID[1].idunico AS INTEGER);
+		
+		IF  idunico IS NULL THEN
+			SET 	idunico = 1; --primo run con tabella LOG vuota!
+		ELSE
+			SET 	idunico = idunico + 1;
+		END IF;		
+		
+		SET Environment.Variables.idunico  = CAST(idunico AS CHARACTER);--fissiamolo per il LOG e mail dopo
+		SET Environment.LASTID = NULL; --erase vector di appoggio
+		SET Environment.Variables.orainizio  = CURRENT_TIMESTAMP; --serivrà per scrivere la tabella log
+/*
+INSERIMENTO INIZIALE IN LOG, subito, con valori a ZERO e lID del flusso attuale, per REFERENTIAL INTEGRITY inserito sulle altre 
+Tabelle collegate...
+*/		
+--variabili in ENV per CONTARE poi INS/UPDATE:---------------------------------------
+		IF Environment.Variables.Count IS NULL THEN
+			CREATE FIELD Environment.Variables.Count VALUE 0;
+		ELSE
+			SET Environment.Variables.Count = 0;
+		END IF;
+		
+		IF Environment.Variables.Ins IS NULL THEN
+			CREATE FIELD Environment.Variables.Ins VALUE 0;
+		ELSE
+			SET Environment.Variables.Ins = 0;
+		END IF;
+		IF Environment.Variables.Upd IS NULL THEN
+			CREATE FIELD Environment.Variables.Upd VALUE 0;
+		ELSE
+			SET Environment.Variables.Upd = 0;
+		END IF;
+		
+---tabella LOg scritta subito per via del: 		usersapbuslog_id==idUnico
+	INSERT INTO Database.usersapbuslog (usersapbuslog_id,
+	 		usersapbuslog_dataora_ini, 
+	 		usersapbuslog_dataora_fin, 
+	 		usersapbuslog_num_rec, 
+	 		usersapbuslog_esito, 
+	 		usersapbuslog_descrizione_esito, 
+	 		usersapbuslog_inserted,
+	 		usersapbuslog_updated,
+	 		sapexpsv_cod   )
+	 		VALUES(
+	 		(SELECT MAX(T.usersapbuslog_id) FROM Database.usersapbuslog AS T) +1 , 
+	 		CAST(Environment.Variables.orainizio AS TIMESTAMP),
+	 		NULL, 
+	 		CAST(Environment.Variables.Count AS INTEGER), 
+	 		'?', 
+	 		'inizio', 
+	 		CAST(Environment.Variables.Ins AS INTEGER), 
+	 		CAST(Environment.Variables.Upd AS INTEGER), 
+	 		TRIM(Environment.Variables.sapexpv_cod)
+	 		);
+		
+	--------------------------------------------------------------		
+
+		
+		
+		DECLARE cpr_num_c CHARACTER; --per SAP ZPAP_DATI_ECOS, equivale al NUMERO SVUOTAMENTI
+		DECLARE tco_cod CHARACTER; --per SAP ZPAP_DATI_ECOS, equivale al TIPO CONTENITORE
+		DECLARE rif_cod CHARACTER; --per SAP ZPAP_DATI_ECOS, equivale al CODICE RIFIUTO
+		DECLARE sapexpsvd_ir CHARACTER; --per SAP ZPAP_DATI_ECOS, equivale al INDICE RIP
+        
+        DECLARE imp_cod_comune_sl CHARACTER; --per query CODICE ISTAT
+        DECLARE imp_uni_comune_sl CHARACTER; --per query CODICE ISTAT
+        
+        DECLARE imp_cod_ut CHARACTER; --per query CAPACITA CONTENITORE
+        DECLARE imp_uni_ut CHARACTER; --per query CAPACITA CONTENITORE
+		DECLARE con_cod CHARACTER; --per query CAPACITA CONTENITORE
+		
+		DECLARE zco_cod CHARACTER; --per query CODICE ISTAT COMUNE
+		
+		DECLARE con_cap CHARACTER; --per query CAPACITA CONTENITORE
+		
+		DECLARE acn_cod CHARACTER; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		DECLARE uab_prog CHARACTER; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		DECLARE cpr_data TIMESTAMP; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		DECLARE acc_dat_posiz TIMESTAMP; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		DECLARE acc_dat_rit TIMESTAMP; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		DECLARE accuab_data_ini TIMESTAMP; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		DECLARE accuab_data_fin TIMESTAMP; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		DECLARE data_consegna TIMESTAMP; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		DECLARE data_ritiro TIMESTAMP; --per query DATA POSIZIONAMENTO,RITIRO,ASSOCIAZIONE e DISSOCIAZIONE
+		
+		DECLARE acn_id_partita CHARACTER; --per query BSACN
+		
+		DECLARE uab_pin CHARACTER; --per query BSUAB
+		DECLARE uab_cod CHARACTER; --per query BSUAB
+		DECLARE Profilo CHARACTER; -- Per Nome File Modifica del 09/05/2017
+		
+		DECLARE J INTEGER; --contatore dimensione jolly
+		
+-- inizio query dati iniziali --
+		IF sapexpv_cod = 'EMPTY' THEN
+			
+			SET Environment.result[] =  --PASSTHRU('select TOP 6 t.sapexpsv_cod
+			PASSTHRU('select t.sapexpsv_cod
+ 			, t.acn_cod
+			, t.uab_prog
+			, t.cpr_data
+            , t.con_cod  
+            , t.imp_cod_comune_sl
+            , t.imp_uni_comune_sl
+            , t.imp_cod_ut
+            , t.imp_uni_ut
+            , t.con_cod
+            , t.cpr_num_c
+            , t.tco_cod
+            , t.rif_cod
+            , t.sapexpsvd_ir 
+            , t.sapexpsvd_prog 
+         	from tasapexpsvd as t , tasapexpsv as N
+         	where t.sapexpsvd_flag_ecos = ? and t.sapexpsvd_flag_exp = ?  and N.sapexpsv_flag_tipo_exp = ? and t.sapexpsv_cod = N.sapexpsv_cod ' VALUES ('0','D','S') );    
+
+          	
+          	
+		ELSE
+
+
+
+          	SET Environment.result[] = 
+          	PASSTHRU('select t.sapexpsv_cod
+          	, t.acn_cod
+			, t.uab_prog
+			, t.cpr_data
+            , t.con_cod  
+            , t.imp_cod_comune_sl
+            , t.imp_uni_comune_sl
+            , t.imp_cod_ut
+            , t.imp_uni_ut
+            , t.con_cod
+            , t.cpr_num_c
+            , t.tco_cod
+            , t.rif_cod
+            , t.sapexpsvd_ir 
+            , t.sapexpsvd_prog 
+         	from tasapexpsvd as t, tasapexpsv as N
+			where t.sapexpsvd_flag_ecos = ? and t.sapexpsvd_flag_exp = ? and t.sapexpsv_cod = ? and N.sapexpsv_flag_tipo_exp = ? and N.sapexpsv_flag_tipo = ? and t.sapexpsv_cod = N.sapexpsv_cod' VALUES ('0','D',sapexpv_cod,'S', 'C') );
+          	
+		END IF;
+
+---------------------------------------------------------------------------------------
+
+--ciclo principale sul NR di records dal resultSET su ECOS
+		DECLARE H INTEGER 1;
+		DECLARE DIM INTEGER CARDINALITY (Environment.result[]);
+		SET Environment.Variables.Count = DIM;
+		WHILE H <= DIM DO
+
+	       	SET acn_cod = Environment.result[H].acn_cod;
+	       	SET uab_prog = Environment.result[H].uab_prog;
+	       	SET cpr_data = Environment.result[H].cpr_data;
+	       	SET con_cod = Environment.result[H].con_cod;
+	       	SET imp_cod_comune_sl = Environment.result[H].imp_cod_comune_sl;
+	       	SET imp_uni_comune_sl = Environment.result[H].imp_uni_comune_sl;
+	       	SET imp_cod_ut = Environment.result[H].imp_cod_ut;
+	       	SET imp_uni_ut = Environment.result[H].imp_uni_ut;  
+	       	SET con_cod = Environment.result[H].con_cod; 
+	       	SET cpr_num_c = Environment.result[H].cpr_num_c;
+	       	SET tco_cod = Environment.result[H].tco_cod;
+	       	SET rif_cod = Environment.result[H].rif_cod;
+	       	SET sapexpsvd_ir = Environment.result[H].sapexpsvd_ir;
+	       	SET Profilo = Environment.result[H].sapexpsv_cod; -- Aggiunto il 09/05/2017
+-- fine query dati iniziali --
+       	
+       	
+-- inizio query codice istat comune --              
+       	SET zco_cod = THE(select ITEM t.zco_cod from Database.bsimp as t where t.imp_cod = imp_cod_comune_sl and t.imp_uni = imp_uni_comune_sl);
+-- fine query codice istat comune --
+       	
+       	
+-- inizio query capacita contenitore --
+       	SET con_cap = THE(select ITEM t.con_cap from Database.bscon as t where t.imp_cod_ut = imp_cod_ut and t.imp_uni_ut = imp_uni_ut and t.con_cod = con_cod); 
+-- fine query capacita contenitore --
+       	
+       	
+-- inizio query date posizionamento, ritiro, associazione e disassociazione --
+       	SET Environment.DataPosRitAssDiass[] = 
+			select t.acc_dat_posiz
+			, t.acc_dat_rit
+			, z.accuab_data_ini
+			, z.accuab_data_fin
+          	from Database.cnacc as t, Database.cnaccuab as z
+          	where t.imp_cod_ut = z.imp_cod_ut AND
+			t.imp_uni_ut = z.imp_uni_ut AND
+			t.acc_dat_posiz = z.acc_dat_posiz AND
+			t.con_cod = z.con_cod AND
+			t.acc_prog = z.acc_prog AND
+			t.imp_cod_ut = imp_cod_ut AND
+			t.imp_uni_ut = imp_uni_ut AND
+			t.con_cod = con_cod AND
+			z.imp_cod_comune_sl = imp_cod_comune_sl AND
+			z.imp_uni_comune_sl = imp_uni_comune_sl AND
+			z.acn_cod = acn_cod AND
+			z.uab_prog = uab_prog AND
+			t.acc_dat_posiz <= cpr_data AND
+			(t.acc_dat_rit >= cpr_data OR t.acc_dat_rit IS NULL) AND
+			z.accuab_data_ini <= cpr_data AND
+			(z.accuab_data_fin >= cpr_data OR z.accuab_data_fin IS NULL);
+                    
+       
+		SET J = CARDINALITY(Environment.DataPosRitAssDiass[]); 
+        IF J=0 THEN --resultset vuoto, nessun record trovato
+        	SET data_consegna = cpr_data;
+        	SET data_ritiro = cpr_data;
+        	
+        ELSE --ho almeno un risultato
+        	
+        	SET acc_dat_posiz = Environment.DataPosRitAssDiass[1].acc_dat_posiz;
+       		SET acc_dat_rit = Environment.DataPosRitAssDiass[1].acc_dat_rit;
+       		SET accuab_data_ini = Environment.DataPosRitAssDiass[1].accuab_data_ini;
+       		SET accuab_data_fin = Environment.DataPosRitAssDiass[1].accuab_data_fin;
+       		--controlli aggiunti AV perchè abbiamo dei NULL
+       		IF accuab_data_ini IS NULL THEN
+        		SET accuab_data_ini = TIMESTAMP '9999-12-31 00:00:00';
+        	END IF;	
+        	IF accuab_data_fin IS NULL THEN
+        		SET accuab_data_fin = TIMESTAMP '9999-12-31 00:00:00';
+        	END IF;	
+        --FINE controlli aggiunti AV perchè abbiamo dei NULL	
+        	IF acc_dat_posiz > accuab_data_ini THEN
+        		SET accuab_data_ini = acc_dat_posiz;
+        	END IF;
+        	
+        	IF acc_dat_rit < accuab_data_fin THEN
+        		SET accuab_data_fin = acc_dat_rit;
+        	END IF;
+        	
+        	SET data_consegna = COALESCE(accuab_data_ini, '00000000');
+        	SET data_ritiro = COALESCE(accuab_data_fin,'99991231'); --come da email del 22-02-2017
+        	
+        END IF;
+        
+-- fine query date posizionamento, ritiro, associazione e disassociazione --
+       
+-- inizio query su bsacn per acn_id_partita --
+       	SET acn_id_partita = THE(select ITEM t.acn_id_partita from Database.bsacn as t where t.imp_cod_comune_sl = imp_cod_comune_sl and t.imp_uni_comune_sl = imp_uni_comune_sl and t.acn_cod = acn_cod);
+-- fine query su bsacn per acn_id_partita --
+
+-- inizio query su bsuab per uab_pin e uab_cod --
+       	SET Environment.queryUAB[] = 
+			select t.uab_pin
+			, t.uab_cod 
+          	from Database.bsuab as t
+          	where t.imp_cod_comune_sl = imp_cod_comune_sl and t.imp_uni_comune_sl = imp_uni_comune_sl and t.acn_cod = acn_cod and t.uab_prog = uab_prog; 
+                    
+       	SET uab_pin = COALESCE(Environment.queryUAB[1].uab_pin,''); --character
+       	SET uab_cod = COALESCE(Environment.queryUAB[1].uab_cod,'');
+       	
+       	SET uab_pin =  '0000000000' || TRIM(uab_pin);
+       	SET uab_pin = RIGHT( uab_pin, 10); --FILL with ZEROES!!!
+-- fine query su bsacn per acn_id_partita --
+
+-- inizio impostazione messaggio per SAP ZPAP_DATI_ECOS --
+
+		CREATE FIELD OutputRoot.XMLNSC.ns:zpap_dati_ecos[H];
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:MANDT = '200';
+		IF cpr_num_c >=  0 THEN --impostato MAGGIORE o UGUALE, in attesa di specifiche.. inviata email pomeriggio del 21-02-2017
+			SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:TIPO_RECORD = 'AC';
+		ELSE -- quindi MINORE
+			SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:TIPO_RECORD = 'CA';
+		END IF;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:CITY_CODE = zco_cod;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:PARTNER = acn_id_partita;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:VERTRAG = uab_pin;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:ANLAGE = RIGHT(TRIM(uab_cod),10);
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:CONTENITORE = con_cod;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:DATA_INIZIO_IRF = CAST(cpr_data AS CHARACTER FORMAT 'yyyyMMdd');
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:DATA_FINE_IRF = CAST(cpr_data AS CHARACTER FORMAT 'yyyyMMdd');
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:TIPO_CONTENITORE = tco_cod;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:CAPACITA_CONTENITORE = con_cap;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:CODICE_RIFIUTO = rif_cod;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:DATA_CONSEGNA = CAST(data_consegna AS CHARACTER FORMAT 'yyyyMMdd');
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:DATA_RITIRO = CAST(data_ritiro AS CHARACTER FORMAT 'yyyyMMdd');
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:INDICE_RIP = sapexpsvd_ir;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:NUMERO_SVUOTAMENTI = cpr_num_c;
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:DATA_IMPORTAZIONE = CAST(CURRENT_DATE AS CHARACTER FORMAT 'yyyyMMdd'); --sysdate
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:UTENTE_IMPORTAZIONE = 'IIB';--'XXX'; --fisso, ma su che valore ?
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:NOME_FILE_IMPORTAZIONE = Profilo||'_' ||CAST(CURRENT_TIMESTAMP AS CHARACTER FORMAT 'yyyyMMddHHmmss') ||'_'|| CAST(idunico AS CHARACTER); --stringa univoca calc sopra! 'AMBIENTE_ECOS_SAP_SVUOTAMENTI';
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:ANOMALIA_CARICAMENTO = ''; -- nessun valore, come da specifiche
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:DATA_CARICAMENTO = ''; -- nessun valore, come da specifiche
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:UTENTE_CARICAMENTO = ''; -- nessun valore, come da specifiche
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:BELNR_WU = ''; -- nessun valore, come da specifiche
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:DTWU = ''; -- nessun valore, come da specifiche
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:HHWU = ''; -- nessun valore, come da specifiche
+		SET OutputRoot.XMLNSC.ns:zpap_dati_ecos[H].ns:ANOMALIA_WU = ''; -- nessun valore, come da specifiche
+-- fine impostazione messaggio per SAP ZPAP_DATI_ECOS --       
+       
+        SET H = H+1;
+		END WHILE;
+       
+		RETURN TRUE; 
+	END;
+END MODULE;
+
+

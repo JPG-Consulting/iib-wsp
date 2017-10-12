@@ -1,0 +1,19 @@
+CREATE COMPUTE MODULE HTTP_StarterProcess_HRParams
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.JSON.Data;
+		--.Societa;
+		--CREATE FIELD OutputRoot.XMLNSC.Periodo;
+		--CREATE FIELD OutputRoot.XMLNSC.ID;
+		--CREATE FIELD OutputRoot.XMLNSC.DataForz;
+		--CREATE FIELD OutputRoot.XMLNSC.TipoDoc;
+		
+		SET OutputRoot.JSON.Data.Societa = InputLocalEnvironment.HTTP.Input.QueryString.societa;
+		SET OutputRoot.JSON.Data.Periodo = InputLocalEnvironment.HTTP.Input.QueryString.dataReg;
+		SET OutputRoot.JSON.Data.ID = InputLocalEnvironment.HTTP.Input.QueryString.id;
+		SET OutputRoot.JSON.Data.DataForz = InputLocalEnvironment.HTTP.Input.QueryString.dataForz;
+		SET OutputRoot.JSON.Data.TipoDoc = InputLocalEnvironment.HTTP.Input.QueryString.tipoDoc;
+		
+		RETURN TRUE;
+	END;
+END MODULE;

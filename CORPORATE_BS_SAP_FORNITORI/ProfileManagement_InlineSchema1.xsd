@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://host.bs.com/common/webservice/ProfileManagement/" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://host.bs.com/common/webservice/ProfileManagement/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
+	<xsd:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="xmlmime.xsd">
+	</xsd:import>
+
+	<xsd:element ibmSchExtn:docRoot="true" name="ImportProfilesRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="1" minOccurs="1" name="companyData" type="tns:CompanyDataList"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="ImportProfilesResponse">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="1" minOccurs="1" name="returnCode" type="xsd:string"/>
+				<xsd:element maxOccurs="1" minOccurs="1" name="returnMessage" type="xsd:string">
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="bravoId" type="xsd:unsignedLong"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="ExportProfilesRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="componentFilter">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="MASTER"/>
+							<xsd:enumeration value="CLASS"/>
+							<xsd:enumeration value="USER"/>
+							<xsd:enumeration value="DEBASIC"/>
+							<xsd:enumeration value="DEEXTENDED"/>
+							<xsd:enumeration value="DECATEGORY"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="conditionFilter" type="tns:ConditionFilter">
+				</xsd:element>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="deConditionFilter" type="tns:DeConditionFilter">
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="categoryConditionFilter" type="tns:CategoryConditionFilter">
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="ExportProfilesResponse">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="1" minOccurs="1" name="returnCode" type="xsd:string"/>
+				<xsd:element maxOccurs="1" minOccurs="1" name="returnMessage" type="xsd:string"/>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="returnCompanyData" type="tns:ReturnCompanyDataList"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="CompanyInfo">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="bravoId" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="companyName" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="bizLegalStruct" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="fiscalCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="vat" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="euVat" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="dAndBCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="bizEmail" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="bizPhone" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="bizFax" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="webSite" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="address" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="zip" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="city" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="province" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="isoCountry" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="address2" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="zip2" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="city2" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="province2" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="isoCountry2" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="postalOfficeBox" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="postalOfficeZipCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="status" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="paymentCondition" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="turnOver" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="currency" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="extCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="apeCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userAlias" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="password" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="pwdQuestion" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="pwdAnswer" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userTitle" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userSurName" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userName" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userEmail" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userPhone" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userFax" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userMobPhone" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userRole" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="locale" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="timezone" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="prefContact" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="prefFolder" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userExtCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userBusinessUnitCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userDivisionCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userProfileCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="registrationDate" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="isoProvince" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="isoProvince2" type="xsd:string">
+			</xsd:element>
+
+			<xsd:element maxOccurs="1" minOccurs="0" name="buyerManaged" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="extStatus" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="type" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="lastModTime" type="xsd:dateTime">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userId" type="xsd:long">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userDivisionId" type="xsd:long">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userLoginCount" type="xsd:long">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userLastLoginDate" type="xsd:date">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="deleted" type="xsd:int">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="extUniqueCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userLastModTime" type="xsd:dateTime">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="companyLastModTime" type="xsd:dateTime">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="registrationDateTime" type="xsd:dateTime">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userLastLoginDateTime" type="xsd:dateTime"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CompanyDataList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="company" type="tns:CompanyImport"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="classification" type="tns:ClassificationImportList"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="subUsers" type="tns:SubUserImportList"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="dataElements" type="tns:DataElementImportList"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DataElementImportList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="operationCode" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="dataElements" type="tns:DeInfoList"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ClassificationImportList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="operationCode" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="categories" type="tns:CategoryInfo"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CategoryInfo">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="categoria" type="tns:Categoria"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="dummyNodeForMSClient" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="Categoria">
+		<xsd:sequence>
+			<xsd:element name="categoryCode" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="categoryName" type="xsd:string">
+			</xsd:element>
+
+			<xsd:element maxOccurs="1" minOccurs="0" name="categoryQualificationStatus" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="SubUserImportList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="operationCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="sendEMail" type="xsd:int"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="subuser" type="tns:SubUserInfo">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="SubUserInfo">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="surName" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="email" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="phoneNumber" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="mobilePhoneNumber" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="division" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="businessUnit" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="rightsProfile" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="login" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="language" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="timeZone" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="extCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userId" type="xsd:long">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="userState" type="xsd:string">
+			</xsd:element>
+
+			<xsd:element maxOccurs="1" minOccurs="0" name="divisionId" type="xsd:long">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="creationDate" type="xsd:dateTime">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="lastLoginDate" type="xsd:dateTime">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="loginCount" type="xsd:long">
+			</xsd:element>
+
+			<xsd:element maxOccurs="1" minOccurs="0" name="lastModTime" type="xsd:dateTime">
+			</xsd:element>
+
+
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ConditionFilter">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="name" nillable="false" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="1" name="value" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ReturnCompanyDataList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="returnCompanyInfo" type="tns:CompanyInfo"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="returnClassification" type="tns:CategoryInfoList">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="returnSubUser" type="tns:SubUserInfoList">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="deBasic" type="tns:DeInfoList"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="deExtended" type="tns:DeInfoList">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="deCategory" type="tns:DeInfoList">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CompanyImport">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="operationCode" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="sendEMail" type="xsd:int"/>
+			<xsd:element maxOccurs="1" minOccurs="1" name="companyInfo" type="tns:CompanyInfo">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<!--xsd:complexType name="DataElement"> <xsd:sequence> <xsd:element name="name" 
+		type="xsd:string" minOccurs="1" maxOccurs="1"/> <xsd:element name="type" 
+		maxOccurs="1" minOccurs="0" type="xsd:string" /> <xsd:element name="values" 
+		maxOccurs="1" minOccurs="1"> <xsd:complexType> <xsd:sequence> <xsd:element 
+		name="value" type="xsd:string" minOccurs="0" maxOccurs="unbounded" > </xsd:element> 
+		</xsd:sequence> </xsd:complexType> </xsd:element> </xsd:sequence> </xsd:complexType> 
+		<xsd:complexType name="DataElementList"> <xsd:sequence> <xsd:element name="de" 
+		type="tns:DataElement" minOccurs="0" maxOccurs="unbounded"/> </xsd:sequence> 
+		</xsd:complexType -->
+
+	<xsd:complexType name="DeValueAttachment">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="fileName" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="fileDescription" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="fileBase64" type="xmime:base64Binary"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="BaseData">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="id" type="xsd:unsignedLong"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ExtendedUserData">
+		<xsd:complexContent>
+			<xsd:extension base="tns:UserData">
+				<xsd:sequence>
+					<xsd:element maxOccurs="1" minOccurs="0" name="profile" type="tns:BaseData"/>
+					<xsd:element maxOccurs="1" minOccurs="0" name="division" type="tns:BaseData"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="DeInfo">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="name" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="type" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="values" type="tns:DeValueList">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="attachmentValue" type="tns:DeValueAttachment">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="defaultLabel" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="defaultLabelLocale" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="attachmentExpiryDate" type="xsd:date">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="attachmentExpiryDateManagedBy" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="attachmentExpiryDateLastUpdateUser" type="tns:UserData">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="attachmentExpiryDateLastUpdateDate" type="xsd:dateTime">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="lastAnswerDate" type="xsd:dateTime">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="lastAnswerUser" type="tns:ExtendedUserData"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="DEValue">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="deValue" type="xsd:string"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:string"/>
+	</xsd:complexType>
+
+
+
+	<xsd:complexType name="DeInfoList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="deInfo" type="tns:DeInfo"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CategoryInfoList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="categoryInfo" type="tns:CategoryInfo"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="SubUserInfoList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="subUser" type="tns:SubUserInfo"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="DeValueList">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="value" type="tns:DEValue"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CategoryConditionFilter">
+
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="category" nillable="false" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="1" name="operator" nillable="false" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="0" name="type">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="QUAL"/>
+						<xsd:enumeration value="CLAS"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="DeConditionFilter">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="1" name="key" nillable="false" type="xsd:string"/>
+			<xsd:element maxOccurs="1" minOccurs="1" name="operator" nillable="false" type="xsd:string"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="1" name="values" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:element ibmSchExtn:docRoot="true" name="ExportProfilesPagedRequest">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="componentFilter">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="MASTER"/>
+							<xsd:enumeration value="CLASS"/>
+							<xsd:enumeration value="USER"/>
+							<xsd:enumeration value="DEBASIC"/>
+							<xsd:enumeration value="DEEXTENDED"/>
+							<xsd:enumeration value="DECATEGORY"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="conditionFilter" type="tns:ConditionFilter">
+				</xsd:element>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="deConditionFilter" type="tns:DeConditionFilter">
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="categoryConditionFilter" type="tns:CategoryConditionFilter">
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="0" name="startAt" type="xsd:int"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element ibmSchExtn:docRoot="true" name="ExportProfilesPagedResponse">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element maxOccurs="1" minOccurs="1" name="returnCode" type="xsd:string"/>
+				<xsd:element maxOccurs="1" minOccurs="1" name="returnMessage" type="xsd:string"/>
+				<xsd:element maxOccurs="1" minOccurs="0" name="totRecords" type="xsd:int">
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1" name="returnedRecords" type="xsd:int">
+				</xsd:element>
+				<xsd:element maxOccurs="1" minOccurs="1" name="startAt" type="xsd:int">
+				</xsd:element>
+				<xsd:element maxOccurs="unbounded" minOccurs="0" name="returnCompanyData" type="tns:ReturnCompanyDataList"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="UserData">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="id" type="xsd:unsignedLong">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="code" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="company" type="tns:CompanyData"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="CompanyData">
+		<xsd:sequence>
+			<xsd:element maxOccurs="1" minOccurs="0" name="id" type="xsd:unsignedLong">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="code" type="xsd:string">
+			</xsd:element>
+			<xsd:element maxOccurs="1" minOccurs="0" name="name" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

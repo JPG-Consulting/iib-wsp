@@ -1,0 +1,13 @@
+
+CREATE COMPUTE MODULE Users_PostUsers
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		INSERT INTO Database.IIB_USERS (ID_USER, USERNAME, TOKEN, TMS_UPDATED) VALUES 
+		(COALESCE((SELECT MAX(T.ID_USER) FROM Database.IIB_USERS AS T) + 1, 1000000001), InputLocalEnvironment.HTTP.Input.QueryString.username, UUIDASCHAR, CURRENT_TIMESTAMP);
+		SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 201;
+		DECLARE id CHARACTER THE(SELECT ITEM T.ID_USER FROM Database.IIB_USERS AS T WHERE T.USERNAME = InputLocalEnvironment.HTTP.Input.QueryString.username);
+		SET OutputRoot.HTTPReplyHeader.Location = '/sys/users/'||id;
+		RETURN TRUE;
+	END;
+
+END MODULE;

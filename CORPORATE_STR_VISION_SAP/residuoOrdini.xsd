@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/ResiduoOrdini">
+    <xsd:element name="Output">
+    	<xsd:complexType>
+    		<xsd:sequence>
+    			<xsd:element name="ordine">
+    				<xsd:complexType>
+    					<xsd:sequence>
+    						<xsd:element name="ordineId" type="xsd:string"/>
+    						<xsd:element name="ordinePos" type="xsd:string"/>
+    						<xsd:element name="tipoOrdine" type="xsd:string"/>
+    						<xsd:element name="societa" type="xsd:string"/>
+    						<xsd:element name="residuo" type="xsd:string"/>
+    					</xsd:sequence>
+    				</xsd:complexType>
+    			</xsd:element>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    </xsd:element>
+</xsd:schema>

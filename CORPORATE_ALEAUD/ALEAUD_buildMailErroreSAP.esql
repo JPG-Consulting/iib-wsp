@@ -1,0 +1,13 @@
+
+
+CREATE COMPUTE MODULE ALEAUD_buildMailErroreSAP
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.ns23:Params.flusso = 'ALEAUD_NETA_SAP_IMPEGNI_MAGAZZINO';
+		SET OutputRoot.XMLNSC.ns23:Params.obj1 = InputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001.SapAleaud01E2state002.STAPA1_LNG;
+		SET OutputRoot.XMLNSC.ns23:Params.body1  =  SUBSTRING(InputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001.SapAleaud01E2state002.STAPA1_LNG AFTER '_');
+		SET OutputRoot.XMLNSC.ns23:Params.body2  =  InputRoot.XMLNSC.ns:SapAleaud01.SapAleaud01IDocBO.SapAleaud01DataRecord.SapAleaud01E2adhdr001.SapAleaud01E2state002.STAPA2_LNG;
+		RETURN TRUE;
+	END;
+
+END MODULE;

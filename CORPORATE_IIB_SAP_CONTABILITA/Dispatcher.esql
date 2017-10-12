@@ -1,0 +1,46 @@
+DECLARE ns NAMESPACE 'http://www.gruppoiren.it/schemas';
+
+
+CREATE COMPUTE MODULE Dispatcher
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE lancio REFERENCE TO InputRoot.XMLNSC.ns:lanci.ns:lancio[1];
+		IF CARDINALITY(InputRoot.XMLNSC.ns:lanci.ns:lancio[])<=0 /*OR lancio.ns:testata[1].id_lancio IS NULL*/ THEN
+			IF InputLocalEnvironment.HTTP.Input.QueryString.idLancio IS NOT NULL THEN
+				SET OutputLocalEnvironment = InputLocalEnvironment;
+				CREATE FIELD OutputRoot.XMLNSC.Info.testo;
+				SET OutputRoot.XMLNSC.Info.testo = 'Nessun lancio trovato corrispondente all''ID selezionato';
+				PROPAGATE TO TERMINAL 'out1';
+			END IF;
+			RETURN FALSE;
+		END IF;
+
+		WHILE LASTMOVE(lancio) = TRUE DO
+			IF lancio.ns:testata.id_lancio IS NOT NULL THEN
+			
+				SET OutputLocalEnvironment = InputLocalEnvironment;
+				SET OutputRoot.XMLNSC.ns:lancio = lancio;
+				IF UPPER(lancio.tipo_flusso) = 'E' OR UPPER(lancio.tipo_flusso) = 'I' THEN
+					SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'EmessoOIncassato';
+					PROPAGATE;
+				ELSE IF UPPER(lancio.tipo_flusso) = 'X' THEN
+						SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'PassivoIntercompany';
+						PROPAGATE;
+					ELSE IF UPPER(lancio.tipo_flusso) = 'F' THEN
+							SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'FattureAttive';
+							PROPAGATE;
+						ELSE
+							SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'FlussoSconosciuto';
+						END IF;
+					END IF;
+				END IF;
+			END IF;
+			
+		MOVE lancio NEXTSIBLING REPEAT TYPE NAME;
+		
+		END WHILE;
+			
+		RETURN FALSE;
+	END;
+
+END MODULE;

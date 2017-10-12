@@ -1,0 +1,26 @@
+DECLARE ns59 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiinternalordergetlist';
+
+
+CREATE COMPUTE MODULE OI_reqToGetList
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET Environment.Query.result[] = SELECT T.ORDER_TYPE_SAP
+											FROM Database.IIB_CORPORATE_DEC_ORDERTYPE AS T
+											WHERE T.SOCIETA_SAP = InputRoot.XMLNSC.ns:Input.societa;
+		SET Environment.Variables.societa = InputRoot.XMLNSC.ns:Input.societa;
+		SET Environment.Variables.dataInizioValidita = InputRoot.XMLNSC.ns:Input.dataInizioValidita;
+		FOR ref AS Environment.Query.result[] DO
+			CREATE FIELD OutputRoot.DataObject.ns59:SapBapiInternalorderGetlist;
+			SET OutputRoot.DataObject.ns59:SapBapiInternalorderGetlist.CONTROLLING_AREA = '1000';
+			SET OutputRoot.DataObject.ns59:SapBapiInternalorderGetlist.ORDER_TYPE = ref.ORDER_TYPE_SAP;
+			PROPAGATE;
+		END FOR;
+		SET OutputLocalEnvironment.Variables.Final = 'YES';
+		CREATE FIELD OutputRoot.DataObject.ns59:SapBapiInternalorderGetlist;
+		SET OutputRoot.DataObject.ns59:SapBapiInternalorderGetlist.CONTROLLING_AREA = '1000';
+		SET OutputRoot.DataObject.ns59:SapBapiInternalorderGetlist.ORDER_TYPE = Environment.Query.result[1].ORDER_TYPE_SAP;
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

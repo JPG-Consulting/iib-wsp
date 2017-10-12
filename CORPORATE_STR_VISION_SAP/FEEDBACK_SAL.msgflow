@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmMQInput.msgnode="ComIbmMQInput.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="FEEDBACK_SAL.msgflow" nsPrefix="FEEDBACK_SAL.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="FEEDBACK_SAL" bundleName="FEEDBACK_SAL" pluginId="CORPORATE_STR_VISION_SAP"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_STR_VISION_SAP/icons/full/obj16/FEEDBACK_SAL.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_STR_VISION_SAP/icons/full/obj30/FEEDBACK_SAL.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmMQInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="20,69" queueName="ZESSAL_OUT" messageDomainProperty="DataObject" messageTypeProperty="{http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessalout}:SapZessalOut" messageFormatProperty="SAP ALE IDoc">
+        <translation xmi:type="utility:ConstantString" string="MQ Input"/>
+        <nsMappingTable nsPrefix="sap" namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessalout"/>
+        <monitorEvents eventSourceDescription="Catch terminal" eventSourceName="MQ Input.terminal.catch" eventIdentity="Errore scrittura esito SAL">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/sap:SapZessalOut/SapZessalOutIDocBO[1]/SapIDocControlRecord/DOCNUM" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessalout"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessalout"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Errore scrittura esito SAL"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessalout"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="91,68" dataSource="INT_ENGINE" computeExpression="esql://routine/#FEEDBACK_SAL_UpdateEsito.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="UpdateElabKO"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="85,135" destination="none">
+        <translation xmi:type="utility:ConstantString" string="Trace"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

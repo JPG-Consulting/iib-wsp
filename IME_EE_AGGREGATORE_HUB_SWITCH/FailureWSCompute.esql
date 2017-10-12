@@ -1,0 +1,26 @@
+declare errText CHARACTER;
+
+CREATE COMPUTE MODULE FailureWSCompute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	    /*declare ptrException reference to InputExceptionList.*[1];
+	    	 WHILE lastmove(ptrException) DO
+			-- store the current values for the error number and text
+			--IF ptrException.Number is not null THEN        	
+        	 set errText = ptrException;        	
+  			--END IF;
+  			-- now move to the last child which should be the next exceptionlist
+			move ptrException lastchild;
+		END WHILE; 
+*/
+		UPDATE Database.AAGGREGA.MAC070_SWITCH_SII AS SP
+		 SET  MAC070_FLG_OUT  = 'E'
+		 	--, MAC070_FLG_IN	= 'X'
+		 	--, MAC070_DATA_IN = CURRENT_TIMESTAMP		 	
+		 	--, MAC070_NOTE    = errText		
+		WHERE SP.MAC070_PKEY_SEQ = 1;-- LocalEnvironment.Database.Input.Event.Usr.MAC070_PKEY_SEQ;			
+		RETURN FALSE;
+	END;
+
+
+END MODULE;

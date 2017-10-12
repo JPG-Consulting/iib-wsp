@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd" var="var1"/>
+    <input path="mbsharedlib://InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd" var="var"/>
+    <output path="mbsharedlib://InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd"/>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="crm_i_crt_inboundResp">
+        <input path="$var1/mb:msg(SOAP_Domain_Msg,assembly,SOAP,Properties)" var="MessageAssembly">
+            <cast path="$MessageAssembly/SOAP_Domain_Msg/Body/any" qualifier="{http://WS_HUB_CRM_Inbound}WSHubCrmInbound" ref="var"/>
+        </input>
+        <output namespace="http://WS_HUB_CRM_Inbound" path="mb:msg(WSHubCrmInboundResponse,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly1/Properties"/>
+            <override>
+                <assign value="{InboundLib}">
+                    <output path="$MessageAssembly1/Properties/MessageSet"/>
+                </assign>
+            </override>
+        </move>
+        <move>
+            <input path="$MessageAssembly/SOAP_Domain_Msg/Body/WSHubCrmInbound/inboundRequest/tracking"/>
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/tracking"/>
+        </move>
+        <assign value="1">
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/esito/esito"/>
+        </assign>
+        <assign value="000">
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/esito/codice"/>
+        </assign>
+        <assign value="Flusso CRM-I-CRT non gestito">
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/esito/motivazione"/>
+        </assign>
+    </mappingDeclaration>
+</mappingRoot>

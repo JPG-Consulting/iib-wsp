@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://HUB_CRM_EE/crm_dati" xmlns:bons1="http://HUB_CRM_EE/crm_dati" xmlns:mrm="http://WS_HUB_CRM_Inbound" xmlns:pref="http://HUB_CRM_EE/crm_dati" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://WS_HUB_CRM_Inbound" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema6.xsd"/>
+    <xsd:include schemaLocation="WS_HUB_CRM_Inbound_InlineSchema4.xsd"/>
+    <xsd:complexType name="InboundResponse">
+        <xsd:sequence>
+          <xsd:element name="tracking" type="bons1:Tracking"/>
+          <xsd:element name="esito" type="bons1:Esito"/>
+        </xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>

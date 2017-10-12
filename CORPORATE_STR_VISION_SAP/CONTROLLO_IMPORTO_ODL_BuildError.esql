@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE CONTROLLO_IMPORTO_ODL_BuildError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.XMLNSC.Return.Esito = 'KO';
+		SET OutputRoot.XMLNSC.Return.Error = InputExceptionList.RecoverableException;
+		RETURN TRUE;
+	END;
+
+END MODULE;

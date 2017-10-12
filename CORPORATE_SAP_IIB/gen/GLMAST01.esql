@@ -1,0 +1,130 @@
+BROKER SCHEMA gen
+DECLARE ns13 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapglmast01';
+
+
+CREATE COMPUTE MODULE GLMAST01
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Variables.idocNum = InputRoot.DataObject.ns13:SapGlmast01.SapGlmast01IDocBO.SapIDocControlRecord.DOCNUM;
+		DECLARE idocData REFERENCE TO InputRoot.DataObject.ns13:SapGlmast01.SapGlmast01IDocBO.SapGlmast01DataRecord.SapGlmast01E2ska1m001;
+		DECLARE count INTEGER;
+		SET count = 0;
+	
+	-------------------------------CONTEGGIO RIGHE---------------------------------------------------------
+		SET count = SELECT COUNT(*)
+					FROM Database.S1_DEC_PDC_ANA AS T
+					WHERE T.SAKNR = idocData.SAKNR;
+	---------------------------------------------------------------------------------------------------
+	
+		IF count = 0 THEN ------------IL RECORD NON ESISTE SU ANA
+			--------------------------INSERT SU TUTTE LE TABELLE------------------------------------------------------
+			INSERT INTO Database.S1_DEC_PDC_ANA 
+			(KTOPL, SAKNR, GVTYP, KTOKS, XBILK, XSPEA, XSPEB, XSPEP, DATA_INS) 
+			VALUES (idocData.KTOPL, idocData.SAKNR, idocData.GVTYP, idocData.KTOKS, idocData.XBILK, idocData.XSPEA, idocData.XSPEB, idocData.XSPEP, CURRENT_TIMESTAMP);
+		
+			INSERT INTO Database.S1_DEC_PDC_TESTO (
+					KEY_PDC_ANA, SPRAS, 
+					TXT20, TXT50, DATA_INS) 
+			VALUES (idocData.SAKNR, idocData.SapGlmast01E2skatm[1].SPRAS, idocData.SapGlmast01E2skatm[1].TXT20,
+				idocData.SapGlmast01E2skatm[1].TXT50 , CURRENT_TIMESTAMP);
+			
+			FOR seg AS idocData.SapGlmast01E2skb1m002[] DO
+			INSERT INTO Database.S1_DEC_PDC_SOCIETA (
+   					KEY_PDC_ANA, BUKRS, 
+   					BEGRU, BUSAB, FDLEV, 
+   					FSTAG, MITKZ, MWSKZ, 
+   					WAERS, XGKON, XINTB, 
+   					XKRES, XOPVW, XSPEB, 
+   					DZUAWA, ALTKT, FIPOS, 
+   					XMWNO, XSALH, DATA_INS) 
+			VALUES (idocData.SAKNR, seg.BUKRS, seg.BEGRU,
+				seg.BUSAB, seg.FDLEV, seg.FSTAG,
+				seg.MITKZ, seg.MWSKZ,
+				seg.WAERS, seg.XGKON,
+				seg.XINTB, seg.XKRES,
+				seg.XOPVW, seg.XSPEB,
+				seg.ZUAWA, seg.ALTKT,
+				seg.FIPOS, seg.XMWNO,
+				seg.XSALH, CURRENT_TIMESTAMP);
+			END FOR;
+			------------------------------------------------------------------------------------------------------	
+				
+		ELSE 
+			-----------------IL RECORD ESISTE SU ANA---------------------------------------------------------------
+			
+			------------------------AGGIORNO ANA---------------------------------------------------------------
+			UPDATE Database.S1_DEC_PDC_ANA AS T
+			SET KTOPL = idocData.KTOPL, SAKNR = idocData.SAKNR, GVTYP = idocData.GVTYP, 
+				KTOKS = idocData.KTOKS, XBILK = idocData.XBILK, XSPEA = idocData.XSPEA, 
+				XSPEB = idocData.XSPEB, XSPEP = idocData.XSPEP, DATA_INS = CURRENT_TIMESTAMP
+			WHERE T.SAKNR = idocData.SAKNR;
+			
+			---------------------------CONTO I RECORD SU PDC_TESTO---------------------------------------------
+			SET count = SELECT COUNT(*)
+						FROM Database.S1_DEC_PDC_TESTO AS T
+						WHERE T.KEY_PDC_ANA = idocData.SAKNR;
+			
+			IF count = 0 THEN --------IL RECORD NON ESISTE SU PDC_TESTO
+				-----------------------------------INSERISCO IN TABELLA------------------------------
+				INSERT INTO Database.S1_DEC_PDC_TESTO (
+					KEY_PDC_ANA, SPRAS, 
+					TXT20, TXT50, DATA_INS) 
+				VALUES (idocData.SAKNR, idocData.SapGlmast01E2skatm[1].SPRAS, idocData.SapGlmast01E2skatm[1].TXT20,
+				idocData.SapGlmast01E2skatm[1].TXT50 , CURRENT_TIMESTAMP);
+			ELSE
+				-----------------------------------AGGIORNO------------------------------------------
+				UPDATE Database.S1_DEC_PDC_TESTO AS T
+				SET KEY_PDC_ANA = idocData.SAKNR, SPRAS = idocData.SapGlmast01E2skatm[1].SPRAS, 
+					TXT20 = idocData.SapGlmast01E2skatm[1].TXT20, TXT50 = idocData.SapGlmast01E2skatm[1].TXT50, DATA_INS = CURRENT_TIMESTAMP
+				WHERE T.KEY_PDC_ANA	= idocData.SAKNR;
+			END IF;
+			---------------------------------------------------------------------------------------------
+			FOR seg AS idocData.SapGlmast01E2skb1m002[] DO
+			-------------------------------CONTO I RECORD SU PDC_SOCIETA-------------------------------------------					
+			SET count = SELECT COUNT(*)
+						FROM Database.S1_DEC_PDC_SOCIETA AS T
+						WHERE T.KEY_PDC_ANA = idocData.SAKNR
+						AND   T.BUKRS = seg.BUKRS;
+			
+			IF count = 0 THEN --------IL RECORD NON ESISTE SU PDC_SOCIETA
+				-----------------------------------INSERISCO IN TABELLA------------------------------
+				INSERT INTO Database.S1_DEC_PDC_SOCIETA (
+   					KEY_PDC_ANA, BUKRS, 
+   					BEGRU, BUSAB, FDLEV, 
+   					FSTAG, MITKZ, MWSKZ, 
+   					WAERS, XGKON, XINTB, 
+   					XKRES, XOPVW, XSPEB, 
+   					DZUAWA, ALTKT, FIPOS, 
+   					XMWNO, XSALH, DATA_INS) 
+				VALUES (idocData.SAKNR, seg.BUKRS, seg.BEGRU,
+					seg.BUSAB, seg.FDLEV, seg.FSTAG,
+					seg.MITKZ, seg.MWSKZ,
+					seg.WAERS, seg.XGKON,
+					seg.XINTB, seg.XKRES,
+					seg.XOPVW, seg.XSPEB,
+					seg.ZUAWA, seg.ALTKT,
+					seg.FIPOS, seg.XMWNO,
+					seg.XSALH, CURRENT_TIMESTAMP);
+				
+			ELSE
+				
+				--------------------------------AGGIORNO---------------------------------------------
+				UPDATE Database.S1_DEC_PDC_SOCIETA AS T
+				SET KEY_PDC_ANA = idocData.SAKNR, BUKRS = seg.BUKRS, 
+   					BEGRU = seg.BEGRU, BUSAB = seg.BUSAB, FDLEV = seg.FDLEV, 
+   					FSTAG = seg.FSTAG, MITKZ = seg.MITKZ, MWSKZ = seg.MWSKZ, 
+   					WAERS = seg.WAERS, XGKON = seg.XGKON, XINTB = seg.XINTB, 
+   					XKRES = seg.XKRES, XOPVW = seg.XOPVW, XSPEB = seg.XSPEB, 
+   					DZUAWA = seg.ZUAWA, ALTKT = seg.ALTKT, FIPOS = seg.FIPOS, 
+   					XMWNO = seg.XMWNO, XSALH = seg.XSALH, DATA_INS = CURRENT_TIMESTAMP
+   				WHERE T.KEY_PDC_ANA	= idocData.SAKNR
+   				AND   T.BUKRS = seg.BUKRS;
+			END IF;
+			END FOR;
+		-------------------------------------------------------------------------------------------------------	
+		END IF;
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

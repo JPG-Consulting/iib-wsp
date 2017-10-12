@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmFileOutput.msgnode="ComIbmFileOutput.msgnode" xmlns:ComIbmFileRead.msgnode="ComIbmFileRead.msgnode" xmlns:ComIbmHTTPHeader.msgnode="ComIbmHTTPHeader.msgnode" xmlns:ComIbmJavaCompute.msgnode="ComIbmJavaCompute.msgnode" xmlns:ComIbmMSLMapping.msgnode="ComIbmMSLMapping.msgnode" xmlns:ComIbmSOAPRequest.msgnode="ComIbmSOAPRequest.msgnode" xmlns:ComIbmTimeoutNotification.msgnode="ComIbmTimeoutNotification.msgnode"
+    xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ComIbmValidate.msgnode="ComIbmValidate.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="Neta_HUB_APR.msgflow" nsPrefix="Neta_HUB_APR.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="Neta_HUB_APR" bundleName="Neta_HUB_APR" pluginId="IME_EE_HUB_NETA"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_EE_HUB_NETA/icons/full/obj16/Neta_HUB_APR.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_EE_HUB_NETA/icons/full/obj30/Neta_HUB_APR.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmTimeoutNotification.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="-6,69" uniqueIdentifier="APR" transactionMode="no" timeoutInterval="2">
+        <translation xmi:type="utility:ConstantString" string="Timeout Notification"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="Timeout Notification.terminal.failure" eventIdentity="Directory polling error">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/TimeoutRequest/Identifier" isXPath="true" complexData="true"/>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Directory polling error"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmJavaCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="83,121" javaClass="Neta_HUB_APR_fileLoop">
+        <translation xmi:type="utility:ConstantString" string="fileLoop"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="fileLoop.terminal.failure" eventIdentity="Directory polling error">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/TimeoutRequest/Identifier" isXPath="true" complexData="true"/>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Directory polling error"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmFileRead.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="156,30" inputDirectory="/ibmdata/WINSHARE/NETA/SII/OUTBOUND/xml/APR_0050" filenamePattern="" messageDomainProperty="XMLNSC" messageSetProperty="{SIILib}" validateTiming="complete" parserXmlnscUseForXmlnsDomain="true">
+        <translation xmi:type="utility:ConstantString" string="File Read"/>
+        <nsMappingTable nsPrefix="dat" namespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+        <nsMappingTable nsPrefix="sg" namespace="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="File Read.terminal.out" eventIdentity="$LocalEnvironment/Destination/File/Name">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/Destination/File/Name" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="dat" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+              <nsPrefixMap prefix="sg" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName dataLocation="$LocalEnvironment/Destination/File/Name" isXPath="true">
+              <nsPrefixMap prefix="dat" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+              <nsPrefixMap prefix="sg" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+            </eventName>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="dat" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+              <nsPrefixMap prefix="sg" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="File Read.terminal.failure" eventIdentity="Parsing fallito">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/File/Read/Name" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="dat" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+              <nsPrefixMap prefix="sg" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="dat" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+              <nsPrefixMap prefix="sg" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Parsing fallito"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="dat" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_APR/v1"/>
+              <nsPrefixMap prefix="sg" nsURI="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmValidate.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="205,95" domain="XMLNSC" set="{SIILib}" checkSet="true" validateMaster="contentAndValue">
+        <translation xmi:type="utility:ConstantString" string="Validate"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="Validate.terminal.failure" eventIdentity="File APR.0050 non costruito correttamente - rinominato">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/File/Read/Name" isXPath="true" complexData="true"/>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="File APR.0050 non costruito correttamente - rinominato"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmJavaCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="245,144" javaClass="sleepAndMove">
+        <translation xmi:type="utility:ConstantString" string="sleepAndMove"/>
+      </nodes>
+      <nodes xmi:type="ComIbmJavaCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="271,76" javaClass="renameFile_fail">
+        <translation xmi:type="utility:ConstantString" string="renameFail"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="renameFail.terminal.failure" eventIdentity="Rename fallito">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/File/Read/Name" isXPath="true" complexData="true"/>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Rename fallito"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmMSLMapping.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="282,192" mappingExpression="msl://{default}#apr0050_sendRequestEE">
+        <translation xmi:type="utility:ConstantString" string="apr0050_sendRequestEE"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="458,146" wsdlFileName="HUB_CRM_EE_WSHubCrmEE.wsdl" selectedPortType="IHubCrmEE" selectedBinding="WSHubCrmEE_IHubCrmEEHttpBinding" selectedOperation="SendRequestEE" selectedPort="WSHubCrmEE_IHubCrmEEHttpPort" targetNamespace="http://HUB_CRM_EE/IHubCrmEE" useHTTPTransport="true" webServiceURL="http://ibmtstbpmlb.master.local/HUB_CRM_EEWeb/sca/WSHubCrmEE" sslProtocol="TLS" messageSetProperty="{OutboundLib}">
+        <translation xmi:type="utility:ConstantString" string="SOAP Request"/>
+        <nsMappingTable nsPrefix="tns" namespace="http://HUB_CRM_EE/IHubCrmEE"/>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Out terminal" eventSourceName="SOAP Request.terminal.out" eventIdentity="Servizio outbound invocato correttamente">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/File/Read/Name" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Servizio outbound invocato correttamente"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="SOAP Request.terminal.failure" eventIdentity="Chiamata al servizio outbound fallita">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/File/Read/Name" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Chiamata al servizio outbound fallita"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Fault terminal" eventSourceName="SOAP Request.terminal.fault" eventIdentity="Fault durante la chiamata al servizio outbound">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/File/Read/Name" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Fault durante la chiamata al servizio outbound"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="tns" nsURI="http://HUB_CRM_EE/IHubCrmEE"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="473,197" dataSource="HUB_EAI" computeExpression="esql://routine/#sendRequestEEResp_APR0100.Main" computeMode="destinationAndMessage">
+        <translation xmi:type="utility:ConstantString" string="sendRequestEEResp_APR0100"/>
+      </nodes>
+      <nodes xmi:type="ComIbmFileOutput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="622,170" outputFilename="APR_0100_KO.xml" writeMode="writeInPlace">
+        <translation xmi:type="utility:ConstantString" string="File Output"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="File Output.terminal.failure" eventIdentity="Errore scrittura file di output">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true"/>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Errore scrittura file di output"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="File Output.terminal.out" eventIdentity="$LocalEnvironment/Destination/File/Name">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$LocalEnvironment/Destination/File/Name" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="none" bitstreamContent="none"/>
+            <eventName dataLocation="$LocalEnvironment/Destination/File/Name" isXPath="true"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_13" location="253,17" destination="none">
+        <translation xmi:type="utility:ConstantString" string="ReadError"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPHeader.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_16" location="411,79" httpRequestHeader="Add">
+        <translation xmi:type="utility:ConstantString" string="HTTP Header"/>
+        <nameValue4RequestHeader name="Authorization" value="Basic V1NUSE9SOldTVEhPUg=="/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_15" location="531,37" destination="none">
+        <translation xmi:type="utility:ConstantString" string="OutboundError"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="345,129" dataSource="HUB_EAI" computeExpression="esql://routine/#recuperoServizio.Main" computeMode="destinationAndMessage">
+        <translation xmi:type="utility:ConstantString" string="recuperoServizio"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="86,32" destination="none">
+        <translation xmi:type="utility:ConstantString" string="PollingError"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_17" location="346,64" destination="none">
+        <translation xmi:type="utility:ConstantString" string="Fail"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_18" location="679,58" destination="none">
+        <translation xmi:type="utility:ConstantString" string="OutputError"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.match" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_15" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_22" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_16" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_16" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_17" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_15" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_18" targetNode="FCMComposite_1_15" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.fault" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_18" sourceNode="FCMComposite_1_12" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

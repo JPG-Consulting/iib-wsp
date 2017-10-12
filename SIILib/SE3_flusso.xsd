@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:Q1="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_SE3/v1">
+    <xsd:import schemaLocation="SE3.xsd" namespace="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_SE3/v1"></xsd:import>
+    <xsd:element name="FlussoSE3.0200Type" type="Q1:FlussoSE3.0200Type"></xsd:element>
+</xsd:schema>

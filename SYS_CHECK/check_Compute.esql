@@ -1,0 +1,54 @@
+CREATE COMPUTE MODULE check_DB
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		 
+
+	 	DECLARE result CHARACTER;			
+		DECLARE check CHARACTER;
+		DECLARE flusso  CHARACTER;
+		
+		SET check ='KO';
+		SET flusso = 'SYS_CHECK';  
+				
+		SET Environment.Variables.dbCheck = 'KO: ' || DataSource || ' non raggiungibile';  -- Gestione casi ko esterni alla select su tabella dual.
+  		SET result ='Errore ORACLE';			
+  		  		
+  		SET result = THE(SELECT ITEM R.DUMMY FROM Database.DUAL AS R);
+  		
+--		TEST sul risultato della select a DB
+	  
+		IF  ( UCASE(result) = 'X')  THEN
+				SET check= 'OK';
+				SET Environment.Variables.dbCheck = check;
+			ELSE 
+				SET check= 'KO';
+				SET Environment.Variables.dbCheck =  check || '  Errore connessione a ' || DataSource || ': ' || result ;
+			PROPAGATE TO TERMINAL 'failure'; 
+		END IF; 
+		 	 		
+		
+		SET OutputRoot.XMLNSC.Status =  Environment.Variables.dbCheck  ;  --'Esito DB : ' || check  ;
+
+
+
+		SET OutputLocalEnvironment.Destination.MQ.DestinationData[1].queueM = QueueManagerName;
+		SET OutputLocalEnvironment.Destination.MQ.DestinationData[1].queueName = 'QCHECK';  
+ 
+						
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

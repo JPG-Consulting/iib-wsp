@@ -1,0 +1,29 @@
+
+
+CREATE COMPUTE MODULE verifica
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+	declare ret_val boolean false;
+		
+		 
+      	if (InputRoot.XMLNSC.Stats.Totale is null) then
+		
+		     SET Environment.Variables.n_files = Environment.Variables.n_files+1;
+      	
+      	 else 
+      		
+      		 SET OutputRoot.XMLNSC.result.elaborati = Environment.Variables.n_files;
+      		 SET OutputRoot.XMLNSC.result.processati = InputRoot.XMLNSC.Stats.Totale;
+      		 
+      		 SET OutputRoot.XMLNSC.result.testo = 'Correttamente elaborati '|| cast(Environment.Variables.n_files as character) || ' di '|| cast (InputRoot.XMLNSC.Stats.Totale as character) ||' files.';
+      		 SET ret_val = true;
+      		
+      	 end if;
+      	
+		 RETURN ret_val;
+		
+	END;
+
+	 
+END MODULE;

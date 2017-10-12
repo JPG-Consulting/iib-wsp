@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="gen" version="8.0.5.0" xmlns:map="gen">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">   
+    <xsd:element name="idocNum" type="xsd:string"/>   
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="/SapMatmas05Zmatmas0510.xsd" var="var1"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var"/>
+    <output path="/SapMatmas05FLAT.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in29" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2cucfg003"/>
+        <namespace kind="supplement" prefix="in28" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2maktm001"/>
+        <namespace kind="supplement" prefix="in27" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mpgdm001"/>
+        <namespace kind="supplement" prefix="in26" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mbewm002"/>
+        <namespace kind="supplement" prefix="in25" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2maram008"/>
+        <namespace kind="supplement" prefix="in24" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mlgtm000"/>
+        <namespace kind="supplement" prefix="in23" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mveum"/>
+        <namespace kind="supplement" prefix="in22" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2cucom001"/>
+        <namespace kind="supplement" prefix="in21" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mprwm"/>
+        <namespace kind="supplement" prefix="in20" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mpopm"/>
+        <namespace kind="supplement" prefix="in2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapidoccontrolrecord"/>
+        <namespace kind="supplement" prefix="in4" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mtxhm001"/>
+        <namespace kind="supplement" prefix="in3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mfhmm"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510ze1mbewm000"/>
+        <namespace kind="supplement" prefix="in19" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mvkem002"/>
+        <namespace kind="supplement" prefix="in18" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mardm001"/>
+        <namespace kind="supplement" prefix="in15" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mlgnm001"/>
+        <namespace kind="supplement" prefix="in14" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510"/>
+        <namespace kind="supplement" prefix="in17" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2meanm"/>
+        <namespace kind="supplement" prefix="in16" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2marmm004"/>
+        <namespace kind="supplement" prefix="in11" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2cuval002"/>
+        <namespace kind="supplement" prefix="in9" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2upslink000"/>
+        <namespace kind="supplement" prefix="in10" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mara1005"/>
+        <namespace kind="supplement" prefix="in31" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510idocbo"/>
+        <namespace kind="supplement" prefix="in13" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mlanm"/>
+        <namespace kind="supplement" prefix="in30" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2cuins002"/>
+        <namespace kind="supplement" prefix="in12" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2marcm006"/>
+        <namespace kind="supplement" prefix="in5" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mkalm002"/>
+        <namespace kind="supplement" prefix="in32" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mvegm"/>
+        <namespace kind="supplement" prefix="in6" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510datarecord"/>
+        <namespace kind="supplement" prefix="in7" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2marc1000"/>
+        <namespace kind="supplement" prefix="in8" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510e2mtxlm"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="ZMATMAS05_10_FlatStruct">
+        <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510" path="$var1/mb:msg(SapMatmas05Zmatmas0510,assembly,XMLNSC,LocalEnvironment,Properties)" var="MessageAssembly"/>
+        <output namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapmatmas05zmatmas0510" path="mb:msg(FlatArray,assembly,XMLNSC,LocalEnvironment,Properties)" var="MessageAssembly2">
+            <cast castType="userDefined" path="$MessageAssembly2/LocalEnvironment/Variables/any" qualifier="idocNum" ref="var"/>
+        </output>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly2/Properties"/>
+        </move>
+        <foreach>
+            <input path="$MessageAssembly/SapMatmas05Zmatmas0510/SapMatmas05Zmatmas0510IDocBO[1]" var="SapMatmas05Zmatmas0510IDocBO"/>
+            <output path="$MessageAssembly2/FlatArray/FlatElem"/>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MATNR"/>
+                <output path="MATNR"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/LVORM"/>
+                <output path="LVORM"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MTART"/>
+                <output path="MTART"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MBRSH"/>
+                <output path="MBRSH"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MATKL"/>
+                <output path="MATKL"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MEINS"/>
+                <output path="MEINS"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/ZEINR"/>
+                <output path="ZEINR"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/BLATT"/>
+                <output path="BLATT"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/GROES"/>
+                <output path="GROES"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/BRGEW"/>
+                <output path="BRGEW"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/NTGEW"/>
+                <output path="NTGEW"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/GEWEI"/>
+                <output path="GEWEI"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SPART"/>
+                <output path="SPART"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/PRDHA"/>
+                <output path="PRDHA"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MSTAE"/>
+                <output path="MSTAE"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MTPOS_MARA"/>
+                <output path="MTPOS_MARA"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2maktm001[1]/MAKTX"/>
+                <output path="MAKTX"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/WERKS"/>
+                <output path="WERKS"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/SapMatmas05Zmatmas0510E2mardm001[1]/LGORT"/>
+                <output path="LGORT"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/VKORG"/>
+                <output path="VKORG"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/VTWEG"/>
+                <output path="VTWEG"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/SKTOF"/>
+                <output path="SKTOF"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/DWERK"/>
+                <output path="DWERK"/>
+            </move>
+            <assign value="0">
+                <output path="TAXKM"/>
+            </assign>
+            <assign value="0">
+                <output path="MTPOS_MVKE"/>
+            </assign>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/EKWSL"/>
+                <output path="EKWSL"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/TRAGR"/>
+                <output path="TRAGR"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/XCHPF"/>
+                <output path="XCHPF"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/IPRKZ"/>
+                <output path="IPRKZ"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/MFRGR"/>
+                <output path="MFRGR"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/EKGRP"/>
+                <output path="EKGRP"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/DISMM"/>
+                <output path="DISMM"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/DISPO"/>
+                <output path="DISPO"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/PLIFZ"/>
+                <output path="PLIFZ"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/WEBAZ"/>
+                <output path="WEBAZ"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/PERKZ"/>
+                <output path="PERKZ"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/DISLS"/>
+                <output path="DISLS"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/BESKZ"/>
+                <output path="BESKZ"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/EISBE"/>
+                <output path="EISBE"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/LAGPR"/>
+                <output path="LAGPR"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/FHORI"/>
+                <output path="FHORI"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/LADGR"/>
+                <output path="LADGR"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/MTVFP"/>
+                <output path="MTVFP"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/PRCTR"/>
+                <output path="PRCTR"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/SERNP"/>
+                <output path="SERNP"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/MMSTA"/>
+                <output path="MMSTA"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/MMSTD"/>
+                <output path="MMSTD"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/SapMatmas05Zmatmas0510E2mardm001[1]/LMINB"/>
+                <output path="LMINB"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2marcm006[1]/SapMatmas05Zmatmas0510E2mardm001[1]/LGPBE"/>
+                <output path="LGPBE"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mbewm002[1]/VPRSV"/>
+                <output path="VPRSV"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mbewm002[1]/VERPR"/>
+                <output path="VERPR"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mbewm002[1]/STPRS"/>
+                <output path="STPRS"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mbewm002[1]/PEINH"/>
+                <output path="PEINH"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mbewm002[1]/BKLAS"/>
+                <output path="BKLAS"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mbewm002[1]/ZKDAT"/>
+                <output path="ZKDAT"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/KONDM"/>
+                <output path="KONDM"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/KTGRM"/>
+                <output path="KTGRM"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/MVGR2"/>
+                <output path="MVGR2"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/MVGR3"/>
+                <output path="MVGR3"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2mvkem002[1]/MVGR4"/>
+                <output path="MVGR4"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2cucfg003[1]/SapMatmas05Zmatmas0510E2cuval002[1]/VALUE"/>
+                <output path="VALUE"/>
+            </move>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/SapMatmas05Zmatmas0510E2cucfg003[1]/SapMatmas05Zmatmas0510E2cuval002[1]/VALUE_TO"/>
+                <output path="VALUE_TO"/>
+            </move>
+            <assign value="0">
+                <output path="LBKUM"/>
+            </assign>
+            <assign value="0">
+                <output path="TAXK1"/>
+            </assign>
+            <assign value="0">
+                <output path="BUKRS"/>
+            </assign>
+            <assign value="0">
+                <output path="BISMT"/>
+            </assign>
+            <move>
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MTART"/>
+                <output path="ORIGINE"/>
+            </move>
+            <move automap="true">
+                <input path="$SapMatmas05Zmatmas0510IDocBO/SapMatmas05Zmatmas0510DataRecord/SapMatmas05Zmatmas0510E2maram008[1]/MSTDE"/>
+                <output path="MSTDE"/>
+            </move>
+        </foreach>
+        <move>
+            <input path="$MessageAssembly/SapMatmas05Zmatmas0510/SapMatmas05Zmatmas0510IDocBO[1]/SapIDocControlRecord/DOCNUM"/>
+            <output path="$MessageAssembly2/LocalEnvironment/Variables/idocNum"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

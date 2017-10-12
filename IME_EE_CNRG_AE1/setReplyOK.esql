@@ -1,0 +1,12 @@
+
+
+CREATE COMPUTE MODULE setReplyOK
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE response CHARACTER;
+		SET response ='Flusso avviato';
+		SET OutputRoot.XMLNSC.Status = response;  
+    	RETURN TRUE;
+    	
+	END;
+END MODULE;

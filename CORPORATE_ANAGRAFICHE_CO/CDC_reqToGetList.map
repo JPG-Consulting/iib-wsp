@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <inlinedXMLSchema><![CDATA[<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">    
+    <xsd:element name="societa" type="xsd:string"/>    
+    <xsd:element name="dataInizioValidita" type="xsd:string"/>    
+</xsd:schema>]]></inlinedXMLSchema>
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var1"/>
+    <input path="/AnagraficheCO_InlineSchema.xsd" var="var2"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var"/>
+    <input inlinedXMLSchema="true" path="../schema_0.xsd" var="var3"/>
+    <input path="db:database(/DECODIFICHE.dbm,INTENG,db:schema-tables(INT_ENGINE,S1_DEC_SOCIETA))" var="INTENG"/>
+    <output path="jar:file://!com/ibm/etools/mft/map/xsds/assembly/Environment.xsd" var="var4"/>
+    <output path="/SapBapiCostcenterGetlist1.xsd" var="var5"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in" uri="http://www.gruppoiren.it/AnagraficheCO/"/>
+        <namespace kind="supplement" prefix="out3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapcostcenterlist1498929925"/>
+        <namespace kind="supplement" prefix="out2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapreturn1478768624"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapicostcentergetlist1"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="CDC_reqToGetList">
+        <input path="$var1/mb:env(Environment)" var="Environment">
+            <cast castType="userDefined" path="$Environment/Variables/any" qualifier="dataInizioValidita" ref="var" var="any"/>
+            <cast castType="userDefined" path="$Environment/Variables/any" qualifier="societa" ref="var" var="any1"/>
+        </input>
+        <input namespace="http://www.gruppoiren.it/AnagraficheCO/" path="$var2/mb:msg(Input,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_Input"/>
+        <input path="$INTENG/db:select(fn:false(),ResultSet(INT_ENGINE/S1_DEC_SOCIETA/CONTROLLING_AREA),db:where('INT_ENGINE.S1_DEC_SOCIETA.SOCIETA_SAP =  ?','?'=$ComIbmMessageAssembly_Input/in:Input/societa))" var="dbselect"/>
+        <output path="$var4/mb:env(Environment)" var="Environment1">
+            <cast castType="userDefined" path="$Environment1/Variables/any" qualifier="dataInizioValidita" ref="var" var="any2"/>
+            <cast castType="userDefined" path="$Environment1/Variables/any" qualifier="societa" ref="var" var="any3"/>
+        </output>
+        <output namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapicostcentergetlist1" path="$var5/mb:msg(SapBapiCostcenterGetlist1,assembly,DataObject,Properties)" var="ComIbmMessageAssembly_SapBapiCostcenterGetlist1"/>
+        <passthrough>
+            <input path="$Environment/."/>
+            <output path="$Environment1/."/>
+            <updates>
+                <move>
+                    <input path="$ComIbmMessageAssembly_Input/Input/dataInizioValidita"/>
+                    <output path="$Environment1/Variables/dataInizioValidita"/>
+                </move>
+                <move>
+                    <input path="$ComIbmMessageAssembly_Input/Input/societa"/>
+                    <output path="$Environment1/Variables/societa"/>
+                </move>
+            </updates>
+        </passthrough>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Properties"/>
+            <output path="$ComIbmMessageAssembly_SapBapiCostcenterGetlist1/Properties"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Input/societa"/>
+            <output path="$ComIbmMessageAssembly_SapBapiCostcenterGetlist1/SapBapiCostcenterGetlist1/COMPANYCODE_TO"/>
+        </move>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Input/dataInizioValidita"/>
+            <output path="$ComIbmMessageAssembly_SapBapiCostcenterGetlist1/SapBapiCostcenterGetlist1/DATE_FROM"/>
+        </move>
+        <select ref="dbselect">
+            <input path="$dbselect/ResultSet[1]"/>
+            <output path="$ComIbmMessageAssembly_SapBapiCostcenterGetlist1/SapBapiCostcenterGetlist1/CONTROLLINGAREA"/>
+            <move>
+                <input path="INT_ENGINE/S1_DEC_SOCIETA/CONTROLLING_AREA"/>
+                <output path="."/>
+            </move>
+        </select>
+        <move>
+            <input path="$ComIbmMessageAssembly_Input/Input/societa"/>
+            <output path="$ComIbmMessageAssembly_SapBapiCostcenterGetlist1/SapBapiCostcenterGetlist1/COMPANYCODE_FROM"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,20 @@
+DECLARE ns NAMESPACE 'http://HUB_CRM_GAS/crm_dati';
+
+CREATE COMPUTE MODULE redirectHub_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE FATT CHARACTER;
+		DECLARE ENDP CHARACTER;
+		SET OutputRoot = InputRoot;
+		SET Environment.codicePraticaOrigine =  InputRoot.SOAP.Body.ns:WSHubCrmInbound.inboundRequest.tracking.codicePraticaOrigine;
+		SET FATT = InputRoot.SOAP.Body.ns:WSHubCrmInbound.inboundRequest.tracking.sistemaOrigine;
+		SET ENDP = THE (SELECT ITEM T.ENDPOINT
+			      FROM Database.HUB_EAI.ENDPOINTS AS T 
+				  WHERE T.SISTEMA_DESTINAZIONE = FATT
+				    AND T.UTILITY = 'GAS'
+				    AND T.SOAP_OPERATION = 'WSHubCrmInbound');
+		SET OutputLocalEnvironment.Destination.SOAP.Request.Transport.HTTP.WebServiceURL = CAST (ENDP AS CHARACTER);
+		
+		RETURN TRUE;
+	END;
+END MODULE;

@@ -1,0 +1,31 @@
+DECLARE ns34 NAMESPACE 'http://HUB_CRM_EE/IHubCrmEE';
+declare messageText CHARACTER;
+
+CREATE COMPUTE MODULE ExceptionDB
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking = InputRoot.XMLNSC.ns1:WSHubCrmInbound.inboundRequest.tracking;
+/*		set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking.idMessaggio = InputRoot.XMLNSC.ns34:WSHubCrmInbound.tracking.idMessaggio;		
+		set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking.servizio = InputRoot.XMLNSC.ns34:WSHubCrmInbound.tracking.servizio;
+	    set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking.codiceFlusso = InputRoot.XMLNSC.ns34:WSHubCrmInbound.tracking.codiceFlusso;
+	    set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking.societaVendita = InputRoot.XMLNSC.ns34:WSHubCrmInbound.tracking.societaVendita;
+	    set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking.segmentoCliente = InputRoot.XMLNSC.ns34:WSHubCrmInbound.tracking.segmentoCliente;
+	    set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking.sistemaFatturazione = InputRoot.XMLNSC.ns34:WSHubCrmInbound.tracking.sistemaFatturazione;
+	    set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking.sistemaOrigine = InputRoot.XMLNSC.ns34:WSHubCrmInbound.tracking.sistemaOrigine;
+	    set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.tracking.codicePraticaOrigine = InputRoot.XMLNSC.ns34:WSHubCrmInbound.tracking.codicePraticaOrigine;
+	    */
+	    set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.esito.esito ='KO';   
+	    declare ptrException reference to InputExceptionList.*[1];
+	   	WHILE lastmove(ptrException) DO
+			-- store the current values for the error number and text
+			--IF ptrException.Number is not null THEN        	
+        	 SET messageText = ptrException;
+  			--END IF;
+  			-- now move to the last child which should be the next exceptionlist
+			move ptrException lastchild;
+		END WHILE; 
+	   	set OutputRoot.XMLNSC.ns34:WSHubCrmInboundResponse.inboundResponse.esito.motivazione =messageText;     	   
+		RETURN TRUE;
+	END;
+
+END MODULE;

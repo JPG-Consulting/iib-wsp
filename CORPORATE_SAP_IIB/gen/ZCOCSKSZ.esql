@@ -1,0 +1,86 @@
+BROKER SCHEMA gen
+
+
+CREATE COMPUTE MODULE ZCOCSKSZ
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE idocData REFERENCE TO InputRoot.DataObject.ns1:SapZcocsksz.SapZcocskszIDocBO.SapZcocskszDataRecord.SapZcocskszZcoscsksz000;
+			
+			 INSERT INTO Database.S1_QUAD_CDC_SAP_ALL 
+			 (CDC_OLD, CDC_NEW, CONTROLLING_AREA, 
+			 FINE_VALIDITA, INIZIO_VALIDITA, DEFINIZIONE,  NUMERO_OGGETTO, SOCIETÀ, 
+			 SETTORE_CONTABILE, AREA_GERARCHIA, PROFIT_CENTER, 
+			 AREA_FUNZIONALE, TESTO_BREVE_CDC, RESPONSABILE, 
+			 TIPO_CDC, AREA_DI_BUSINESS, IMPIANTO_CDC, 
+			 MOD_STAFF_CDC, UNBUNDLING, PRODOTTO, 
+			 AMBITO, SUB_AMBITO, CDR, 
+			 PROCESSO, CDC_DI_BUDGET, TIPO_CENTRO_DI_COSTO, 
+			 TIPO_UTILIZZO, EPM_PROFIT_CENTER_NEW, COMPILATORE, 
+			 VALIDATORE, RESPONSABILE_FUNZIONALE, ATTIVITA_CDC,  REPARTO, DIVISA, 
+			 COSTI_PRIMARI_EFF, COSTI_SECONDARI_EFF, RICAVI_EFF, 
+			 AGG_IMPEGNO_FINANZIARIO, COSTI_PRIMARI_PIAN, COSTI_SECONDARI_PIAN, 
+			 RICAVI_PIAN, GESTIRE_QTA_CONSUMO, ACQUISITO_IL, 
+			 AUTORE_CR, SISTEMA_LOGICO, IMPIEGO, 
+			 APPLICAZIONE, SCHEMACALCOSTI, CHIAVE_QUOTE_DI_CG, 
+			 TEMP_FORMULA_INDIP_DA_ATT, TEMP_FORMULA_DIP_DA_ATT, TEMP_IMP_INDIP_DA_ATT, 
+			 TEMP_IMP_DIP_DA_ATT, CODICE_PAESE, INTESTAZIONE, 
+			 NOME_1, NOME_2, NOME_3, 
+			 NOME_4, LOCALITA, FRAZIONE, 
+			 VIA, CASELLA_POSTALE, CAP, 
+			 CAP_CAS_POST, REGIONE, SEDE_FISCALE, 
+			 CHIAVE_LINGUA, NUMERO_TELEBOX, TELEFONO_1, 
+			 TELEFONO_2, NUMERO_DI_TELEFAX, NUMERO_TELETEX, 
+			 N_TELEX, LINEA_DATI, NOME_DELLA_STAMPANTE, 
+			 JOINT_VENTURE, TIPO_DI_COSTO, CLASSE_PARTECIP, 
+			 JOINT_VENTURE_OBJ, CLASSE_JIB_JIBE, SOTTOCL_A_JIB_JIBE, 
+			 COMP_ANAG_CDC, UTENTE_RESPONSABILE, DIVISIONE, 
+			 SEZIONE_IMPIANTO_CDC, EPM_CONTR_AREA_OLD,ATTIVITA_SOST) 
+			 
+			 VALUES (idocData.ZZ1CDCOLD, idocData.KOSTL, idocData.KOKRS,
+			 		idocData.DATBI, idocData.DATAB, idocData.LTEXT,
+			 		idocData.OBJNR, idocData.BUKRS, idocData.GSBER,
+			 		idocData.KHINR, idocData.PRCTR, idocData.FUNC_AREA,
+			 		idocData.KTEXT, idocData.VERAK, idocData.KOSAR,
+			 		idocData.ZZ1ADB, idocData.ZZ1IMPCDC, idocData.ZZ1MODCDC,
+			 		idocData.ZZ1UNB, idocData.ZZ1PRODCDC, idocData.ZZ1AMBITO,
+			 		idocData.ZZ1SUBAMB, idocData.ZZ1CDRCDC, idocData.ZZ1PROCESSO,
+			 		idocData.ZZ1CDCBDG, idocData.ZZ1TIPOCDC, idocData.ZZ1TIPOUTIL,
+			 		idocData.ZZ1PRCNEW, idocData.ZZ1COMPIL, idocData.ZZ1VALID,
+			 		idocData.ZZ1RESPFUNZ, idocData.ZZ1ATTCDC, idocData.ABTEI,
+			 		idocData.WAERS, idocData.BKZKP, idocData.BKZKS,
+			 		idocData.BKZER, idocData.BKZOB, idocData.PKZKP,
+			 		idocData.PKZKS, idocData.PKZER, idocData.MGEFL,
+			 		idocData.ERSDA, idocData.USNAM, idocData.LOGSYSTEM,
+			 		idocData.KVEWE, idocData.KAPPL, idocData.KALSM,
+			 		idocData.KOSZSCHL, idocData.CPI_TEMPL, idocData.CPD_TEMPL,
+			 		idocData.SCI_TEMPL, idocData.SCD_TEMPL, idocData.LAND1,
+			 		idocData.ANRED, idocData.NAME1, idocData.NAME2,
+			 		idocData.NAME3, idocData.NAME4, idocData.ORT01,
+			 		idocData.ORT02, idocData.STRAS, idocData.PFACH,
+			 		idocData.PSTLZ, idocData.PSTL2, idocData.REGIO,
+			 		idocData.TXJCD, idocData.SPRAS, idocData.TELBX,
+			 		idocData.TELF1, idocData.TELF2, idocData.TELFX,
+			 		idocData.TELTX, idocData.TELX1, idocData.DATLT,
+			 		idocData.DRNAM, idocData.VNAME, idocData.RECID,
+			 		idocData.ETYPE, idocData.JV_OTYPE, idocData.JV_JIBCL,
+			 		idocData.JV_JIBSA, idocData.KOMPL, idocData.VERAK_USER,
+			 		idocData.WERKS, idocData.ZZ1SEZIMPCDC, idocData.ZZ1CAREAOLD,
+			 		idocData.PFACH);
+			 
+		SET Environment.Variables.Ins_ZCOCSKSZ = Environment.Variables.Ins_ZCOCSKSZ + 1;
+		
+		IF Environment.Variables.Count_ZCOCSKSZ = Environment.Variables.Ins_ZCOCSKSZ THEN
+			
+			SET OutputRoot.XMLNSC.ns5:Params.flusso = 'ZCOCSKSZ';
+			SET OutputRoot.XMLNSC.ns5:Params.body1 = Environment.Variables.Count_ZCOCSKSZ;
+			SET OutputRoot.XMLNSC.ns5:Params.body2 = 0;
+			SET OutputRoot.XMLNSC.ns5:Params.body3 = idocData.BUKRS;
+			
+			SET OutputLocalEnvironment.Variables.dbString = 'Processato IDOC di tipo ZCOCSKSZ - Inseriti '||CAST(Environment.Variables.Count_ZCOCSKSZ AS CHARACTER)||' record - Aggiornati '|| CAST(0 AS CHARACTER) ||' record per la società ' || idocData.BUKRS ;
+			PROPAGATE;
+		END IF;
+		
+		RETURN FALSE;
+	END;
+
+END MODULE;

@@ -1,0 +1,37 @@
+DECLARE ns12 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiprojectgetinfo';
+DECLARE ns3 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapbapiprojectdefgetlist';
+
+
+CREATE COMPUTE MODULE WBS_callGetInfo
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		DECLARE proj REFERENCE TO InputRoot.DataObject.ns3:SapBapiProjectdefGetlist.SapProjectDefinitionList[>];
+		CREATE FIELD Environment.Data.Output;
+		
+		WHILE LASTMOVE(proj) DO
+			CREATE FIELD OutputRoot.DataObject.ns12:SapBapiProjectGetinfo;
+			SET OutputRoot.DataObject.ns12:SapBapiProjectGetinfo.PROJECT_DEFINITION = proj.PROJECT_DEFINITION;
+			MOVE proj NEXTSIBLING REPEAT TYPE NAME;
+			PROPAGATE;
+		END WHILE;
+		
+		CALL CopyMessageHeaders();
+		SET OutputLocalEnvironment.Variables.Final = 'YES';
+		CREATE FIELD OutputRoot.DataObject.ns12:SapBapiProjectGetinfo;
+		SET OutputRoot.DataObject.ns12:SapBapiProjectGetinfo.PROJECT_DEFINITION = proj.PROJECT_DEFINITION;
+		RETURN TRUE;
+		END;
+		
+	CREATE PROCEDURE CopyMessageHeaders() 
+	BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+END MODULE;

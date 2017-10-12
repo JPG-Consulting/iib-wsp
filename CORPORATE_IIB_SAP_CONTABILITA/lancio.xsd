@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.gruppoiren.it/schemas"
+	xmlns:Q1="http://www.gruppoiren.it/schemas">
+	
+	<xsd:complexType name="lancioType">
+		<xsd:sequence>
+			<xsd:element name="soc" type="xsd:string"></xsd:element>
+			<xsd:element name="soc_sap" type="xsd:string"></xsd:element>
+			<xsd:element name="data_flusso" type="xsd:dateTime"></xsd:element>
+			<xsd:element name="id_lancio" type="xsd:decimal"></xsd:element>
+			<xsd:element name="tipo_flusso" type="xsd:string"></xsd:element>
+			<xsd:element name="elaborato" type="xsd:string"></xsd:element>
+			<xsd:element name="cod_elab" type="xsd:string"></xsd:element>
+			<xsd:element name="descr_elab" type="xsd:string"></xsd:element>
+			<xsd:element name="data_elab" type="xsd:dateTime"></xsd:element>
+			<xsd:element name="id_esterno" type="xsd:string"></xsd:element>
+			<xsd:element ref="Q1:testata" maxOccurs="unbounded"
+				minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:element name="lancio" type="Q1:lancioType"></xsd:element>
+
+	<xsd:complexType name="lanciType">
+		<xsd:sequence>
+			<xsd:element ref="Q1:lancio" maxOccurs="unbounded"
+				minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="lanci" type="Q1:lanciType"></xsd:element>
+	
+	<xsd:complexType name="testataType">
+    	<xsd:sequence>
+    		<xsd:element name="id_lancio" type="xsd:decimal"></xsd:element>
+    		<xsd:element name="tipo_flusso" type="xsd:string"></xsd:element>
+    		<xsd:element name="progr" type="xsd:decimal"></xsd:element>
+    		<xsd:element name="anno" type="xsd:integer"></xsd:element>
+    		<xsd:element name="tipo_doc" type="xsd:string"></xsd:element>
+    		<xsd:element name="data_emiss" type="xsd:dateTime"></xsd:element>
+    		<xsd:element name="data_reg" type="xsd:dateTime"></xsd:element>
+    		<xsd:element name="provenienza" type="xsd:string"></xsd:element>
+    		<xsd:element name="intercompany" type="xsd:string"></xsd:element>
+    		<xsd:element name="num_doc" type="xsd:string"></xsd:element>
+    		<xsd:element name="data_doc" type="xsd:dateTime"></xsd:element>
+    		<xsd:element name="tipo_pag" type="xsd:string"></xsd:element>
+    		<xsd:element name="data_scad" type="xsd:dateTime"></xsd:element>
+    		<xsd:element name="descr_testata" type="xsd:string"></xsd:element>
+    		<xsd:element name="cod_elab" type="xsd:string"></xsd:element>
+    		<xsd:element name="descr_elab" type="xsd:string"></xsd:element>
+    		<xsd:element name="data_elab" type="xsd:dateTime"></xsd:element>
+    		<xsd:element name="id_esterno" type="xsd:string"></xsd:element>
+    		<xsd:element name="elab" type="xsd:string"></xsd:element>
+    		<xsd:element name="cod_cliente" type="xsd:string"></xsd:element>
+    		<xsd:element name="tot_fattura" type="xsd:string"></xsd:element>
+    		<xsd:element name="ra_tipo" type="xsd:string"></xsd:element>
+    		<xsd:element name="ra_importo" type="xsd:string"></xsd:element>
+    		<xsd:element name="ra_imponibile" type="xsd:string"></xsd:element>
+    		<xsd:element name="ra_codice" type="xsd:string"></xsd:element>
+    		<xsd:element ref="Q1:rigaCoge" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    		<xsd:element ref="Q1:rigaIva" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+
+
+    
+    <xsd:element name="testata" type="Q1:testataType"></xsd:element>
+    
+    <xsd:complexType name="rigaCogeType">
+		<xsd:sequence>
+			<xsd:element name="id_lancio" type="xsd:decimal"></xsd:element>
+			<xsd:element name="tipo_flusso" type="xsd:string"></xsd:element>
+			<xsd:element name="progr" type="xsd:decimal"></xsd:element>
+			<xsd:element name="chiave_cont" type="xsd:string"></xsd:element>
+			<xsd:element name="conto_coge" type="xsd:string"></xsd:element>
+			<xsd:element name="centro_costo" type="xsd:string"></xsd:element>
+			<xsd:element name="wbs" type="xsd:string"></xsd:element>
+			<xsd:element name="profit_center" type="xsd:string"></xsd:element>
+			<xsd:element name="settore_cont" type="xsd:string"></xsd:element>
+			<xsd:element name="importo" type="xsd:decimal"></xsd:element>
+			<xsd:element name="codice_iva" type="xsd:string"></xsd:element>
+			<xsd:element name="dett_riga" type="xsd:string"></xsd:element>
+			<xsd:element name="intercompany" type="xsd:string"></xsd:element>
+			<xsd:element name="attribuzione" type="xsd:string"></xsd:element>
+			<xsd:element name="data_scad" type="xsd:dateTime"></xsd:element>
+			<xsd:element name="data_valuta" type="xsd:dateTime"></xsd:element>
+			<xsd:element name="progr_riga" type="xsd:integer"></xsd:element>
+			<xsd:element name="ordine_interno" type="xsd:string"></xsd:element>
+			<xsd:element name="cod_materiale" type="xsd:string"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:element name="rigaCoge" type="Q1:rigaCogeType"></xsd:element>
+
+
+	<xsd:complexType name="righeCogeType">
+		<xsd:sequence>
+			<xsd:element ref="Q1:rigaCoge" maxOccurs="unbounded"
+				minOccurs="0">
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+
+	<xsd:element name="righeCoge" type="Q1:righeCogeType"></xsd:element>
+	
+	<xsd:complexType name="rigaIvaType">
+    	<xsd:sequence>
+    		<xsd:element name="id_lancio" type="xsd:decimal"></xsd:element>
+    		<xsd:element name="tipo_flusso" type="xsd:string"></xsd:element>
+    		<xsd:element name="progr" type="xsd:decimal"></xsd:element>
+    		<xsd:element name="chiave_cont" type="xsd:string"></xsd:element>
+    		<xsd:element name="codice_iva" type="xsd:string"></xsd:element>
+    		<xsd:element name="imponibile" type="xsd:decimal"></xsd:element>
+    		<xsd:element name="imposta" type="xsd:decimal"></xsd:element>
+    		<xsd:element name="progr_riga" type="xsd:integer"></xsd:element>
+    		<xsd:element name="KSCL" type="xsd:string"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:element name="rigaIva" type="Q1:rigaIvaType"></xsd:element>
+    
+    <xsd:complexType name="righeIvaType">
+    	<xsd:sequence>
+    		<xsd:element ref="Q1:rigaIva" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    
+    <xsd:element name="righeIva" type="Q1:righeIvaType"></xsd:element>
+    
+</xsd:schema>

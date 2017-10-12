@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE GET_ORE_LAVORATE_BuildError
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SapBapiPtimeoverviewGet.SapTimetypevalues;
+		SET OutputRoot.DataObject.ns1:SapBapiPtimeoverviewGetWrapper.SapBapiPtimeoverviewGet.SapTimetypevalues.TIMETYPEVALUE = '0';
+		RETURN TRUE;
+	END;
+
+END MODULE;

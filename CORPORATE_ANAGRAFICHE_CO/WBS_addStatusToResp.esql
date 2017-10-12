@@ -1,0 +1,44 @@
+
+
+CREATE COMPUTE MODULE WBS_addStatusToResp
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE input REFERENCE TO Environment.Data.Output.oggettoContabile[>];
+		WHILE LASTMOVE(input) = TRUE DO
+			DECLARE s INTEGER 0;
+			IF input.codice IS NOT NULL THEN
+				SET s = SELECT COUNT(*) FROM InputRoot.DataObject.ns9:SapBapiBus2054GetStatus.SapESystemStatus[] AS status
+								WHERE status.SYSTEM_STATUS = 'REL' AND status.WBS_ELEMENT = input.codice;
+				IF s > 0 THEN
+					SET input.stato = 'VALIDO';
+				ELSE
+					SET input.stato = 'NON VALIDO';
+				END IF;
+			END IF;
+			MOVE input NEXTSIBLING REPEAT TYPE NAME;
+		END WHILE;
+		
+		CALL CopyMessageHeaders();
+		
+		CREATE FIELD OutputRoot.XMLNSC.ns:Output;
+		SET OutputRoot.XMLNSC.ns:Output = Environment.Data.Output;
+		FOR ogg AS OutputRoot.XMLNSC.ns:Output.oggettoContabile[] DO
+			SET ogg.(XMLNSC.Attribute)tipo = 'WBS';
+		END FOR;
+		
+		RETURN TRUE;
+
+	
+	END;
+	
+	CREATE PROCEDURE CopyMessageHeaders() 
+	BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+END MODULE;

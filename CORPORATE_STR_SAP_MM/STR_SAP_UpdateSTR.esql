@@ -1,0 +1,38 @@
+
+
+CREATE COMPUTE MODULE STR_SAP_UpdateSTR
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		CREATE FIELD OutputRoot.XMLNSC.Result.Status;
+		SET OutputRoot.XMLNSC.Result.Info.IDFlusso = InputRoot.JSON.Data.IDFlusso;
+		SET OutputRoot.XMLNSC.Result.Info.Societa = InputRoot.JSON.Data.Societa;
+		SET OutputRoot.XMLNSC.Result.Info.DataInizio = InputRoot.JSON.Data.DataInizio;
+		SET OutputRoot.XMLNSC.Result.Info.DataFine = InputRoot.JSON.Data.DataFine;
+		SET OutputRoot.XMLNSC.Result.Info.Elaborati = CARDINALITY(InputRoot.JSON.Data.Record.result[]);
+		SET OutputRoot.XMLNSC.Result.Info.Inviati = '0';
+		CREATE FIELD OutputRoot.XMLNSC.Result.Info.Oggetti.Record;
+		
+		DECLARE ogg REFERENCE TO OutputRoot.XMLNSC.Result.Info.Oggetti.Record[>];
+		FOR record AS InputRoot.JSON.Data.Record.result[] DO
+			UPDATE Database.STR_CONTAB_CONS_FORM AS T
+			SET FL_ACQ = 0
+			WHERE T.ROWID = record.ROWID;
+			
+			SET ogg.ID = record.ID;
+			SET ogg.Azienda = record.Azienda;
+			SET ogg.CdcOrigine = record.CDC_ORIGINE;
+			SET ogg.CdcDestinazione = record.CDC;
+			SET ogg.Attivita = record.ATTIVITA;
+			SET ogg.Commessa = record.COMMESSA;
+			SET ogg.Oggetto = record.Oggetto;
+			SET ogg.Tipo = record.Tipo;
+			SET ogg.Esito = record.Esito;
+			CREATE NEXTSIBLING OF ogg AS ogg REPEAT;
+		END FOR;
+		DELETE FIELD ogg;
+		SET OutputRoot.XMLNSC.Result.Status.Codice = '001';
+		SET OutputRoot.XMLNSC.Result.Status.Descrizione = 'IDOC non inviato - Esito check oggetti contabili '||InputRoot.JSON.Data.Esito;
+		RETURN TRUE;
+	END;
+
+END MODULE;

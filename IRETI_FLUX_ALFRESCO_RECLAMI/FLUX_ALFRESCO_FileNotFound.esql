@@ -1,0 +1,12 @@
+
+
+CREATE COMPUTE MODULE FLUX_ALFRESCO_FileNotFound
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputRoot.SOAP.Body.ns6:CreateResponse.status.status = 'KO';
+		SET OutputRoot.SOAP.Body.ns6:CreateResponse.status.descrizione = 'File ' || InputLocalEnvironment.Destination.File.Name ||' non trovato.';
+		SET OutputRoot.SOAP.Body.ns6:CreateResponse.status.ID = 'File Not Found';
+		RETURN TRUE;
+	END;
+
+END MODULE;

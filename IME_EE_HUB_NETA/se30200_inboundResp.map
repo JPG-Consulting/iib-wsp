@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="mbsharedlib://SIILib/SE3_flusso.xsd"/>
+    <output path="mbsharedlib://InboundLib/WS_HUB_CRM_Inbound_InlineSchema1.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureGenerali/v1.5"/>
+        <namespace kind="supplement" prefix="in3" uri="http://www.acquirenteunico.it/schemas/SII_AU/StruttureEL/v1.3"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.acquirenteunico.it/schemas/SII_AU/Flussi_SE3/v1"/>
+        <namespace kind="supplement" prefix="out2" uri="http://HUB_CRM_EE/crm_dati"/>
+        <namespace kind="supplement" prefix="out" uri="http://WS_HUB_CRM_Inbound"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="se30200_inboundResp">
+        <input path="mb:msg(FlussoSE3.0200Type,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <output namespace="http://WS_HUB_CRM_Inbound" path="mb:msg(WSHubCrmInboundResponse,assembly,XMLNSC,Properties)" var="MessageAssembly1"/>
+        <move>
+            <input path="$MessageAssembly/Properties"/>
+            <output path="$MessageAssembly1/Properties"/>
+            <override>
+                <assign value="{InboundLib}">
+                    <output path="$MessageAssembly1/Properties/MessageSet"/>
+                </assign>
+            </override>
+        </move>
+        <assign value="CRM-I-CRT">
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/tracking/codiceFlusso"/>
+        </assign>
+        <assign value="1">
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/esito/esito"/>
+        </assign>
+        <assign value="000">
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/esito/codice"/>
+        </assign>
+        <assign value="SE3">
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/tracking/servizio"/>
+        </assign>
+        <move>
+            <input path="$MessageAssembly/FlussoSE3.0200Type/IdentificativiRichiesta/CP_GESTORE"/>
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/tracking/codicePraticaDistributore"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/FlussoSE3.0200Type/DatiTecnici/COD_POD"/>
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/tracking/codicePratica"/>
+        </move>
+        <move>
+            <input path="$MessageAssembly/FlussoSE3.0200Type/DatiTecnici/COD_POD"/>
+            <output path="$MessageAssembly1/WSHubCrmInboundResponse/inboundResponse/tracking/codicePraticaOrigine"/>
+        </move>
+    </mappingDeclaration>
+</mappingRoot>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://thor_fat/thor_fat" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:thor_fatthor_fat="http://thor_fat/thor_fat">
+  <!-- Message definition generated from P:\Users\e-decaro\IBM\IIBT10\workspace_TEST\IME_SMISTAMENTO_CADE\THOR_FAT.dbm -->
+
+<!-- Complex type for THOR_FAT.THOR_FAT.CADE_FILE_OUT -->
+    <xsd:complexType name="CADE_FILE_OUTType">
+    <xsd:sequence>
+      <xsd:element name="ID_FILE_OUTPUT">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="4000"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="FILE_NAME">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="4000"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="FILE_BLOB" type="xsd:hexBinary"/>
+      <xsd:element minOccurs="0" name="USR_CREATED" nillable="true">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="4000"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="USR_UPDATED" nillable="true">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:maxLength value="4000"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="TMS_CREATED" nillable="true" type="xsd:dateTime"/>
+      <xsd:element minOccurs="0" name="TMS_UPDATED" nillable="true" type="xsd:dateTime"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- Global element for THOR_FAT.THOR_FAT.CADE_FILE_OUT -->
+    <xsd:element ibmSchExtn:docRoot="true" name="CADE_FILE_OUT" type="thor_fatthor_fat:CADE_FILE_OUTType"/>
+</xsd:schema>

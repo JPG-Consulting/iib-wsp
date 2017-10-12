@@ -1,0 +1,40 @@
+
+
+CREATE COMPUTE MODULE GET_ORE_LAVORATE_BuildRequestAM
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		DELETE FIELD OutputLocalEnvironment.Adapter;
+		CREATE FIELD OutputRoot.DataObject.ns:SapBapiPtimeoverviewGet;
+		DECLARE param REFERENCE TO OutputRoot.DataObject.ns:SapBapiPtimeoverviewGet;
+		DECLARE inp REFERENCE TO InputRoot.DataObject.*.SapBapiPtimeoverviewGet;
+		SET param.EXTAPPLICATION = inp.EXTAPPLICATION;
+		SET param.FROMDATE = inp.FROMDATE;
+		SET param.TODATE = inp.TODATE;
+		SET param.SapEmployees.EMPLOYEENUMBER = inp.SapEmployees.EMPLOYEENUMBER;
+		SET param.SapTimetypes.TIMETYPE = 'TSST';
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;
+
+
+CREATE COMPUTE MODULE GET_ORE_LAVORATE_BuildRequestENIA
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		DELETE FIELD OutputLocalEnvironment.Adapter;
+		CREATE FIELD OutputRoot.DataObject.ns:SapBapiPtimeoverviewGet;
+		DECLARE param REFERENCE TO OutputRoot.DataObject.ns:SapBapiPtimeoverviewGet;
+		DECLARE inp REFERENCE TO InputRoot.DataObject.*.SapBapiPtimeoverviewGet;
+		SET param.EXTAPPLICATION = inp.EXTAPPLICATION;
+		SET param.FROMDATE = inp.FROMDATE;
+		SET param.TODATE = inp.TODATE;
+		SET param.SapEmployees.EMPLOYEENUMBER = Environment.Data[1].CID_SAP_ENIA;
+		SET param.SapTimetypes.TIMETYPE = '2OLA';
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

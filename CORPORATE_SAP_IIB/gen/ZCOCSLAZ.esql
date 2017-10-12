@@ -1,0 +1,46 @@
+BROKER SCHEMA gen
+DECLARE ns5 NAMESPACE 'www.gruppoiren.it/schemas';
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzcocslaz';
+
+
+CREATE COMPUTE MODULE ZCOCSLAZ
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Variables.idocNum = InputRoot.DataObject.ns:SapZcocslaz.SapZcocslazIDocBO.SapIDocControlRecord.DOCNUM;
+		DECLARE idataRef REFERENCE TO InputRoot.DataObject.ns:SapZcocslaz.SapZcocslazIDocBO.SapZcocslazDataRecord.SapZcocslazZcoscslaz000[1];
+		--declare LSTAR        character;
+		--declare LatypiText   character;
+		DECLARE c 			 INTEGER;
+		DECLARE ins 		 INTEGER;
+		DECLARE upd 		 INTEGER;
+		SET ins = 0;
+		SET upd = 0;
+		
+		WHILE LASTMOVE(idataRef)=TRUE DO
+			--SET LSTAR        = idataRef.LSTAR;
+			--set LatypiText   = idataRef.LATYPI_TEXT;
+			SET c = SELECT COUNT(*) 
+			FROM Database.S1_DEC_ANAG_TIPIATT
+			WHERE S1_DEC_ANAG_TIPIATT.CODICE = idataRef.LSTAR;
+			
+			IF c = 0 THEN				
+				INSERT INTO Database.S1_DEC_ANAG_TIPIATT (CODICE,DESCRIZIONE) VALUES (idataRef.LSTAR, idataRef.LATYPI_TEXT);
+				SET ins = ins +1;
+			ELSE
+				UPDATE Database.S1_DEC_ANAG_TIPIATT
+				   SET DESCRIZIONE = idataRef.LATYPI_TEXT
+				 WHERE S1_DEC_ANAG_TIPIATT.CODICE = idataRef.LSTAR;
+				 SET upd = upd + 1;
+			END IF;		
+				     
+		MOVE idataRef NEXTSIBLING NAME 'SapZcocslazZcoscslaz000';		
+		END WHILE;
+		
+		SET OutputRoot.XMLNSC.ns5:Params.flusso = 'ZCOCSLAZ';
+		SET OutputRoot.XMLNSC.ns5:Params.body1 = ins;
+		SET OutputRoot.XMLNSC.ns5:Params.body2 = upd;
+		SET OutputLocalEnvironment.Variables.dbString = 'Processato IDOC di tipo ZCOCSLAZ - Inseriti '||CAST(ins AS CHARACTER)||' record - Aggiornati '|| CAST(upd AS CHARACTER) ||' record';
+		
+		RETURN TRUE;
+	END;
+END MODULE;

@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmDatabase.msgnode="ComIbmDatabase.msgnode" xmlns:ComIbmDatabaseInput.msgnode="ComIbmDatabaseInput.msgnode" xmlns:ComIbmJavaCompute.msgnode="ComIbmJavaCompute.msgnode" xmlns:ComIbmMSLMapping.msgnode="ComIbmMSLMapping.msgnode" xmlns:ComIbmSOAPRequest.msgnode="ComIbmSOAPRequest.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="OEWebForm.msgflow" nsPrefix="OEWebForm.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="OEWebForm" bundleName="OEWebForm" pluginId="OrderEntry_SF"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/OrderEntry_SF/icons/full/obj16/OEWebForm.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/OrderEntry_SF/icons/full/obj30/OEWebForm.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmDatabaseInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="10,84" dataSource="HUB_EAI" databaseInputExpression="esql://routine/#OEWebForm_Database_Input">
+        <translation xmi:type="utility:ConstantString" string="ViewInput"/>
+        <nsMappingTable nsPrefix="ime" namespace="http://imestpi0/hub_eai"/>
+        <monitorEvents eventSourceDescription="Transaction rollback" eventSourceName="ViewInput.transaction.Rollback" eventIdentity="Transazione fallita Order Entry - Rollback">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="independent">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Transazione fallita Order Entry - Rollback"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmJavaCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="136,145" javaClass="src.OEWebForm_JavaCompute">
+        <translation xmi:type="utility:ConstantString" string="buildJSON"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="buildJSON.terminal.failure" eventIdentity="Costruzione messaggio JSON fallita">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true"/>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Costruzione messaggio JSON fallita"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmMSLMapping.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="171,67" mappingExpression="msl://{default}#OEWebForm_Mapping">
+        <translation xmi:type="utility:ConstantString" string="JSON_OrderEntry"/>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="425,137" wsdlFileName="EAIServiceInbound.wsdl" selectedPortType="EAIServiceInboundPortType" selectedBinding="EAIServiceInboundBinding" selectedOperation="OEWebForm" selectedPort="EAIServiceInbound" targetNamespace="http://soap.sforce.com/schemas/class/EAIServiceInbound" useHTTPTransport="true" webServiceURL="https://cs82.salesforce.com/services/Soap/class/EAIServiceInbound" sslProtocol="TLSv1.1" parserXmlnscBuildTreeUsingXMLSchema="false">
+        <translation xmi:type="utility:ConstantString" string="OrderEntry"/>
+        <mustUnderstandResponseHeadersWSDLDefined header="Header" namespace="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+        <nsMappingTable nsPrefix="ime" namespace="http://imestpi0/hub_eai"/>
+        <nsMappingTable nsPrefix="tns" namespace="urn:enterprise.soap.sforce.com"/>
+        <nsMappingTable nsPrefix="tns1" namespace="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+        <monitorEvents eventSourceDescription="Fault terminal" eventSourceName="OrderEntry.terminal.fault" eventIdentity="Creazione pratica fault">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Creazione pratica fault"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="OrderEntry.terminal.failure" eventIdentity="Creazione pratica fallita">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Creazione pratica fallita"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="OrderEntry.terminal.out" eventIdentity="Creazione pratica completata">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Creazione pratica completata"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+              <nsPrefixMap prefix="tns1" nsURI="http://soap.sforce.com/schemas/class/EAIServiceInbound"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="565,257" wsdlFileName="Enterprise.wsdl" selectedPortType="Soap" selectedBinding="SoapBinding" selectedOperation="login" selectedPort="Soap" targetNamespace="urn:enterprise.soap.sforce.com" useHTTPTransport="true" webServiceURL="https://test.salesforce.com/services/Soap/c/36.0/0DF3E0000008OLd" sslProtocol="TLSv1.1">
+        <translation xmi:type="utility:ConstantString" string="Login"/>
+        <nsMappingTable nsPrefix="ime" namespace="http://imestpi0/hub_eai"/>
+        <nsMappingTable nsPrefix="tns" namespace="urn:enterprise.soap.sforce.com"/>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Out terminal" eventSourceName="Login.terminal.out" eventIdentity="Login SF completato">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Login SF completato"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="Login.terminal.failure" eventIdentity="Login SF fallito">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Login SF fallito"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="Fault terminal" eventSourceName="Login.terminal.fault" eventIdentity="Login Fallito">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Login Fallito"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="ime" nsURI="http://imestpi0/hub_eai"/>
+              <nsPrefixMap prefix="tns" nsURI="urn:enterprise.soap.sforce.com"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="321,116" dataSource="HUB_EAI" computeExpression="esql://routine/#OEWebForm_BuildRequest.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BuildSOAPHeaders"/>
+      </nodes>
+      <nodes xmi:type="ComIbmMSLMapping.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="514,137" mappingExpression="msl://{default}#mapIntoResponse">
+        <translation xmi:type="utility:ConstantString" string="mapIntoResponse"/>
+      </nodes>
+      <nodes xmi:type="ComIbmDatabase.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_13" location="630,141" dataSource="HUB_EAI" statement="esql://routine/#insertEsito.Main">
+        <translation xmi:type="utility:ConstantString" string="insertEsito"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="insertEsito.terminal.failure" eventIdentity="Fallimento registrazione esito creazione pratica">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true"/>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Fallimento registrazione esito creazione pratica"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="704,192" dataSource="HUB_EAI" computeExpression="esql://routine/#invioFallito.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="invioFallito"/>
+        <monitorEvents eventSourceDescription="Failure terminal" eventSourceName="invioFallito.terminal.failure" eventIdentity="Registrazione fallimento creazione pratica incompleto">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Environment/codicePraticaHub" isXPath="true" complexData="true"/>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Registrazione fallimento creazione pratica incompleto"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="85,70" computeExpression="esql://routine/#OEWebForm_tracking.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="Tracking"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="270,181" destination="none">
+        <translation xmi:type="utility:ConstantString" string="JSONBuildError"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="741,112" destination="none">
+        <translation xmi:type="utility:ConstantString" string="DBFail"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="453,251" dataSource="HUB_EAI" computeExpression="esql://routine/#OEWebForm_InvalidSessionOrFault.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="InvalidSessionOrFault"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_14" location="697,262" dataSource="HUB_EAI" computeExpression="esql://routine/#OEWebForm_StoreSessionID.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="StoreSessionID"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_15" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in">
+        <bendPoints>75,52,-205,-3</bendPoints>
+      </connections>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.fault" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_13" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.fault" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_12" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_12" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_18" targetNode="FCMComposite_1_14" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_14" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in">
+        <bendPoints>31,59,313,184</bendPoints>
+        <bendPoints>-307,61,-25,186</bendPoints>
+      </connections>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>
