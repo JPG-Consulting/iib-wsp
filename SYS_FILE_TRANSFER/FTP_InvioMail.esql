@@ -1,0 +1,39 @@
+
+
+CREATE COMPUTE MODULE FTP_InvioMail
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		DECLARE CRLF CHARACTER CAST(X'0A0D' AS CHARACTER CCSID 1208);
+		DECLARE nrec INTEGER CARDINALITY (InputRoot.JSON.Data.Item[]);	
+		DECLARE NomeF CHARACTER;
+		DECLARE Server CHARACTER;
+		
+		DECLARE f INTEGER 1;
+		
+		Set NomeF = '';
+		Set Server  = InputRoot.JSON.Data.Item[1].ServerOUT;
+		
+		WHILE f <= nrec DO   -- Recupero il nome dei file
+			SET NomeF = NomeF || CRLF || InputRoot.JSON.Data.Item[f].nomeFile;
+		SET f= f+1;
+		
+		END WHILE;	
+		
+		SET NomeF = NomeF || CRLF ||'N. file: ' || CAST(nrec AS CHARACTER);
+ 	
+		SET OutputRoot.XMLNSC.ns1:Params.flusso = 'IMPORT_OK_FILE';
+		SET OutputRoot.XMLNSC.ns1:Params.obj1   = Environment.Variables.NOME_SERVIZIO_IN;												  
+		SET OutputRoot.XMLNSC.ns1:Params.body1 	= NomeF;	
+		SET OutputRoot.XMLNSC.ns1:Params.body2  = Environment.Variables.ServerIN  || ' - ' || Environment.Variables.PATHIN;
+		SET OutputRoot.XMLNSC.ns1:Params.body3  = Environment.Variables.ServerOUT || ' - ' || Environment.Variables.PATHOUT;
+		IF LENGTH(Environment.Variables.PATHARC) <> 0 THEN
+			SET OutputRoot.XMLNSC.ns1:Params.body4  = Environment.Variables.PATHARC;
+		ELSE
+			SET OutputRoot.XMLNSC.ns1:Params.body4  = 'I file non sono archiviati';
+		END IF;															
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

@@ -1,0 +1,20 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_ReadVarLocal
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+  SET OutputLocalEnvironment.XMLNSC.Variables.PathIn  = THE( SELECT  T.PathIn
+									  					FROM Database.IIB_IMPORT_FILE AS T
+									   					WHERE T.Nome_Servizio = InputLocalEnvironment.HTTP.Input.QueryString.ServIN);
+									   					
+									   					
+  SET OutputLocalEnvironment.XMLNSC.Variables.ServOUT   = InputLocalEnvironment.HTTP.Input.QueryString.ServOUT;
+  SET OutputLocalEnvironment.XMLNSC.Variables.File   = InputLocalEnvironment.XMLNSC.Variables.File;
+  SET OutputLocalEnvironment.XMLNSC.Variables.PathArch   = InputLocalEnvironment.XMLNSC.Variables.PathArch;
+  SET OutputLocalEnvironment.HTTP =  InputLocalEnvironment.HTTP;
+  
+		RETURN TRUE;
+	END;
+
+END MODULE;

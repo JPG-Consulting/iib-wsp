@@ -1,0 +1,19 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_Rispot
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		DECLARE Server CHARACTER;
+		
+		SET OutputRoot.XMLNSC.ns1:Params.flusso = 'IMPORT_NO_FILE';
+		SET OutputRoot.XMLNSC.ns1:Params.obj1  = InputLocalEnvironment.XMLNSC.Variables.ServIN;
+		SET OutputRoot.XMLNSC.ns1:Params.body1 = InputLocalEnvironment.XMLNSC.Variables.ServIN;
+		SET OutputRoot.XMLNSC.ns1:Params.body2 = InputLocalEnvironment.XMLNSC.Variables.PathIn;
+		SET OutputRoot.XMLNSC.ns1:Params.body3 = InputLocalEnvironment.XMLNSC.Variables.File;
+		
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

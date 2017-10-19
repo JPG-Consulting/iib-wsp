@@ -1,0 +1,33 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_ReadTipeOut
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		SET OutputRoot = InputRoot;
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		
+		
+		DECLARE Tipo CHARACTER;
+		
+		Set  Tipo = THE (SELECT ITEM T.TIPOLOGIA
+								 FROM Database.IIB_IMPORT_FILE AS T
+								 WHERE T.Nome_Servizio    = InputLocalEnvironment.XMLNSC.Variables.ServOUT);	
+	
+	CASE Tipo
+		WHEN 'FTP' THEN
+			  	SET OutputLocalEnvironment.Destination.MQDestinationList.DestinationData[1].queueName  = 'IMPORTFTP';   
+		WHEN 'SFTP' THEN
+				SET OutputLocalEnvironment.Destination.MQDestinationList.DestinationData[1].queueName  = 'IMPORTSFTP';   
+		WHEN 'LOCALE' THEN	
+				SET OutputLocalEnvironment.Destination.MQDestinationList.DestinationData[1].queueName  = 'IMPORTLOCAL';   	
+		ELSE
+			--SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'ERROR';						
+		END CASE;
+	
+
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

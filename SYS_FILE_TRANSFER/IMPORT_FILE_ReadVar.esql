@@ -1,0 +1,65 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_ReadVar
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		DECLARE query ROW;
+		DECLARE Count Integer;
+		DECLARE File CHARACTER;
+		DECLARE PathArc CHARACTER;
+
+		SET OutputRoot = InputRoot;
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+
+		SET Count = SELECT Count(*)
+								 FROM Database.IIB_IMPORT_FILE AS T
+								 WHERE T.Nome_Servizio    = InputLocalEnvironment.HTTP.Input.QueryString.ServOUT;
+		
+		If Count = 0 then
+			SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'ERROR';	
+			SET  OutputLocalEnvironment.XMLNSC.Variables.ServerErr = InputLocalEnvironment.HTTP.Input.QueryString.ServOUT;
+			RETURN TRUE;
+			
+		Else
+
+		SET query.resultSet[] = SELECT T.TIPOLOGIA, T.PATHARC
+								 FROM Database.IIB_IMPORT_FILE AS T
+								 WHERE T.Nome_Servizio    = InputLocalEnvironment.HTTP.Input.QueryString.ServIN;
+
+		
+		CASE query.resultSet[1].TIPOLOGIA
+		WHEN 'FTP' THEN
+			SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'FTP';
+		WHEN 'SFTP' THEN
+			SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'SFTP';
+		WHEN 'LOCALE' THEN	
+			SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'LOCAL';	
+		ELSE
+			SET OutputLocalEnvironment.Destination.RouterList.DestinationData[1].labelName = 'ERROR';	
+			SET  OutputLocalEnvironment.XMLNSC.Variables.ServerErr = InputLocalEnvironment.HTTP.Input.QueryString.ServIN;				
+		END CASE;
+		
+		IF (length(trim(InputLocalEnvironment.HTTP.Input.QueryString.NomeFile))<>0) THEN
+				SET File =  InputLocalEnvironment.HTTP.Input.QueryString.NomeFile;
+		ELSE
+				SET File =  '';	
+		END IF;				
+		
+		
+		IF (length(trim(InputLocalEnvironment.HTTP.Input.QueryString.Arch))<>0) AND InputLocalEnvironment.HTTP.Input.QueryString.Arch = 'Y' THEN
+			 SET PathArc = query.resultSet[1].PATHARC;
+		ELSE
+				SET PathArc =  '';	
+		END IF;	
+		
+		SET  OutputLocalEnvironment.XMLNSC.Variables.PathArch  = PathArc;
+		SET  OutputLocalEnvironment.XMLNSC.Variables.File = File;
+		
+		END IF;	
+		
+		RETURN TRUE;
+	END;
+
+	
+END MODULE;

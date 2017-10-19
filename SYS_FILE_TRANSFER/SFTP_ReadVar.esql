@@ -1,0 +1,26 @@
+
+
+CREATE COMPUTE MODULE SFTP_ReadVar
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		 DECLARE query ROW;
+		 
+		SET OutputRoot = InputRoot;
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET query.resultSet[] = SELECT T.Server, T.Utente, T.PWD, T.PATHOUT, T.PORTA
+									   FROM Database.IIB_IMPORT_FILE AS T
+									   WHERE T.Nome_Servizio = InputRoot.JSON.Data.Item[1].ServerOUT;
+
+  SET  OutputLocalEnvironment.XMLNSC.Variables.Server   =   query.resultSet[1].Server;
+  SET OutputLocalEnvironment.XMLNSC.Variables.Utente   = query.resultSet[1].Utente;
+  SET OutputLocalEnvironment.XMLNSC.Variables.PWD   = query.resultSet[1].PWD;
+  SET OutputLocalEnvironment.XMLNSC.Variables.PORT   = query.resultSet[1].PORTA;
+   SET OutputLocalEnvironment.XMLNSC.Variables.PATHOUT  = query.resultSet[1].PATHOUT;
+									   					
+
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

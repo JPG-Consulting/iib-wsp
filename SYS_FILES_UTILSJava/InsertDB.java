@@ -1,5 +1,6 @@
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.regex.Pattern;
@@ -12,6 +13,7 @@ import com.ibm.broker.plugin.MbMessage;
 import com.ibm.broker.plugin.MbMessageAssembly;
 import com.ibm.broker.plugin.MbOutputTerminal;
 import com.ibm.broker.plugin.MbUserException;
+import com.sun.xml.internal.ws.resources.ManagementMessages;
 
 
 public class InsertDB extends MbJavaComputeNode {
@@ -29,16 +31,18 @@ public class InsertDB extends MbJavaComputeNode {
 	public  MbMessageAssembly outAssembly;
 	 
 	
-	private boolean          flag_continue;
-	private String           nometabella;
-	private String           formatodata;
-	private String           separatore;
+	private boolean flag_continue;
+	private String  nometabella;
+	private String  formatodata;
+	private String  separatore;
+	private String	chiave;
+	private String	sequence;
+	private String	chiaveUnica;
+	private String	separatoreDecimali = null;
 	 
 	public void evaluate(MbMessageAssembly inAssembly) throws MbException {
 		
 		MbOutputTerminal out = getOutputTerminal("out");
-		//MbMessage inMessage = inAssembly.getMessage();
-		 //inMessage = inAssembly.getMessage();
 	    outAssembly = null;
 	    
 		this.inAssembly =inAssembly;
@@ -49,12 +53,8 @@ public class InsertDB extends MbJavaComputeNode {
 	    setContinue(true);
 	   
 		try {
-			// create new message as a copy of the input
-			// outMessage = new MbMessage();
-			 //outMessage = new MbMessage(inMessage);
-			 outMessage = new MbMessage();
 			
-			
+			outMessage = new MbMessage();
 			outAssembly = new MbMessageAssembly(inAssembly, outMessage);
 				
 		 	
@@ -106,7 +106,7 @@ public class InsertDB extends MbJavaComputeNode {
 			}
 
 			if (getContinue() && checkInsertRigheDb())  {
-	    		setErrorMessage("Insert ... righe inserite");  // posso continuare l'elaborato...
+	    		  // posso continuare l'elaborato...
 	    		setContinue(true); 
 			}
 			
@@ -366,15 +366,34 @@ public class InsertDB extends MbJavaComputeNode {
  	    			      outAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/HTTP/Input/QueryString/db").getValueAsString(),
  	    			      JDBC_TransactionType.MB_TRANSACTION_AUTO);
         	              
+        	              //logica inserimento chiavi via sequence
+        	              MbElement e = null;
+        	              
+        	              e = outAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/HTTP/Input/QueryString/chiave");
+        	              if (e != null) chiave = e.getValueAsString();
+        	              e = null;
+        	              
+        	              e = outAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/HTTP/Input/QueryString/sequence");
+        	              if (e != null) sequence = e.getValueAsString();
+        	              e = null;
+        	              
+        	              e = outAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/HTTP/Input/QueryString/chiaveUnica");
+        	              if (e != null) chiaveUnica = e.getValueAsString();
+        	              
+        	              e = outAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/HTTP/Input/QueryString/separatoreDecimali");
+        	              if (e != null) separatoreDecimali = e.getValueAsString();
         	              
         	              s = conn.createStatement();
         	              
         	              //s.addBatch("alter session set nls_date_format = 'yyyy/mm/dd hh24:mi:ss'");
-        	              s.addBatch("alter session set nls_date_format = "+getFormatoData());
-        	              s.executeBatch();
+        	              s.execute("alter session set nls_date_format = '"+getFormatoData()+"'");
+
+        	              if (separatoreDecimali != null) {
+        	            	  s.execute("alter session set nls_numeric_characters = '"+separatoreDecimali+"'");
+        	              }
  
         	              
-        	              String[] records    = new String((byte[]) inAssembly.getMessage().getRootElement().getFirstElementByPath("/BLOB/BLOB").getValue(), StandardCharsets.UTF_8).split("\r\n"); 
+        	              String[] records    = new String((byte[]) inAssembly.getMessage().getRootElement().getFirstElementByPath("/BLOB/BLOB").getValue(), StandardCharsets.UTF_8).split("\\r\\n|\\n|\\r"); 
   		 				
         	  			  String[] cols = records[0].split(Pattern.quote(getSeparatore()));
         	  			
@@ -382,6 +401,7 @@ public class InsertDB extends MbJavaComputeNode {
 	        	  		  String[] riga;
 	        	  		  String campi         ="";
 	        	  		  String insert         ="";
+	        	  		  String valoreChiave = null;
 
 	        	  		  int numero_colonne = 0;
 	        	  		  int numero_valori = 0;
@@ -392,7 +412,16 @@ public class InsertDB extends MbJavaComputeNode {
 		        	  				numero_colonne=numero_colonne+1;
 		        	  	  }			
 		        	  			intesatazione =	intesatazione.replaceFirst(",", " ");
-		        	  			 	
+		        	  			 if (chiave != null ) {
+		        	  				 if(chiaveUnica.equals("SI")){
+		        	  					ResultSet rs = s.executeQuery("SELECT "+ sequence+".nextval from dual");
+		        	  					rs.next();
+		        	  					valoreChiave = rs.getString("nextval");
+		        	  				 }
+		        	  				 if (sequence.equals("NO")){
+		        	  					valoreChiave = chiaveUnica;
+		        	  				 }
+		        	  			 }
 		        	             for (int a = 1; a < records.length; a++) {
 		        	              	
 		        	              	   riga = records[a].split(Pattern.quote(separatore),-1);
@@ -405,17 +434,26 @@ public class InsertDB extends MbJavaComputeNode {
 		        	         			  }	
 		        	              	   campi =	campi.replaceFirst(",", " ");
 		        	              	   
-		        	              	  
-		        	              	 insert = "insert into " +  getNomeTabella() +" ("+intesatazione+") "+" values ("+campi+")";
-		        	              	 s.executeQuery(insert); 	        	              	
+		        	              	 if (chiave != null) {
+		        	              		 	if (chiaveUnica.equals("NO")){
+		        	              		 		ResultSet rs = s.executeQuery("SELECT "+ sequence+".nextval from dual");
+				        	  					rs.next();
+		        	              		 		valoreChiave = rs.getString("nextval");
+		        	              		 	}
+		        	              		 	insert = "insert into " +  getNomeTabella() +" ("+chiave+","+intesatazione+") "+" values ('"+valoreChiave+"',"+campi+")";
+		        	              	 } else {
+		        	              		 insert = "insert into " +  getNomeTabella() +" ("+intesatazione+") "+" values ("+campi+")";
+		        	              	 }
+		        	              	 s.execute(insert); 	        	              	
 		        	              	 insert="";
 		        	              	 campi = "";
+		        	              	
 		        	              	 numero_righe_inserite =numero_righe_inserite+1;
 		
 		        	  			}
 		        	             
 		        	             
-		        	             
+		        	            setErrorMessage(numero_righe_inserite + " righe inserite"); 
 		     			        s.close();
          			                
 						        flag_continue = true;

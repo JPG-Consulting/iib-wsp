@@ -1,0 +1,18 @@
+
+
+CREATE COMPUTE MODULE LOCAL_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+ SET OutputLocalEnvironment.XMLNSC.Variables.PATHOUT  = THE( SELECT  T.PATHOUT
+									  					FROM Database.IIB_IMPORT_FILE AS T
+									   					WHERE T.Nome_Servizio = InputRoot.JSON.Data.Item[1].ServerOUT);
+									   					
+									   					
+	SET OutputRoot = InputRoot;
+	SET OutputLocalEnvironment.JSON = InputLocalEnvironment.JSON;
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

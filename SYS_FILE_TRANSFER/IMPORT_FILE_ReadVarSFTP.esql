@@ -1,0 +1,27 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_ReadVarSFTP
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+	DECLARE query ROW;
+
+	SET query.resultSet[] = SELECT T.Server, T.Utente, T.PWD, T.PathIn, T.PORTA
+									   FROM Database.IIB_IMPORT_FILE AS T
+									   WHERE T.Nome_Servizio = InputLocalEnvironment.HTTP.Input.QueryString.ServIN;
+
+  SET  OutputLocalEnvironment.XMLNSC.Variables.Server   =   query.resultSet[1].Server;
+  SET OutputLocalEnvironment.XMLNSC.Variables.Utente   = query.resultSet[1].Utente;
+  SET OutputLocalEnvironment.XMLNSC.Variables.PWD   = query.resultSet[1].PWD;
+  SET OutputLocalEnvironment.XMLNSC.Variables.PORT   = query.resultSet[1].PORTA;
+  SET OutputLocalEnvironment.XMLNSC.Variables.PathIn   = query.resultSet[1].PathIn;
+  SET OutputLocalEnvironment.XMLNSC.Variables.ServOUT   = InputLocalEnvironment.HTTP.Input.QueryString.ServOUT;
+  SET OutputLocalEnvironment.XMLNSC.Variables.File   = InputLocalEnvironment.XMLNSC.Variables.File;
+  SET OutputLocalEnvironment.XMLNSC.Variables.PathArch   = InputLocalEnvironment.XMLNSC.Variables.PathArch;
+  
+
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

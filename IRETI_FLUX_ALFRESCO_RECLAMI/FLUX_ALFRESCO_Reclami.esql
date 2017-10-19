@@ -14,7 +14,12 @@ CREATE COMPUTE MODULE FLUX_ALFRESCO_Reclami
 		SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.MITTENTE_INTERMEDIO = COALESCE(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:mittenti.ns:"mittente-esterno".ns:intermedio, 'X');
 		
 		IF Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:tipo_protocollo = 'P' THEN
-			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NUMERO = SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN FROM 3 FOR 6);
+			IF	LENGTH(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN) = 15 THEN
+				SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NUMERO = SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN FROM 3 FOR 6);
+			ELSE
+				SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NUMERO = SUBSTRING('000000' FROM 1 FOR 6-LENGTH(TRIM(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN))) || TRIM(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:riferimento_IREN);
+			END IF;
+			
 	     	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.NUMERO_RISPOSTA = SUBSTRING(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo FROM 3 FOR 6);
 	     	SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DATA_PROTOCOLLO = LEFT(Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:data_protocollo, 10);
 			SET OutputRoot.XMLNSC.PROTOCOLLI.PROTOCOLLO.DATA_DOCUMENTO = '';

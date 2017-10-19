@@ -1,0 +1,17 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		--SET OutputRoot = InputRoot;
+		declare messageText character;
+		declare messageNumber character;
+		CREATE FIELD OutputRoot.XMLNSC.Info.testo;
+		SET OutputRoot.XMLNSC.Info.testo = 'PROCESSO IN ERRORE';
+		CREATE FIELD OutputRoot.XMLNSC.Info.errore;      
+		SET OutputRoot.XMLNSC.Info.errore = InputExceptionList.RecoverableException;
+		RETURN TRUE;
+	END;
+
+	
+END MODULE;

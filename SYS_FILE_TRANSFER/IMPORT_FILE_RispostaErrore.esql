@@ -1,0 +1,18 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_RispostaErrore
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		DECLARE Server CHARACTER;
+
+		Set Server  = InputLocalEnvironment.XMLNSC.Variables.ServerErr;
+
+		SET OutputRoot.XMLNSC.ns1:Params.flusso = 'IMPORTLocal';
+		SET OutputRoot.XMLNSC.ns1:Params.body1 = 'Il server '|| Server ||' non è stato configurato nella tabella dei server';
+
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

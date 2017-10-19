@@ -1,0 +1,45 @@
+
+
+CREATE COMPUTE MODULE FTP_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	
+		 DECLARE query ROW;
+		 
+		SET OutputRoot = InputRoot;
+		SET OutputLocalEnvironment = InputLocalEnvironment;
+		SET query.resultSet[] = SELECT T.Server
+									 , T.Utente
+									 , T.PWD
+									 , T.PATHOUT
+									 , T.NOME_SERVIZIO
+							      FROM Database.IIB_IMPORT_FILE AS T
+							     WHERE T.Nome_Servizio = InputRoot.JSON.Data.Item[1].ServerOUT;
+
+	  	SET OutputLocalEnvironment.XMLNSC.Variables.Server   = query.resultSet[1].Server;
+	 	SET OutputLocalEnvironment.XMLNSC.Variables.Utente   = query.resultSet[1].Utente;
+	  	SET OutputLocalEnvironment.XMLNSC.Variables.PWD   	 = query.resultSet[1].PWD;
+	  	SET OutputLocalEnvironment.XMLNSC.Variables.PORT   	 = '21';
+	    SET OutputLocalEnvironment.XMLNSC.Variables.PATHOUT  = query.resultSet[1].PATHOUT;
+	    
+		SET query.resultSetIN[] = SELECT T.Server
+										, T.PATHIN
+										, T.NOME_SERVIZIO
+										, T.PATHARC
+							      FROM Database.IIB_IMPORT_FILE AS T
+							     WHERE T.Nome_Servizio = InputRoot.JSON.Data.Item[1].ServerIN;
+							     
+		SET Environment.Variables.ServerIN   			 = query.resultSetIN[1].Server;
+	 	SET Environment.Variables.PATHIN	       		 = query.resultSetIN[1].PATHIN;
+	  	SET Environment.Variables.NOME_SERVIZIO_IN   	 = query.resultSetIN[1].NOME_SERVIZIO;
+	    SET Environment.Variables.PATHARC  			 	 = query.resultSetIN[1].PATHARC;
+	    
+	    SET Environment.Variables.ServerOUT  			 = query.resultSet[1].Server;	 
+	    SET Environment.Variables.PATHOUT	  			 = query.resultSet[1].PATHOUT;   
+		SET Environment.Variables.NOME_SERVIZIO_OUT   	 = query.resultSet[1].NOME_SERVIZIO;
+				
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

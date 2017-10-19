@@ -148,9 +148,9 @@ CREATE COMPUTE MODULE FLUX_ALFRESCO_BlobToSoap
 		SET Environment.Variables.idRichiesta = UUIDASCHAR;
 		--||LOG DELETE REQUEST
 		INSERT INTO Database.IIB_FLUX_DOCUMENTALE 
-		(ID_RICHIESTA, ID_FLUX, NUMERO_PROTOCOLLO, RICHIESTA, DESCRIZIONE_RICHIESTA, TMS_RICHIESTA)
+		(ID_RICHIESTA, ID_FLUX, NUMERO_PROTOCOLLO, DESCRIZIONE_RICHIESTA, TMS_RICHIESTA)
 		VALUES
-		(Environment.Variables.idRichiesta, Environment.Variables.idFlux, Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo, ASBITSTREAM(OutputRoot.SOAP), 'Upload documento '||OutputRoot.SOAP.Body.ns6:Create.metadata.nomeFile, CURRENT_TIMESTAMP);
+		(Environment.Variables.idRichiesta, Environment.Variables.idFlux, Environment.Variabili.XMLNSC.ns:documenti.ns:documento.ns:numero_protocollo, 'Upload documento '||OutputRoot.SOAP.Body.ns6:Create.metadata.nomeFile, CURRENT_TIMESTAMP);
 		PASSTHRU('COMMIT');
 		
 		RETURN TRUE;

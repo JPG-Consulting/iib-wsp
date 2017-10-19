@@ -1,0 +1,31 @@
+
+
+CREATE COMPUTE MODULE SFTP_CreaMail
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		DECLARE CRLF CHARACTER CAST(X'0A0D' AS CHARACTER CCSID 1208);
+		DECLARE nrec INTEGER CARDINALITY (InputRoot.JSON.Data.Item[]);	
+		DECLARE NomeF CHARACTER;
+		DECLARE Server CHARACTER;
+		DECLARE f INTEGER 1;
+		
+		Set NomeF = '';
+		Set Server  = InputRoot.JSON.Data.Item[1].ServerOUT;
+		
+		WHILE f <= nrec DO   -- Recupero il nome dei file
+			SET NomeF = NomeF || CRLF || InputRoot.JSON.Data.Item[f].nomeFile;
+		SET f= f+1;
+		
+		END WHILE;	
+ 	
+		SET OutputRoot.XMLNSC.ns1:Params.flusso = 'IMPORTSftp';
+		SET OutputRoot.XMLNSC.ns1:Params.body1 = 'Sul server '|| Server ||' sono stati importati i seguenti file: '
+													||NomeF;
+
+
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

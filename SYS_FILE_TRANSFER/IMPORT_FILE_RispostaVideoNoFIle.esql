@@ -1,0 +1,16 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_RispostaVideoNoFIle
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		DECLARE Server CHARACTER;
+
+		Set Server  = InputLocalEnvironment.XMLNSC.Variables.ServIN;
+		
+		SET  OutputRoot.XMLNSC.Info = 'Nel server ' || Server ||' non sono stati trovati file da importare';
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

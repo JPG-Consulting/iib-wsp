@@ -1,0 +1,25 @@
+
+
+CREATE COMPUTE MODULE IMPORT_FILE_RispostaVideo
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	
+	DECLARE NomeF CHARACTER;
+	DECLARE f INTEGER 1;
+	DECLARE nrec INTEGER CARDINALITY (InputRoot.JSON.Data.Item[]);
+		
+	Set NomeF = '';
+	
+	WHILE f <= nrec DO   
+		SET OutputRoot.XMLNSC.Info.File[f] = InputRoot.JSON.Data.Item[f].nomeFile;
+		
+		SET f= f+1;
+		
+	END WHILE;	
+
+
+	
+		RETURN TRUE;
+	END;
+
+END MODULE;
