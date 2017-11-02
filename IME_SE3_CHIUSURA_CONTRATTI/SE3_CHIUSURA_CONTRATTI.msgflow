@@ -7,48 +7,55 @@
     <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_SE3_CHIUSURA_CONTRATTI/icons/full/obj16/SE3_CHIUSURA_CONTRATTI.gif"/>
     <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_SE3_CHIUSURA_CONTRATTI/icons/full/obj30/SE3_CHIUSURA_CONTRATTI.gif"/>
     <composition>
-      <nodes xmi:type="ComIbmWSInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="22,110" URLSpecifier="/ime/mt/chiusura_contratti">
+      <nodes xmi:type="ComIbmWSInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="17,126" URLSpecifier="/ime/mt/chiusura_contratti" parseQueryString="true" messageDomainProperty="BLOB">
         <translation xmi:type="utility:ConstantString" string="HTTP Input"/>
       </nodes>
-      <nodes xmi:type="ComIbmWSRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="111,53" URLSpecifier="http://localhost:7800/sys/upload_csv" httpVersion="1.1" protocol="TLS">
+      <nodes xmi:type="ComIbmWSRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="190,51" URLSpecifier="http://localhost:7800/sys/upload_csv" httpVersion="1.1" protocol="TLS" messageDomainProperty="JSON">
         <translation xmi:type="utility:ConstantString" string="InsertRows"/>
       </nodes>
-      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="431,104" computeExpression="esql://routine/#SE3_CHIUSURA_CONTRATTI_BuildRequest.Main">
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="513,3" computeExpression="esql://routine/#SE3_CHIUSURA_CONTRATTI_BuildRequest.Main" computeMode="all">
         <translation xmi:type="utility:ConstantString" string="BuildRequest"/>
       </nodes>
-      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="206,53" computeExpression="esql://routine/#SE3_CHIUSURA_CONTRATTI_BuildMessage.Main">
-        <translation xmi:type="utility:ConstantString" string="BuildMessage"/>
-      </nodes>
-      <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="345,100">
+      <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="363,2">
         <translation xmi:type="utility:ConstantString" string="HTTP Reply"/>
       </nodes>
-      <nodes xmi:type="ComIbmHTTPAsyncRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="517,106" asyncResponseCorrelator="CHIUSURA_CONTRATTI_ASYNC_PROC" URLSpecifier="http://localhost:7800/sys/call_procedure">
+      <nodes xmi:type="ComIbmHTTPAsyncRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="654,1" asyncResponseCorrelator="CHIUSURA_CONTRATTI_ASYNC_PROC" URLSpecifier="http://ibmsvlib01:7800/sys/call_procedure">
         <translation xmi:type="utility:ConstantString" string="CallProcedure"/>
       </nodes>
-      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="19,188" asyncRequestCorrelator="CHIUSURA_CONTRATTI_ASYNC_PROC">
+      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="-16,260" asyncRequestCorrelator="CHIUSURA_CONTRATTI_ASYNC_PROC" messageDomainProperty="JSON">
         <translation xmi:type="utility:ConstantString" string="ProcedureResponse"/>
       </nodes>
-      <nodes xmi:type="ComIbmHTTPAsyncRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="201,183" asyncResponseCorrelator="CHIUSURA_CONTRATTI_MAIL" URLSpecifier="http://localhost:7800/sys/send_email">
+      <nodes xmi:type="ComIbmHTTPAsyncRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="251,255" asyncResponseCorrelator="CHIUSURA_CONTRATTI_MAIL" URLSpecifier="http://localhost:7800/sys/email_sender">
         <translation xmi:type="utility:ConstantString" string="SendEmail"/>
       </nodes>
-      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="303,184" asyncRequestCorrelator="CHIUSURA_CONTRATTI_MAIL">
+      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="361,254" asyncRequestCorrelator="CHIUSURA_CONTRATTI_MAIL">
         <translation xmi:type="utility:ConstantString" string="MailResp"/>
       </nodes>
-      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_13" location="463,180" destination="none">
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_13" location="514,251" destination="none">
         <translation xmi:type="utility:ConstantString" string="Trace"/>
       </nodes>
-      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_14" location="165,122" computeExpression="esql://routine/#SE3_CHIUSURA_CONTRATTI_BuildErrorMessage.Main">
-        <translation xmi:type="utility:ConstantString" string="BuildErrorMessage"/>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="53,48" computeExpression="esql://routine/#SE3_CHIUSURA_CONTRATTI_BuildQueryString.Main" computeMode="destination">
+        <translation xmi:type="utility:ConstantString" string="BuildQueryString"/>
       </nodes>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="362,116">
+        <translation xmi:type="utility:ConstantString" string="HTTP Reply1"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="269,52" computeExpression="esql://routine/#SE3_CHIUSURA_CONTRATTI_SwitchStatus.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="SwitchStatus"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="127,255" computeExpression="esql://routine/#SE3_CHIUSURA_CONTRATTI_BuildSendMail.Main">
+        <translation xmi:type="utility:ConstantString" string="BuildSendMail"/>
+      </nodes>
       <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
       <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_11" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_12" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_14" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.catch" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_14" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_12" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_13" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_15" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_18" targetNode="FCMComposite_1_11" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
     </composition>
     <propertyOrganizer/>
     <stickyBoard/>

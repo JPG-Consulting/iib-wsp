@@ -13,7 +13,6 @@ import com.ibm.broker.plugin.MbMessage;
 import com.ibm.broker.plugin.MbMessageAssembly;
 import com.ibm.broker.plugin.MbOutputTerminal;
 import com.ibm.broker.plugin.MbUserException;
-import com.sun.xml.internal.ws.resources.ManagementMessages;
 
 
 public class InsertDB extends MbJavaComputeNode {
@@ -144,10 +143,8 @@ public class InsertDB extends MbJavaComputeNode {
 	    	conn = getJDBCType4Connection(
 	    			
 	    			outAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/HTTP/Input/QueryString/db").getValueAsString(),
-	    			//this.inAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/HTTP/Input/QueryString/db").getValueAsString(),
 	    			JDBC_TransactionType.MB_TRANSACTION_AUTO);
-	    	
-	    	//conn.close();
+
 	    	setContinue(true);                             
     	    return true;
     	

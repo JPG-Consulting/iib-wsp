@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmMQInput.msgnode="ComIbmMQInput.msgnode" xmlns:ComIbmMSLMapping.msgnode="ComIbmMSLMapping.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="SAP_EVMK_PARTITE_APERTE.msgflow" nsPrefix="SAP_EVMK_PARTITE_APERTE.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="SAP_EVMK_PARTITE_APERTE" bundleName="SAP_EVMK_PARTITE_APERTE" pluginId="IME_EVERY_MAKE"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_EVERY_MAKE/icons/full/obj16/SAP_EVMK_PARTITE_APERTE.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_EVERY_MAKE/icons/full/obj30/SAP_EVMK_PARTITE_APERTE.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmMQInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="23,101" queueName="ZIEVMK_PARTITE_APERTE">
+        <translation xmi:type="utility:ConstantString" string="SAP200_CONTRATTI"/>
+      </nodes>
+      <nodes xmi:type="ComIbmMSLMapping.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="152,102" mappingExpression="msl://{default}#SAP_EM_PARTITE_APERTE_mapToXml">
+        <translation xmi:type="utility:ConstantString" string="mapToXml"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

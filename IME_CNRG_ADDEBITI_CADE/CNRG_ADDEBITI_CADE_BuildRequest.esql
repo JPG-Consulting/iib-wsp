@@ -1,0 +1,25 @@
+
+
+CREATE COMPUTE MODULE CNRG_ADDEBITI_CADE_BuildRequest
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		-- chimata a procedura URL http://ibmsvlib01:7800/sys/call_procedure?db=C1&proc=SWITCH_OUT!!!
+		
+		SET OutputLocalEnvironment.Destination.HTTP.QueryString.db =          InputLocalEnvironment.Destination.HTTP.QueryString.db;--       'C1';
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.proc =        'ADDEBITI_CADE.CREA_ADDEBITI_CADE';
+        
+        
+        -- creare una struttura Json 
+         
+        set OutputRoot.JSON.Data.(JSON.Array)Parameters.Item[1].direction='out';
+        set OutputRoot.JSON.Data.(JSON.Array)Parameters.Item[1].type='integer';
+        set OutputRoot.JSON.Data.(JSON.Array)Parameters.Item[1].name='cod_errore';
+        set OutputRoot.JSON.Data.(JSON.Array)Parameters.Item[1].value='';
+        
+		
+		
+		RETURN TRUE;
+	END;
+ 
+END MODULE;

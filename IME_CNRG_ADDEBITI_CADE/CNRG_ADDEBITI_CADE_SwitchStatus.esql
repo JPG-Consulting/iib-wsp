@@ -1,0 +1,23 @@
+
+
+CREATE COMPUTE MODULE CNRG_ADDEBITI_CADE_SwitchStatus
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		 IF  InputRoot.JSON.Data.info.status    THEN
+               SET OutputRoot = InputRoot;
+			    
+			   RETURN true;
+			 
+			ELSE
+			   SET OutputRoot = InputRoot;
+			   PROPAGATE TO TERMINAL 'out1';
+			   RETURN false;
+			END IF;
+			
+			
+		
+		RETURN TRUE;
+	END;
+
+END MODULE;

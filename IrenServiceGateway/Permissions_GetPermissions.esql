@@ -1,0 +1,45 @@
+
+
+CREATE COMPUTE MODULE Permissions_GetPermissions
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		IF CARDINALITY(InputLocalEnvironment.HTTP.Input.Path.Segment[]) = 3 AND InputLocalEnvironment.HTTP.Input.Path.Segment[3] IS NOT NULL THEN
+			SET OutputRoot.JSON.(JSON.Array)Data.Item[] = SELECT P.ID_RES, R.NAME, 'NO' AS ALLOWED FROM Database.IIB_PERMISSIONS AS P, Database.IIB_RESOURCES AS R, Database.IIB_USERS AS U WHERE P.ID_USER = U.ID_USER AND P.ID_RES = R.ID_RES AND U.TOKEN = COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.user, '');
+			
+			SET Environment.Variables.Allowed[] = SELECT P.ID_RES FROM Database.IIB_PERMISSIONS AS P WHERE P.ID_USER = InputLocalEnvironment.HTTP.Input.Path.Segment[3];
+			
+			DECLARE isCaller CHARACTER THE(SELECT ITEM U.USERNAME FROM Database.IIB_USERS AS U WHERE U.ID_USER = InputLocalEnvironment.HTTP.Input.Path.Segment[3] AND U.TOKEN = COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.user, ''));
+			
+			FOR res AS Environment.Variables.Allowed[] DO
+				FOR userRes AS OutputRoot.JSON.(JSON.Array)Data.Item[] DO
+					IF userRes.ID_RES = res.ID_RES THEN
+						SET userRes.ALLOWED = 'YES';
+					END IF;
+					
+					IF isCaller IS NOT NULL THEN
+						SET userRes.ALLOWED = 'BLANK';
+					END IF;
+				END FOR;
+			END FOR;
+		ELSE
+			SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 405;
+		END IF;
+		
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		SET OutputRoot = InputRoot;
+	END;
+END MODULE;

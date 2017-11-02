@@ -3,22 +3,35 @@
 CREATE COMPUTE MODULE SE3_CHIUSURA_CONTRATTI_BuildRequest
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
-		-- CALL CopyMessageHeaders();
-		-- CALL CopyEntireMessage();
-		RETURN TRUE;
+		-- chimata a procedura URL http://ibmsvlib01:7800/sys/call_procedure?db=C1&proc=SWITCH_OUT!!!
+		
+		SET OutputLocalEnvironment.Destination.HTTP.QueryString.db =          'C1';
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.proc =        'CNRG.SWITCH_OUT';
+        
+        
+        -- creare una struttura Json 
+         
+        set OutputRoot.JSON.Data.(JSON.Array)Parameters.Item[1].direction='out';
+        set OutputRoot.JSON.Data.(JSON.Array)Parameters.Item[1].type='integer';
+        set OutputRoot.JSON.Data.(JSON.Array)Parameters.Item[1].name='err_out';
+        set OutputRoot.JSON.Data.(JSON.Array)Parameters.Item[1].value='';
+        
+        
+        /* oggetto da comporre
+
+        {"Parameters": [
+					      {"direction": "out",      
+					      "type": "number",  
+					      "name":"err_out",
+					      "value":""
+					      }
+					      
+					    ]    
+        }*/
+        
+        
+       	RETURN TRUE;
 	END;
 
-	CREATE PROCEDURE CopyMessageHeaders() BEGIN
-		DECLARE I INTEGER 1;
-		DECLARE J INTEGER;
-		SET J = CARDINALITY(InputRoot.*[]);
-		WHILE I < J DO
-			SET OutputRoot.*[I] = InputRoot.*[I];
-			SET I = I + 1;
-		END WHILE;
-	END;
-
-	CREATE PROCEDURE CopyEntireMessage() BEGIN
-		SET OutputRoot = InputRoot;
-	END;
+	 
 END MODULE;

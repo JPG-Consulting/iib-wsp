@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" name="GestioneIncassi" targetNamespace="http://www.gruppoiren.it/Everymake/" xmlns:ns="http://www.gruppoiren.it/Everymake/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsd1="http://www.gruppoiren.it/Everymake/">
+  <wsdl:documentation>
+    <wsdl:appinfo source="WMQI_APPINFO">
+      <MRWSDLAppInfo imported="true">
+        <binding hasEncoding="false" imported="true" name="GestioneIncassiSOAP" originalBindingStyle="document"/>
+      </MRWSDLAppInfo>
+    </wsdl:appinfo>
+  </wsdl:documentation>
+  <wsdl:types>
+   <xsd:schema targetNamespace="http://www.gruppoiren.it/Everymake/">
+<xsd:include schemaLocation="Incassi.xsd"/>
+</xsd:schema>
+    
+  
+  
+  </wsdl:types>
+  <wsdl:types>
+  	<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  		<xsd:import namespace="http://www.gruppoiren.it/Everymake/"
+  			schemaLocation="Incassi.xsd">
+  		</xsd:import></xsd:schema></wsdl:types>
+  <wsdl:message name="GestioneIncassi">
+    <wsdl:part element="ns:ElencoIncassi" name="ElencoIncassi"/>
+  </wsdl:message>
+  <wsdl:message name="GestioneIncassiResponse">
+    <wsdl:part element="ns:Acquisizione" name="Acquisizione"/>
+  </wsdl:message>
+  <wsdl:portType name="GestioneIncassi">
+    <wsdl:operation name="GestioneIncassi">
+      <wsdl:input message="ns:GestioneIncassi"/>
+      <wsdl:output message="ns:GestioneIncassiResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GestioneIncassiSOAP" type="ns:GestioneIncassi">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GestioneIncassi">
+      <soap:operation soapAction="http://www.gruppoiren.org/Everymake/NewOperation"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GestioneIncassi">
+    <wsdl:port binding="ns:GestioneIncassiSOAP" name="GestioneIncassiSOAP">
+      <soap:address location="http://localhost:7800/ime/SOAP/everymake"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

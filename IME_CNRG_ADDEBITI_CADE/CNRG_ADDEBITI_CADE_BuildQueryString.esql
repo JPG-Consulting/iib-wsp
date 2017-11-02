@@ -1,0 +1,19 @@
+
+
+CREATE COMPUTE MODULE CNRG_ADDEBITI_CADE_BuildQueryString
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	    SET OutputLocalEnvironment.Destination.HTTP.QueryString.db                 = InputLocalEnvironment.HTTP.Input.QueryString.db;
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.nomeTabella        = 'A1378_ADDEBITI_CADE';
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.chiave             = 'A1378_ID_ADDEBITO_CADE';
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.sequence           = 'A1378_ADDEBITO_CADE_SEQ';
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.chiaveUnica        = 'NO';
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.separatore         =  InputLocalEnvironment.HTTP.Input.QueryString.separatore;           -- '|';
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.formatoData        =  InputLocalEnvironment.HTTP.Input.QueryString.formatoData;          --'dd/mm/yyyy';
+        SET OutputLocalEnvironment.Destination.HTTP.QueryString.separatoreDecimali =  InputLocalEnvironment.HTTP.Input.QueryString.separatoreDecimali;  --',.';
+		
+		RETURN TRUE;
+	END;
+
+	 
+END MODULE;

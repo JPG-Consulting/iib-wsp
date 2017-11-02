@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/Everymake/">
+    <xsd:element name="ElencoContratti">
+    	<xsd:complexType>
+    		<xsd:sequence>
+    			<xsd:element name="SISTEMA_SORGENTE" type="xsd:string"></xsd:element>
+    			<xsd:element name="DatiContratto" minOccurs="0" maxOccurs="unbounded">
+    				<xsd:complexType>
+    					<xsd:sequence>
+							<xsd:element name="BUSINESS_PARTNER" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="CONTO_CONTRATTUALE" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="SOCIETA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="CONTRATTO" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="CODICE_FISCALE" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="PARTITA_IVA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="NOMINATIVO" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="VIA_FORNITURA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="CAP_FORNITURA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="COMUNE_FORNITURA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="PROVINCIA_FORNITURA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="POD_PDR" minOccurs="0" maxOccurs="1" type="xsd:string"/>														
+    					</xsd:sequence>
+    				</xsd:complexType>
+    			</xsd:element>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    </xsd:element>
+    
+</xsd:schema>

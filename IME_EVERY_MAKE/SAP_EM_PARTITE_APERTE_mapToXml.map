@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/SapZievmkPartiteAperte.xsd"/>
+    <output path="/PartiteAperte.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteaperte"/>
+        <namespace kind="supplement" prefix="in4" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteaperteidocbo"/>
+        <namespace kind="supplement" prefix="in3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapidoccontrolrecord"/>
+        <namespace kind="supplement" prefix="in5" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteapertedatarecord"/>
+        <namespace kind="supplement" prefix="in6" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteapertezsevmktestata000"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteapertezsevmkpartiteaperte000"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/Everymake/"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="SAP_EM_PARTITE_APERTE_mapToXml">
+        <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteaperte" path="mb:msg(SapZievmkPartiteAperte,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_SapZievmkPartiteAperte"/>
+        <output namespace="http://www.gruppoiren.it/Everymake/" path="mb:msg(ElencoPartite,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <foreach>
+            <input path="$ComIbmMessageAssembly_SapZievmkPartiteAperte/SapZievmkPartiteAperte/SapZievmkPartiteAperteIDocBO/SapZievmkPartiteAperteDataRecord/SapZievmkPartiteAperteZsevmkTestata000/SapZievmkPartiteAperteZsevmkPartiteAperte000"/>
+            <output path="$MessageAssembly/ElencoPartite/DatiPartite"/>
+            <move>
+                <input path="BUSINESS_PARTNER"/>
+                <output path="BUSINESS_PARTNER"/>
+            </move>
+            <move>
+                <input path="CONTO_CONTRATTUALE"/>
+                <output path="CONTO_CONTRATTUALE"/>
+            </move>
+            <move>
+                <input path="CONTRATTO"/>
+                <output path="CONTRATTO"/>
+            </move>
+            <move>
+                <input path="NUMERO_DOCUMENTO"/>
+                <output path="NUMERO_DOCUMENTO"/>
+            </move>
+            <move>
+                <input path="SOCIETA"/>
+                <output path="SOCIETA"/>
+            </move>
+            <move>
+                <input path="DATA_EMISSIONE"/>
+                <output path="DATA_EMISSIONE"/>
+            </move>
+            <move>
+                <input path="DATA_SCADENZA"/>
+                <output path="DATA_SCADENZA"/>
+            </move>
+            <move>
+                <input path="IMPORTO"/>
+                <output path="IMPORTO"/>
+            </move>
+            <move>
+                <input path="NUMERO_FATTURA"/>
+                <output path="NUMERO_FATTURA"/>
+            </move>
+            <move>
+                <input path="BOLLETTINO_UNICO"/>
+                <output path="BOLLETTINO_UNICO"/>
+            </move>
+            <move>
+                <input path="ESTRATTO_CONTO"/>
+                <output path="ESTRATTO_CONTO"/>
+            </move>
+            <move>
+                <input path="ESTRATTO_CONTO_SOLLECITI"/>
+                <output path="ESTRATTO_CONTO_SOLLECITI"/>
+            </move>
+            <move>
+                <input path="BOLLETTINO_RATEIZZAZIONE"/>
+                <output path="BOLLETTINO_RATEIZZAZIONE"/>
+            </move>
+            <move>
+                <input path="TIPO_IMPORTO"/>
+                <output path="TIPO_IMPORTO"/>
+            </move>
+        </foreach>
+    </mappingDeclaration>
+</mappingRoot>

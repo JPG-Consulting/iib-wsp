@@ -1,0 +1,27 @@
+DECLARE ns23 NAMESPACE 'www.gruppoiren.it/schemas';
+
+CREATE COMPUTE MODULE SE3_CHIUSURA_CONTRATTI_BuildSendMail
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+        
+        
+       
+		CREATE FIELD OutputRoot.XMLNSC.ns23:Params;
+		DECLARE param REFERENCE TO OutputRoot.XMLNSC.ns23:Params;
+				
+	    set param.flusso = 'CNRG_CHIUSURA_CONTRATTI';
+	    IF (InputRoot.JSON.Data.info.status) THEN
+	    	set param.obj1 = 'Completata';
+		    set param.body1  = 'Fine elaborazione procedura: A1336_SWITCH_OUT';
+		    set param.body2  = 'err_out : '||CAST(InputRoot.JSON.Data.result.err_out  AS CHARACTER);
+	    ELSE
+	    	set param.obj1 = 'ERRORE';
+	    	set param.body1  = 'Errore elaborazione procedura: A1336_SWITCH_OUT';
+		    set param.body2  = 'Dettaglio : '|| CAST(InputRoot.JSON.Data.info.description AS CHARACTER);
+	    END IF;
+	    
+		RETURN TRUE;		
+		 
+	END;
+ 
+END MODULE;

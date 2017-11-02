@@ -1,0 +1,20 @@
+
+
+CREATE COMPUTE MODULE AnagraficaServizi_GetAnagrafica
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE user CHARACTER COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.user, '%');
+		DECLARE id CHARACTER '%';		
+		IF CARDINALITY(InputLocalEnvironment.HTTP.Input.Path.Segment[]) = 3 AND InputLocalEnvironment.HTTP.Input.Path.Segment[3] IS NOT NULL THEN
+			SET id = InputLocalEnvironment.HTTP.Input.Path.Segment[3];
+		END IF;
+		
+		SET OutputRoot.JSON.(JSON.Array)Data.Item[] = SELECT T.ID_SERVIZIO, T.BUSINESS_UNIT,T.APPLICAZIONE,T.SERVIZIO,T.URL,T.DESCRIZIONE FROM Database.IIB_ANAGRAFICA_SERVIZI AS T ; 
+		                                               
+		
+		RETURN TRUE;
+	 
+	END;
+
+	 
+END MODULE;

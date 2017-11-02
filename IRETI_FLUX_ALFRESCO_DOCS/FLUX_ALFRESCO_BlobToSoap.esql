@@ -130,6 +130,7 @@ CREATE COMPUTE MODULE FLUX_ALFRESCO_BlobToSoap
 		END FOR;
 		END IF;
 		
+		SET OutputRoot.JSON.Data.permissions.inheritPermissions = false;
 		FOR acl AS documento.ns:acls.ns:acl[] DO
 			SET OutputRoot.JSON.Data.permissions.{'GROUP_'||acl.ns:soggetto} = 'SiteConsumer';	
 		END FOR;

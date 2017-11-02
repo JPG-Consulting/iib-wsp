@@ -1,0 +1,49 @@
+
+
+CREATE COMPUTE MODULE UPLOAD_CONTRATTI_BULK_CheckInput
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF CARDINALITY(InputLocalEnvironment.HTTP.Input.Path.Segment[]) = 6 THEN
+			DECLARE d CHARACTER InputLocalEnvironment.HTTP.Input.Path.Segment[4]||InputLocalEnvironment.HTTP.Input.Path.Segment[5]||InputLocalEnvironment.HTTP.Input.Path.Segment[6];
+			SET d = CAST(CAST(d AS DATE FORMAT 'yyyyMMdd' DEFAULT DATE '0000-01-01') AS CHARACTER FORMAT 'yyyyMMdd');
+			IF d = '00010000' THEN
+				SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 404;
+				PROPAGATE TO TERMINAL 'out1';
+				RETURN FALSE;
+			END IF;
+			
+			DECLARE user CHARACTER THE (SELECT ITEM T.VALORE
+							      		 FROM Database.IIB_VAR_CFG AS T
+								        WHERE T.FLUSSO    ='CONTRATTI_ALFRESCO' 
+								          AND T.VARIABILE ='FTP_USER');
+			DECLARE password CHARACTER THE (SELECT ITEM T.VALORE
+							      		 FROM Database.IIB_VAR_CFG AS T
+								        WHERE T.FLUSSO    ='CONTRATTI_ALFRESCO' 
+								          AND T.VARIABILE ='FTP_PASSWORD');
+								          
+			DECLARE host CHARACTER THE (SELECT ITEM T.VALORE
+				      		 FROM Database.IIB_VAR_CFG AS T
+					        WHERE T.FLUSSO    ='CONTRATTI_ALFRESCO' 
+					          AND T.VARIABILE ='FTP_HOST');
+					   
+			DECLARE anno CHARACTER SUBSTRING(d FROM 1 FOR 4);
+			DECLARE mese CHARACTER SUBSTRING(d FROM 5 FOR 2);
+			DECLARE giorno CHARACTER SUBSTRING(d FROM 7 FOR 2);
+			SET OutputLocalEnvironment.Variables.Path = '/Standard/anno_'||anno||'/mese_'||mese||'/giorno_'||giorno;
+			SET OutputLocalEnvironment.Variables.URL = THE(SELECT ITEM T.VALORE FROM Database.IIB_VAR_CFG AS T WHERE T.FLUSSO = 'DOCUMENTALE' AND T.VARIABILE = 'ENDPOINT_ALFRESCO')||'alfresco/service/bulkfsimport/initiate';
+			--SET OutputLocalEnvironment.Variables.URL = 'http://ibmtstib01:7800/sys/permissions/1111';
+			SET OutputLocalEnvironment.Variables.Host = host;
+			SET OutputLocalEnvironment.Variables.User = user;
+			SET OutputLocalEnvironment.Variables.Password = password;
+			SET OutputRoot.HTTPRequestHeader.Authorization = InputRoot.HTTPInputHeader.Authorization;
+			
+								          			
+			RETURN TRUE;
+		ELSE
+			SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 404;
+			PROPAGATE TO TERMINAL 'out1';
+			RETURN FALSE;
+		END IF;
+	END;
+
+END MODULE;

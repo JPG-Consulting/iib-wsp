@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/Everymake/" xmlns:ns="http://www.gruppoiren.it/Everymake/">
+    <xsd:element name="ElencoPartite">
+    	<xsd:complexType>
+    		<xsd:sequence>
+    			<xsd:element name="SISTEMA_SORGENTE" type="xsd:string"></xsd:element>
+    			<xsd:element name="DatiPartite" minOccurs="0" maxOccurs="unbounded">
+    				<xsd:complexType>
+    					<xsd:sequence>
+							<xsd:element name="BUSINESS_PARTNER" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="CONTO_CONTRATTUALE" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="SOCIETA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="CONTRATTO" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="NUMERO_DOCUMENTO" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="DATA_EMISSIONE" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="DATA_SCADENZA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="IMPORTO" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="NUMERO_FATTURA" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="BOLLETTINO_UNICO" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="ESTRATTO_CONTO" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+							<xsd:element name="ESTRATTO_CONTO_SOLLECITI" minOccurs="0" maxOccurs="1" type="xsd:string"/>														
+    						<xsd:element name="BOLLETTINO_RATEIZZAZIONE" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+    						<xsd:element name="TIPO_IMPORTO" minOccurs="0" maxOccurs="1" type="xsd:string"/>    						
+    					</xsd:sequence>
+    				</xsd:complexType>
+    			</xsd:element>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    </xsd:element>
+    
+</xsd:schema>

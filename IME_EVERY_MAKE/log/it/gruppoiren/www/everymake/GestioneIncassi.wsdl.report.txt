@@ -1,0 +1,22 @@
+
+
+Importing file: P:\Users\e-decaro\IBM\IIBT10\workspace\IME_EVERY_MAKE\GestioneIncassi.wsdl
+
+The WSDL import will proceed with bindings GestioneIncassiSOAP.
+Creating wsdl schema document for file:///P:/Users/e-decaro/IBM/IIBT10/workspace/IME_EVERY_MAKE/GestioneIncassi.wsdl.
+Parsing wsdl binding {http://www.gruppoiren.it/Everymake/}GestioneIncassiSOAP.
+Parsing wsdl binding input GestioneIncassiSAP.
+Parsing wsdl binding output GestioneIncassiSAP.
+Processing doc style for operation GestioneIncassiSAP.
+Populating WSDL schema GestioneIncassi.xsd.
+Creating file GestioneIncassi.xsd in the workspace.
+Creating file Incassi.xsd in the workspace.
+Copying source WSDL GestioneIncassi.wsdl to GestioneIncassi.wsdl.
+
+Elapsed time processing this message definition file: 0.235 seconds
+Number of warnings for this message definition file: 0
+
+
+Number of files processed: 1
+
+

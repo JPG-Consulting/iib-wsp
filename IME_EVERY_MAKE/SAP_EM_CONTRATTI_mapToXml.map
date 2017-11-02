@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/SapZievmkContratti.xsd"/>
+    <output path="/Contratti.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="in2" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapidoccontrolrecord"/>
+        <namespace kind="supplement" prefix="in4" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontrattizsevmktestata000"/>
+        <namespace kind="supplement" prefix="in3" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontrattiidocbo"/>
+        <namespace kind="supplement" prefix="in5" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontratti"/>
+        <namespace kind="supplement" prefix="in6" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontrattizsevmkcontratti000"/>
+        <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontrattidatarecord"/>
+        <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/Everymake/"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="SAP_EM_CONTRATTI_mapToXml">
+        <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontratti" path="mb:msg(SapZievmkContratti,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <output namespace="http://www.gruppoiren.it/Everymake/" path="mb:msg(ElencoContratti,assembly,XMLNSC,Properties)" var="MessageAssembly2"/>
+        <foreach>
+            <input path="$MessageAssembly/SapZievmkContratti/SapZievmkContrattiIDocBO/SapZievmkContrattiDataRecord/SapZievmkContrattiZsevmkTestata000/SapZievmkContrattiZsevmkContratti000"/>
+            <output path="$MessageAssembly2/ElencoContratti/DatiContratto"/>
+            <move>
+                <input path="BUSINESS_PARTNER"/>
+                <output path="BUSINESS_PARTNER"/>
+            </move>
+            <move>
+                <input path="CONTO_CONTRATTUALE"/>
+                <output path="CONTO_CONTRATTUALE"/>
+            </move>
+            <move>
+                <input path="SOCIETA"/>
+                <output path="SOCIETA"/>
+            </move>
+            <move>
+                <input path="CONTRATTO"/>
+                <output path="CONTRATTO"/>
+            </move>
+            <move>
+                <input path="CODICE_FISCALE"/>
+                <output path="CODICE_FISCALE"/>
+            </move>
+            <move>
+                <input path="PARTITA_IVA"/>
+                <output path="PARTITA_IVA"/>
+            </move>
+            <move>
+                <input path="NOMINATIVO"/>
+                <output path="NOMINATIVO"/>
+            </move>
+            <move>
+                <input path="VIA_FORNITURA"/>
+                <output path="VIA_FORNITURA"/>
+            </move>
+            <move>
+                <input path="CAP_FORNITURA"/>
+                <output path="CAP_FORNITURA"/>
+            </move>
+            <move>
+                <input path="COMUNE_FORNITURA"/>
+                <output path="COMUNE_FORNITURA"/>
+            </move>
+            <move>
+                <input path="PROVINCIA_FORNITURA"/>
+                <output path="PROVINCIA_FORNITURA"/>
+            </move>
+            <move>
+                <input path="POD_PDR"/>
+                <output path="POD_PDR"/>
+            </move>
+        </foreach>
+    </mappingDeclaration>
+</mappingRoot>

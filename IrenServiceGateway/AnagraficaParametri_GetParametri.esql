@@ -1,0 +1,23 @@
+
+
+CREATE COMPUTE MODULE AnagraficaParametri_GetParametri
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		 
+		DECLARE user CHARACTER COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.user, '%');
+		DECLARE id CHARACTER '%';	
+		DECLARE id_servizio CHARACTER COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.servizio, '%');
+			
+		IF CARDINALITY(InputLocalEnvironment.HTTP.Input.Path.Segment[]) = 3 AND InputLocalEnvironment.HTTP.Input.Path.Segment[3] IS NOT NULL THEN
+			SET id = InputLocalEnvironment.HTTP.Input.Path.Segment[3];
+		END IF;
+		
+		SET OutputRoot.JSON.(JSON.Array)Data.Item[] = SELECT T.ID_PARAMETRO, T.ID_SERVIZIO,T.NOME_PARAMETRO,T.OBBLIGATORIO,T.TIPO_PARAMETRO,T.DATATYPE,T.DOMINIO FROM Database.IIB_ANAGRAFICA_PARAMETRI AS T 
+		                                              where T.ID_SERVIZIO = id_servizio; 
+		 
+		 
+		RETURN TRUE;
+	END;
+
+	 
+END MODULE;

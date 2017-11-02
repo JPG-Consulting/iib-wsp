@@ -1,0 +1,23 @@
+
+
+CREATE COMPUTE MODULE Permissions_PostPermissions
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		IF CARDINALITY(InputLocalEnvironment.HTTP.Input.Path.Segment[]) = 3 AND InputLocalEnvironment.HTTP.Input.Path.Segment[3] IS NOT NULL THEN
+			DECLARE idUser CHARACTER COALESCE(InputLocalEnvironment.HTTP.Input.Path.Segment[3], '9999999999');
+			
+			DELETE FROM Database.IIB_PERMISSIONS AS P WHERE P.ID_USER = idUser;
+			
+			FOR perm AS InputRoot.JSON.Data.Item[] DO
+				INSERT INTO Database.IIB_PERMISSIONS (ID_USER, ID_RES) VALUES 
+				(idUser, perm);
+			END FOR;
+			SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 201;
+			
+		ELSE
+			SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 405;
+		END IF;
+		
+		RETURN TRUE;
+	END;
+END MODULE;

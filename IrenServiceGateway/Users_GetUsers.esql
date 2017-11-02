@@ -1,0 +1,16 @@
+
+
+CREATE COMPUTE MODULE Users_GetUsers
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE user CHARACTER COALESCE(InputLocalEnvironment.HTTP.Input.QueryString.user, '%');
+		DECLARE id CHARACTER '%';		
+		IF CARDINALITY(InputLocalEnvironment.HTTP.Input.Path.Segment[]) = 3 AND InputLocalEnvironment.HTTP.Input.Path.Segment[3] IS NOT NULL THEN
+			SET id = InputLocalEnvironment.HTTP.Input.Path.Segment[3];
+		END IF;
+		
+		SET OutputRoot.JSON.(JSON.Array)Data.Item[] = SELECT T.ID_USER, T.USERNAME FROM Database.IIB_USERS AS T WHERE T.ID_USER LIKE id AND T.TOKEN LIKE user;
+	END;
+
+END MODULE;
+

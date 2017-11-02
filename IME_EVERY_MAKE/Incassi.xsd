@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.gruppoiren.it/Everymake/" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions" xmlns:ns="http://www.gruppoiren.it/Everymake/">
+
+
+    <xsd:element ibmSchExtn:docRoot="true" name="ElencoIncassi">
+    	<xsd:complexType>
+    		<xsd:sequence>
+    			<xsd:element name="SISTEMA_SORGENTE" type="xsd:string"/>
+    			<xsd:element maxOccurs="unbounded" minOccurs="0" name="DatiIncassi">
+    				<xsd:complexType>
+    					<xsd:sequence>
+    						<xsd:element maxOccurs="1" minOccurs="1" name="TestataIncassi">
+    							<xsd:complexType>
+    								<xsd:sequence>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="CONTABILE_EVERYMAKE" type="xsd:string"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="CANALE_INCASSO" type="xsd:string"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="DATA_REGISTRAZIONE" type="xsd:date"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="DATA_PAGAMENTO" type="xsd:date"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="DATA_VALUTA" type="xsd:date"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="SOCIETA_INCASSO" type="xsd:string"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="COGE_INCASSO" type="xsd:string"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="IMPORTO_INCASSO" type="xsd:decimal"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="DIVISA" type="xsd:string"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="CAUSALE_BONIFICO" type="xsd:string"/>
+    								</xsd:sequence>
+    							</xsd:complexType>
+    						</xsd:element>
+    						<xsd:element maxOccurs="unbounded" minOccurs="0" name="PosizioneIncassi">
+    							<xsd:complexType>
+    								<xsd:sequence>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="NUMERO_DOCUMENTO" type="xsd:string"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="CONTRATTO" type="xsd:string"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="BOLLETTINO_RATEIZZAZIONE" type="xsd:string"/>
+    									<xsd:element maxOccurs="1" minOccurs="0" name="IMPORTO" type="xsd:decimal"/>
+    								</xsd:sequence>
+    							</xsd:complexType>
+    						</xsd:element>
+    					</xsd:sequence>
+    				</xsd:complexType>
+    			</xsd:element>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    </xsd:element>
+
+    <xsd:element ibmSchExtn:docRoot="true" name="Acquisizione">
+    	<xsd:complexType>
+    		<xsd:sequence>
+    			<xsd:element name="Esito" type="xsd:string"/>
+    			<xsd:element name="Descrizione" type="xsd:string"/>
+    		</xsd:sequence>
+    	</xsd:complexType>
+    </xsd:element>
+</xsd:schema>

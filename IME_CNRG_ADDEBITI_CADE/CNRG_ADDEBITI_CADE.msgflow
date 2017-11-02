@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmHTTPAsyncRequest.msgnode="ComIbmHTTPAsyncRequest.msgnode" xmlns:ComIbmHTTPAsyncResponse.msgnode="ComIbmHTTPAsyncResponse.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ComIbmWSInput.msgnode="ComIbmWSInput.msgnode" xmlns:ComIbmWSReply.msgnode="ComIbmWSReply.msgnode" xmlns:ComIbmWSRequest.msgnode="ComIbmWSRequest.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="CNRG_ADDEBITI_CADE.msgflow" nsPrefix="CNRG_ADDEBITI_CADE.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="CNRG_ADDEBITI_CADE" bundleName="CNRG_ADDEBITI_CADE" pluginId="IME_CNRG_ADDEBITI_CADE"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_CNRG_ADDEBITI_CADE/icons/full/obj16/CNRG_ADDEBITI_CADE.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_CNRG_ADDEBITI_CADE/icons/full/obj30/CNRG_ADDEBITI_CADE.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmWSInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="53,175" URLSpecifier="/ime/addebiti_cade" parseQueryString="true">
+        <translation xmi:type="utility:ConstantString" string="HTTP Input"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="454,16">
+        <translation xmi:type="utility:ConstantString" string="HTTP Reply"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="435,139">
+        <translation xmi:type="utility:ConstantString" string="HTTP Reply1"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="100,79" computeExpression="esql://routine/#CNRG_ADDEBITI_CADE_BuildQueryString.Main" computeMode="destination">
+        <translation xmi:type="utility:ConstantString" string="BuildQueryString"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="229,71" URLSpecifier="http://localhost:7800/sys/upload_csv" httpVersion="1.1" protocol="TLS" messageDomainProperty="JSON">
+        <translation xmi:type="utility:ConstantString" string="InsertRows"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_6" location="333,65" computeExpression="esql://routine/#CNRG_ADDEBITI_CADE_SwitchStatus.Main">
+        <translation xmi:type="utility:ConstantString" string="SwitchStatus"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="558,15" computeExpression="esql://routine/#CNRG_ADDEBITI_CADE_BuildRequest.Main" computeMode="all">
+        <translation xmi:type="utility:ConstantString" string="BuildRequest"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPAsyncRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="667,15" asyncResponseCorrelator="CNRG_ADDEBITI_CADE_ASYNC_PROC" URLSpecifier="http://ibmsvlib01:7800/sys/call_procedure">
+        <translation xmi:type="utility:ConstantString" string="CallProcedure"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="27,307" asyncRequestCorrelator="CNRG_ADDEBITI_CADE_ASYNC_PROC" messageDomainProperty="JSON">
+        <translation xmi:type="utility:ConstantString" string="ProcedureResponse"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="173,303" computeExpression="esql://routine/#CNRG_ADDEBITI_CADE_BuildSendMail.Main">
+        <translation xmi:type="utility:ConstantString" string="BuildSendMail"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="514,297" asyncRequestCorrelator="CNRG_ADDEBITI_CADE_ASYNC_MAIL">
+        <translation xmi:type="utility:ConstantString" string="MailResp"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="627,305">
+        <translation xmi:type="utility:ConstantString" string="Trace"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPAsyncRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_13" location="319,304" asyncResponseCorrelator="CNRG_ADDEBITI_CADE_ASYNC_MAIL" URLSpecifier="http://localhost:7800/sys/email_sender">
+        <translation xmi:type="utility:ConstantString" string="SendEmail"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_10" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_6" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_6" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_7" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>
