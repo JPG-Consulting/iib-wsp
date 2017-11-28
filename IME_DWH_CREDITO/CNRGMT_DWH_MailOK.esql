@@ -1,0 +1,14 @@
+
+
+CREATE COMPUTE MODULE CNRGMT_DWH_MailOK
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'CNRG_DWH';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'CNRGMT_DWH: Acquisizione Flusso CNRG MT';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'I valori dei Clienti/Fornitori di CNRG MT sono stati aquisiti';
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

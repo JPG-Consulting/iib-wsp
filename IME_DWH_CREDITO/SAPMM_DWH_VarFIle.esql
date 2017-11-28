@@ -1,0 +1,28 @@
+
+
+CREATE COMPUTE MODULE SAPMM_DWH_VarFIle
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+	SET  OutputLocalEnvironment.Destination.File.Directory  = THE (SELECT ITEM T.VALORE
+                                   	     						FROM Database.IIB_VAR_CFG AS T
+                                      							  WHERE T.FLUSSO    = 'SAPMM_DWH'
+                                        						 AND T.VARIABILE ='PATH');
+  
+
+	SET  OutputLocalEnvironment.Destination.File.Name  = THE (SELECT ITEM T.VALORE
+                                   	     						FROM Database.IIB_VAR_CFG AS T
+                                      							  WHERE T.FLUSSO    = 'SAPMM_DWH'
+                                        						 AND T.VARIABILE ='NOMEFILE');
+                                        						 
+   	SET  OutputLocalEnvironment.Destination.File.Archive.Directory  = THE (SELECT ITEM T.VALORE
+                                   	     						FROM Database.IIB_VAR_CFG AS T
+                                      							  WHERE T.FLUSSO    = 'SAPMM_DWH'
+                                        						 AND T.VARIABILE ='ARCPATH');        
+                                        						                                         						                             				 
+                                        						 
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

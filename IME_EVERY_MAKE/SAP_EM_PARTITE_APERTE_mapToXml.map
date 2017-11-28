@@ -9,11 +9,12 @@
         <namespace kind="supplement" prefix="in6" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteapertezsevmktestata000"/>
         <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteapertezsevmkpartiteaperte000"/>
         <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/Everymake/"/>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
     </namespaces>
     <generation engine="xquery"/>
     <mappingDeclaration name="SAP_EM_PARTITE_APERTE_mapToXml">
         <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkpartiteaperte" path="mb:msg(SapZievmkPartiteAperte,assembly,XMLNSC,Properties)" var="ComIbmMessageAssembly_SapZievmkPartiteAperte"/>
-        <output namespace="http://www.gruppoiren.it/Everymake/" path="mb:msg(ElencoPartite,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <output namespace="http://www.gruppoiren.it/Everymake/" path="mb:msg(ElencoPartite,assembly,XMLNSC,LocalEnvironment,Properties)" var="MessageAssembly"/>
         <foreach>
             <input path="$ComIbmMessageAssembly_SapZievmkPartiteAperte/SapZievmkPartiteAperte/SapZievmkPartiteAperteIDocBO/SapZievmkPartiteAperteDataRecord/SapZievmkPartiteAperteZsevmkTestata000/SapZievmkPartiteAperteZsevmkPartiteAperte000"/>
             <output path="$MessageAssembly/ElencoPartite/DatiPartite"/>
@@ -74,5 +75,16 @@
                 <output path="TIPO_IMPORTO"/>
             </move>
         </foreach>
+        <function ref="fn:concat">
+            <input path="$ComIbmMessageAssembly_SapZievmkPartiteAperte/SapZievmkPartiteAperte/SapZievmkPartiteAperteIDocBO/SapZievmkPartiteAperteDataRecord/SapZievmkPartiteAperteZsevmkTestata000/PROGRESSIVO" var="PROGRESSIVO"/>
+            <output path="$MessageAssembly/LocalEnvironment/Destination/File/Name"/>
+            <param name="string1" value="'PARTITE_SAP_'"/>
+            <param name="string2" value="fn:current-date()"/>
+            <param name="string3" value="'_'"/>
+            <param name="string4" value="$PROGRESSIVO"/>
+        </function>
+        <assign value="/ibmdata/data/Everymake/SAP">
+            <output path="$MessageAssembly/LocalEnvironment/Destination/File/Directory"/>
+        </assign>
     </mappingDeclaration>
 </mappingRoot>

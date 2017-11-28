@@ -7,6 +7,7 @@ CREATE COMPUTE MODULE UPLOAD_CONTRATTI_BULK_Compute
 		CALL CopyEntireMessage();
 		IF InputRoot.HTTPResponseHeader.Location IS NOT NULL THEN
 			SET OutputRoot.HTTPResponseHeader.Location = SUBSTRING(InputLocalEnvironment.Variables.URL BEFORE 'initiate')||'status';
+			SET OutputRoot.HTTPRequestHeader.Authorization = OutputRoot.HTTPInputHeader.Authorization;
 		END IF;
 		RETURN TRUE;
 	END;

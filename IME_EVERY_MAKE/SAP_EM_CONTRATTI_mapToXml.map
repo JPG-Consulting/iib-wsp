@@ -9,11 +9,12 @@
         <namespace kind="supplement" prefix="in6" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontrattizsevmkcontratti000"/>
         <namespace kind="supplement" prefix="in" uri="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontrattidatarecord"/>
         <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/Everymake/"/>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
     </namespaces>
     <generation engine="xquery"/>
     <mappingDeclaration name="SAP_EM_CONTRATTI_mapToXml">
         <input namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkcontratti" path="mb:msg(SapZievmkContratti,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
-        <output namespace="http://www.gruppoiren.it/Everymake/" path="mb:msg(ElencoContratti,assembly,XMLNSC,Properties)" var="MessageAssembly2"/>
+        <output namespace="http://www.gruppoiren.it/Everymake/" path="mb:msg(ElencoContratti,assembly,XMLNSC,LocalEnvironment,Properties)" var="MessageAssembly2"/>
         <foreach>
             <input path="$MessageAssembly/SapZievmkContratti/SapZievmkContrattiIDocBO/SapZievmkContrattiDataRecord/SapZievmkContrattiZsevmkTestata000/SapZievmkContrattiZsevmkContratti000"/>
             <output path="$MessageAssembly2/ElencoContratti/DatiContratto"/>
@@ -66,5 +67,16 @@
                 <output path="POD_PDR"/>
             </move>
         </foreach>
+        <function ref="fn:concat">
+            <input path="$MessageAssembly/SapZievmkContratti/SapZievmkContrattiIDocBO/SapZievmkContrattiDataRecord/SapZievmkContrattiZsevmkTestata000/PROGRESSIVO" var="PROGRESSIVO"/>
+            <output path="$MessageAssembly2/LocalEnvironment/Destination/File/Name"/>
+            <param name="string1" value="'CONTRATTI_SAP_'"/>
+            <param name="string2" value="fn:current-date()"/>
+            <param name="string3" value="'_'"/>
+            <param name="string4" value="$PROGRESSIVO"/>
+        </function>
+        <assign value="/ibmdata/data/Everymake/SAP">
+            <output path="$MessageAssembly2/LocalEnvironment/Destination/File/Directory"/>
+        </assign>
     </mappingDeclaration>
 </mappingRoot>

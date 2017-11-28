@@ -4,6 +4,8 @@
 	<comment></comment>
 	<projects>
 		<project>CWYAP_SAPAdapter_Tx</project>
+		<project>IME_EVERY_MAKEJava</project>
+		<project>CWYAP_SAPAdapter_Tx2</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

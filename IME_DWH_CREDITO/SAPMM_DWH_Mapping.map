@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="/SAPMM_FORNITORE.xsd" var="var"/>
+    <input path="jar:file://!com/ibm/msl/mapping/rdb/xsds/dbreturn.xsd" var="var1"/>
+    <output path="db:table(/DWH_SAPMM.dbm,DWH_SAPMM,STAGING_DWH,SAPMM_IN_FORNITORE)" var="SAPMMINFORNITORE"/>
+    <namespaces>
+        <namespace kind="extension" prefix="fn" uri="http://www.w3.org/2005/xpath-functions"/>
+        <namespace kind="extension" prefix="xs" uri="http://www.w3.org/2001/XMLSchema"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="SAPMM_DWH_Mapping">
+        <input path="$var/mb:msg(SAPMM_FORNITORE,assembly,DFDL,Properties)" var="MessageAssembly"/>
+        <output path="$SAPMMINFORNITORE/db:update(fn:false(),fn:true(),db:where(&quot;STAGING_DWH.SAPMM_IN_FORNITORE.ID_SISTEMA_PROVENIENZA_DATI = 13 AND 'IT'||STAGING_DWH.SAPMM_IN_FORNITORE.ID_SOCIETA_COMPETENZA = ?   AND STAGING_DWH.SAPMM_IN_FORNITORE.ID_FORNITORE =   ?1&quot;,'?1'=$record/ID_FORNITORE,'?'=$record/ID_SOCIETA_COMPETENZA),ID_SISTEMA_PROVENIENZA_DATI,ID_SOCIETA_COMPETENZA,ID_FORNITORE,CF,PIVA,RAGIONE_SOCIALE_NOMINATIVO,DATA_ULTIMA_FATTURA,AUDIT_DATA_INS_TERR)" var="dbupdate1"/>
+        <foreach>
+            <input path="$MessageAssembly/SAPMM_FORNITORE/record" var="record"/>
+            <output path="$dbupdate1/."/>
+            <transaction>
+                <update>
+                    <input path="$record/." var="record1"/>
+                    <output path="."/>
+                    <function ref="fn:substring-after">
+                        <input path="$record1/ID_SOCIETA_COMPETENZA" var="ID_SOCIETA_COMPETENZA"/>
+                        <output path="ID_SOCIETA_COMPETENZA"/>
+                        <param name="string1" value="$ID_SOCIETA_COMPETENZA"/>
+                        <param name="string2" value="'IT'"/>
+                    </function>
+                    <move>
+                        <input path="$record1/ID_FORNITORE"/>
+                        <output path="ID_FORNITORE"/>
+                    </move>
+                    <move>
+                        <input path="$record1/CF"/>
+                        <output path="CF"/>
+                    </move>
+                    <move>
+                        <input path="$record1/PIVA"/>
+                        <output path="PIVA"/>
+                    </move>
+                    <move>
+                        <input path="$record1/RAGIONE_SOCIALE_NOMINATIVO" var="RAGIONE_SOCIALE_NOMINATIVO"/>
+                        <output path="RAGIONE_SOCIALE_NOMINATIVO"/>
+                    </move>
+                    <function ref="fn:current-date">
+                        <output path="AUDIT_DATA_INS_TERR"/>
+                    </function>
+                    <assign value="13">
+                        <output path="ID_SISTEMA_PROVENIENZA_DATI"/>
+                    </assign>
+                    <function ref="xs:date">
+                        <input path="$record1/DATA_ULTIMA_FATTURA" var="DATA_ULTIMA_FATTURA1"/>
+                        <output path="DATA_ULTIMA_FATTURA"/>
+                        <param name="primitive" value="$DATA_ULTIMA_FATTURA1"/>
+                    </function>
+                </update>
+                <return>
+                    <input path="$var1/DBUpdateReturn"/>
+                    <task type="todo">
+                        <input path="NumberOfRowsUpdated"/>
+                    </task>
+                </return>
+            </transaction>
+        </foreach>
+    </mappingDeclaration>
+</mappingRoot>

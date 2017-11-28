@@ -1,0 +1,44 @@
+
+
+CREATE COMPUTE MODULE CNRG_Fattura_ErrorFatt
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	DECLARE CRLF CHARACTER CAST(X'0A0D' AS CHARACTER CCSID 1208);
+
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'CNRGDiS_DWH_ERR';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'CNRG_DWH: Errore Flusso Fattura';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'E'' stato riscontrato il seguente errore ' || CRLF || parseToString(InputExceptionList);
+
+		RETURN TRUE;
+	END;
+	
+	CREATE FUNCTION parseToString(IN root REFERENCE) RETURNS CHARACTER
+	BEGIN
+		DECLARE concatString character;
+		SET concatString = '';
+		CALL ComposeDetails(root,concatString);
+ 		return concatString;
+	END;
+	
+		CREATE PROCEDURE ComposeDetails(IN root REFERENCE,INOUT concatString CHARACTER) 
+	BEGIN
+		DECLARE CRLF CHARACTER CAST(X'0D0A' AS CHARACTER CCSID 1208);
+		DECLARE TAB CHARACTER CAST(X'09' AS CHARACTER CCSID 1208);
+		DECLARE fieldName CHARACTER;
+		DECLARE fieldValue CHARACTER;
+		DECLARE cursor REFERENCE TO root;
+		MOVE cursor FIRSTCHILD;
+		WHILE LASTMOVE(cursor) Do
+			SET fieldName = FIELDNAME(cursor);
+			SET fieldValue = FIELDVALUE(cursor);
+			IF (fieldValue is not null) THEN
+				SET  concatString  =  concatString  ||'<'||fieldName||'>' ||fieldValue||'</'||fieldName||'>'||CRLF;
+			ELSE
+				SET  concatString  =  concatString  ||'<'||fieldName||'>'||CRLF;
+				CALL ComposeDetails(cursor, concatString  );
+				SET  concatString  =  concatString  ||'</'||fieldName||'>'||CRLF;
+			END IF;
+		MOVE cursor NEXTSIBLING;
+		END WHILE;  
+	END;
+END MODULE;

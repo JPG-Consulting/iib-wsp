@@ -1,0 +1,16 @@
+
+
+CREATE COMPUTE MODULE CNRGML_DWH_Server
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		DECLARE SistemaCNRG CHARACTER; 
+		
+		SET OutputLocalEnvironment.XMLNSC.Variables.SistemaCNRG = 'C2';
+		SET OutputLocalEnvironment.XMLNSC.Variables.UserCNRG = 'CNRGSIET';
+			
+
+
+		RETURN TRUE;
+	END;
+END MODULE;

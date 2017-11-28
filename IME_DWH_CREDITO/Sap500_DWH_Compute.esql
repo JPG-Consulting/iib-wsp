@@ -1,0 +1,13 @@
+DECLARE ns1 NAMESPACE 'www.gruppoiren.it/schemas';
+
+CREATE COMPUTE MODULE Sap500_DWH_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'SAP500_DWH';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'Acquisizione Flusso Clienti';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'Il caricamento relativo a flusso Clienti stati aquisiti';
+		RETURN TRUE;
+	END;
+
+END MODULE;

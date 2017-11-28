@@ -1,0 +1,17 @@
+
+
+CREATE COMPUTE MODULE CNRG_Fattura_FatMailNoAcq
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'CNRGDiS_DWH_NoF';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'CNRG_DWH : Errore Flusso FATTURA';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'Il flusso non è stato elaborato in quanto erano presenti flussi di lettura precedenti in errore. Occorre sanare gli errori per poter permettere il caricamento dei nuovi dati';
+
+
+		RETURN TRUE;
+	END;
+
+
+END MODULE;

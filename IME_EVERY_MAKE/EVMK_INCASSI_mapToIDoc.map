@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><mappingRoot xmlns="http://www.ibm.com/2008/ccl/Mapping" domainID="com.ibm.msl.mapping.xml" domainIDExtension="mb" mainMap="true" targetNamespace="default" version="8.0.5.0" xmlns:map="default">
+    <input path="jar:file://!com/ibm/etools/mft/map/xsds/predefined/SOAPDomainMsg.xsd" var="var1"/>
+    <input path="/Incassi.xsd" var="var"/>
+    <output path="/SapZievmkIncassi.xsd"/>
+    <namespaces>
+        <namespace kind="supplement" prefix="out" uri="http://www.gruppoiren.it/Everymake/"/>
+    </namespaces>
+    <generation engine="xquery"/>
+    <mappingDeclaration name="EVMK_INCASSI_mapToIDoc">
+        <input path="$var1/mb:msg(SOAP_Domain_Msg,assembly,SOAP,Properties)" var="ComIbmMessageAssembly_SOAP_Domain_Msg">
+            <cast path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/any" qualifier="{http://www.gruppoiren.it/Everymake/}ElencoIncassi" ref="var"/>
+        </input>
+        <output namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzievmkincassi" path="mb:msg(SapZievmkIncassi,assembly,XMLNSC,Properties)" var="MessageAssembly"/>
+        <foreach>
+            <input path="$ComIbmMessageAssembly_SOAP_Domain_Msg/SOAP_Domain_Msg/Body/ElencoIncassi/DatiIncassi"/>
+            <output path="$MessageAssembly/SapZievmkIncassi/SapZievmkIncassiIDocBO/SapZievmkIncassiDataRecord/SapZievmkIncassiZsevmkIncassiT000"/>
+            <move>
+                <input path="TestataIncassi/CONTABILE_EVERYMAKE"/>
+                <output path="CONTABILE_EVERYMAKE"/>
+            </move>
+            <move>
+                <input path="TestataIncassi/CANALE_INCASSO"/>
+                <output path="CANALE_INCASSO"/>
+            </move>
+            <move>
+                <input path="TestataIncassi/DATA_REGISTRAZIONE"/>
+                <output path="DATA_REGISTRAZIONE"/>
+            </move>
+            <move>
+                <input path="TestataIncassi/DATA_PAGAMENTO"/>
+                <output path="DATA_PAGAMENTO"/>
+            </move>
+            <move>
+                <input path="TestataIncassi/DATA_VALUTA"/>
+                <output path="DATA_VALUTA"/>
+            </move>
+            <move>
+                <input path="TestataIncassi/SOCIETA_INCASSO"/>
+                <output path="SOCIETA_INCASSO"/>
+            </move>
+            <move>
+                <input path="TestataIncassi/COGE_INCASSO"/>
+                <output path="COGE_INCASSO"/>
+            </move>
+            <move>
+                <input path="TestataIncassi/IMPORTO_INCASSO"/>
+                <output path="IMPORTO_INCASSO"/>
+            </move>
+            <move>
+                <input path="TestataIncassi/DIVISA"/>
+                <output path="DIVISA"/>
+            </move>
+            <foreach>
+                <input path="PosizioneIncassi"/>
+                <output path="SapZievmkIncassiZsevmkIncassiP000"/>
+                <move>
+                    <input path="NUMERO_DOCUMENTO"/>
+                    <output path="NUMERO_DOCUMENTO"/>
+                </move>
+                <move>
+                    <input path="CONTRATTO"/>
+                    <output path="CONTRATTO"/>
+                </move>
+                <move>
+                    <input path="BOLLETTINO_RATEIZZAZIONE"/>
+                    <output path="BOLLETTINO_RATEIZZAZIONE"/>
+                </move>
+                <move>
+                    <input path="IMPORTO"/>
+                    <output path="IMPORTO"/>
+                </move>
+            </foreach>
+        </foreach>
+    </mappingDeclaration>
+</mappingRoot>

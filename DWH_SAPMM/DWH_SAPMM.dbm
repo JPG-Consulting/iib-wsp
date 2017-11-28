@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--xtools2_universal_type_manager-->
+<xmi:XMI xmlns:datamodelversion="http://www.ibm.com/com.ibm.datatools.core/model/data/1.8.0.0" xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:OracleModel="http:///com/ibm/db/models/oracle/oracle.ecore" xmlns:SQLDataTypes="http:///org/eclipse/datatools/modelbase/sql/datatypes.ecore" xmlns:SQLSchema="http:///org/eclipse/datatools/modelbase/sql/schema.ecore">
+  <OracleModel:OracleDatabase xmi:id="_EzC9QKQ2Eee_X7VjF67Ibw" name="DWH_SAPMM" vendor="Oracle" version="11" schemas="_E15c8KQ2Eee_X7VjF67Ibw">
+    <eAnnotations xmi:id="_EzC9QaQ2Eee_X7VjF67Ibw" source="ConnectionURI">
+      <details xmi:id="_EzC9QqQ2Eee_X7VjF67Ibw" key="ConnectionKey" value="DWH_SAPMM"/>
+    </eAnnotations>
+  </OracleModel:OracleDatabase>
+  <SQLSchema:Schema xmi:id="_E15c8KQ2Eee_X7VjF67Ibw" name="STAGING_DWH" tables="_3nIDoKQ3Eee_X7VjF67Ibw" database="_EzC9QKQ2Eee_X7VjF67Ibw"/>
+  <OracleModel:OracleTable xmi:id="_3nIDoKQ3Eee_X7VjF67Ibw" name="SAPMM_IN_FORNITORE" schema="_E15c8KQ2Eee_X7VjF67Ibw">
+    <columns xmi:id="_S56fYKQ4Eee_X7VjF67Ibw" name="ID_SISTEMA_PROVENIENZA_DATI" defaultValue="13">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_S56fYaQ4Eee_X7VjF67Ibw" name="CHAR" length="16"/>
+    </columns>
+    <columns xmi:id="_V-JFYKQ4Eee_X7VjF67Ibw" name="ID_SOCIETA_COMPETENZA">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_V-JFYaQ4Eee_X7VjF67Ibw" name="CHAR" length="16"/>
+    </columns>
+    <columns xmi:id="_YW00AKQ4Eee_X7VjF67Ibw" name="ID_FORNITORE">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_YW00AaQ4Eee_X7VjF67Ibw" name="CHAR" length="16"/>
+    </columns>
+    <columns xmi:id="_bR2asKQ4Eee_X7VjF67Ibw" name="CF">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_bR2asaQ4Eee_X7VjF67Ibw" name="CHAR" length="16"/>
+    </columns>
+    <columns xmi:id="_d8RZkKQ4Eee_X7VjF67Ibw" name="PIVA">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_d8RZkaQ4Eee_X7VjF67Ibw" name="CHAR" length="14"/>
+    </columns>
+    <columns xmi:id="_hEpfwKQ4Eee_X7VjF67Ibw" name="RAGIONE_SOCIALE_NOMINATIVO">
+      <containedType xsi:type="SQLDataTypes:CharacterStringDataType" xmi:id="_hEpfwaQ4Eee_X7VjF67Ibw" name="CHAR" length="80"/>
+    </columns>
+    <columns xmi:id="_kZ49QKQ4Eee_X7VjF67Ibw" name="DATA_ULTIMA_FATTURA">
+      <containedType xsi:type="SQLDataTypes:DateDataType" xmi:id="_k5viAKQ4Eee_X7VjF67Ibw" name="DATE" primitiveType="DATE"/>
+    </columns>
+    <columns xmi:id="_gFo_MKRLEee_X7VjF67Ibw" name="AUDIT_DATA_INS_TERR">
+      <containedType xsi:type="SQLDataTypes:DateDataType" xmi:id="_g5bMkKRLEee_X7VjF67Ibw" name="DATE" primitiveType="DATE"/>
+    </columns>
+  </OracleModel:OracleTable>
+</xmi:XMI>

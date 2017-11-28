@@ -1,0 +1,55 @@
+
+
+CREATE COMPUTE MODULE SAPMM_DWH_ErrorMail
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		
+	DECLARE CRLF CHARACTER CAST(X'0A0D' AS CHARACTER CCSID 1208);
+
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'SAPMM_DWH_ERR';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'SAPMM_DWH: Errore Flusso Fornitori';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'E'' stato riscontrato il seguente errore ' || CRLF || parseToString(InputExceptionList);
+
+
+	UPDATE Database.STAGING_DWH.SAPMM_SEMAFORO 
+	SET STATO_ELABORAZIONE = 2, MESSAGGIO_ERRORE = 'Errore nel caricamento', TS_FINE = CURRENT_TIMESTAMP  
+	WHERE 
+	SAPMM_SEMAFORO.NOME_TABELLA = 'SAPMM_IN_FORNITORE' 	and 
+	SAPMM_SEMAFORO.STATO_ELABORAZIONE = 0 and 
+	SAPMM_SEMAFORO.TIPO_ELABORAZIONE = 'C';
+	
+		RETURN TRUE;
+	END;
+	
+	CREATE FUNCTION parseToString(IN root REFERENCE) RETURNS CHARACTER
+	BEGIN
+		DECLARE concatString character;
+		SET concatString = '';
+		CALL ComposeDetails(root,concatString);
+ 		return concatString;
+	END;
+	
+		CREATE PROCEDURE ComposeDetails(IN root REFERENCE,INOUT concatString CHARACTER) 
+	BEGIN
+		DECLARE CRLF CHARACTER CAST(X'0D0A' AS CHARACTER CCSID 1208);
+		DECLARE TAB CHARACTER CAST(X'09' AS CHARACTER CCSID 1208);
+		DECLARE fieldName CHARACTER;
+		DECLARE fieldValue CHARACTER;
+		DECLARE cursor REFERENCE TO root;
+		MOVE cursor FIRSTCHILD;
+		WHILE LASTMOVE(cursor) Do
+			SET fieldName = FIELDNAME(cursor);
+			SET fieldValue = FIELDVALUE(cursor);
+			IF (fieldValue is not null) THEN
+				SET  concatString  =  concatString  ||'<'||fieldName||'>' ||fieldValue||'</'||fieldName||'>'||CRLF;
+			ELSE
+				SET  concatString  =  concatString  ||'<'||fieldName||'>'||CRLF;
+				CALL ComposeDetails(cursor, concatString  );
+				SET  concatString  =  concatString  ||'</'||fieldName||'>'||CRLF;
+			END IF;
+		MOVE cursor NEXTSIBLING;
+		END WHILE;  
+			END;
+
+END MODULE;

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:csv="http://www.ibm.com/dfdl/CommaSeparatedFormat" xmlns:dfdl="http://www.ogf.org/dfdl/dfdl-1.0/" xmlns:fn="http://www.w3.org/2005/xpath-functions" xmlns:ibmDfdlExtn="http://www.ibm.com/dfdl/extensions" xmlns:ibmSchExtn="http://www.ibm.com/schema/extensions">
+
+
+    <xsd:import namespace="http://www.ibm.com/dfdl/CommaSeparatedFormat" schemaLocation="IBMdefined/CommaSeparatedFormat.xsd"/>
+    <xsd:annotation>
+		<xsd:appinfo source="http://www.ogf.org/dfdl/">
+			<dfdl:format documentFinalTerminatorCanBeMissing="yes" encoding="{$dfdl:encoding}" escapeSchemeRef="csv:CSVEscapeScheme" outputNewLine="%LF;" ref="csv:CommaSeparatedFormat"/>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+
+	<xsd:element dfdl:outputNewLine="%LF;" ibmSchExtn:docRoot="true" name="SAPMM_FORNITORE">
+		<xsd:complexType>
+			<xsd:sequence dfdl:outputNewLine="%LF;" dfdl:separator="">
+				<xsd:element dfdl:occursCountKind="implicit" dfdl:outputNewLine="%LF;" dfdl:terminator="%LF;%WSP*;" maxOccurs="unbounded" name="record">
+					<xsd:complexType>
+						<xsd:sequence dfdl:outputNewLine="%LF;" dfdl:separator=";" dfdl:separatorSuppressionPolicy="trailingEmpty">
+							<xsd:element dfdl:outputNewLine="%LF;" dfdl:ref="csv:CommaSeparatedFormat" ibmDfdlExtn:sampleValue="value1" name="Campo1" type="xsd:string"/>
+							<xsd:element dfdl:outputNewLine="%LF;" ibmDfdlExtn:sampleValue="value2" name="Campo2" type="xsd:string"/>
+							<xsd:element dfdl:outputNewLine="%LF;" ibmDfdlExtn:sampleValue="value3" name="ID_SOCIETA_COMPETENZA" type="xsd:string"/>
+                            <xsd:element dfdl:outputNewLine="%LF;" ibmDfdlExtn:sampleValue="value4" name="ID_FORNITORE" type="xsd:string"/>
+                            <xsd:element dfdl:outputNewLine="%LF;" ibmDfdlExtn:sampleValue="value5" minOccurs="0" name="CF" type="xsd:string"/>
+                            <xsd:element dfdl:outputNewLine="%LF;" ibmDfdlExtn:sampleValue="value6" minOccurs="0" name="PIVA" type="xsd:string"/>
+                            <xsd:element dfdl:encoding="ISO-8859-1" dfdl:outputNewLine="%LF;" ibmDfdlExtn:sampleValue="Value7" name="RAGIONE_SOCIALE_NOMINATIVO" type="xsd:string"/>
+                            <xsd:element dfdl:fillByte="8" dfdl:outputNewLine="%LF;" ibmDfdlExtn:sampleValue="Value8" name="DATA_ULTIMA_FATTURA" type="xsd:string"/>
+                        </xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>				
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+
+</xsd:schema>

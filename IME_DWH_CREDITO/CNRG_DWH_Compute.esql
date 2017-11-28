@@ -1,0 +1,14 @@
+
+CREATE COMPUTE MODULE CNRG_DWH_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'CNRGDiS_DWH';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'CNRG_DWH: Acquisizione Flusso CNRG DIS';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'I valori di CNRG sono stati aquisiti';
+
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

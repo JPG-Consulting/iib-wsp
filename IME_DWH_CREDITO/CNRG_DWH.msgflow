@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:CNRG_Cliente.subflow="CNRG_Cliente.subflow" xmlns:CNRG_FATTURA.subflow="CNRG_FATTURA.subflow" xmlns:CNRG_FORNITURA.subflow="CNRG_FORNITURA.subflow" xmlns:CNRG_PianoRate.subflow="CNRG_PianoRate.subflow" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmHTTPAsyncRequest.msgnode="ComIbmHTTPAsyncRequest.msgnode" xmlns:ComIbmHTTPAsyncResponse.msgnode="ComIbmHTTPAsyncResponse.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode"
+    xmlns:ComIbmWSInput.msgnode="ComIbmWSInput.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="CNRG_DWH.msgflow" nsPrefix="CNRG_DWH.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="CNRG_DWH" bundleName="CNRG_DWH" pluginId="IME_DWH_CNRG"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_DWH_CNRG/icons/full/obj16/CNRG_DWH.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/IME_DWH_CNRG/icons/full/obj30/CNRG_DWH.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmWSInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="17,57" URLSpecifier="/IME/SistemiAlimentati/CNRGDIS_DWH">
+        <translation xmi:type="utility:ConstantString" string="HTTP Input"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPAsyncRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_10" location="708,55" asyncResponseCorrelator="CNRG_DWH" URLSpecifier="http://localhost:7800/sys/email_sender">
+        <translation xmi:type="utility:ConstantString" string="MAIL"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_11" location="491,233" asyncRequestCorrelator="CNRG_DWH">
+        <translation xmi:type="utility:ConstantString" string="HTTP Asynchronous Response"/>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_12" location="701,230" destination="none">
+        <translation xmi:type="utility:ConstantString" string="Trace1"/>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="607,55" computeExpression="esql://routine/#CNRG_DWH_Compute.Main">
+        <translation xmi:type="utility:ConstantString" string="MailOK"/>
+      </nodes>
+      <nodes xmi:type="CNRG_FATTURA.subflow:FCMComposite_1" xmi:id="FCMComposite_1_13" location="371,55">
+        <translation xmi:type="utility:ConstantString" string="CNRG_FATTURA"/>
+      </nodes>
+      <nodes xmi:type="CNRG_Cliente.subflow:FCMComposite_1" xmi:id="FCMComposite_1_2" location="132,55">
+        <translation xmi:type="utility:ConstantString" string="CNRG_Cliente"/>
+      </nodes>
+      <nodes xmi:type="CNRG_FORNITURA.subflow:FCMComposite_1" xmi:id="FCMComposite_1_4" location="233,55">
+        <translation xmi:type="utility:ConstantString" string="CNRG_FORNITURA"/>
+      </nodes>
+      <nodes xmi:type="CNRG_PianoRate.subflow:FCMComposite_1" xmi:id="FCMComposite_1_5" location="483,53">
+        <translation xmi:type="utility:ConstantString" string="CNRG_PianoRate"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_14" targetNode="FCMComposite_1_12" sourceNode="FCMComposite_1_11" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_10" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_4" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_13" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_13" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.Output" targetTerminalName="InTerminal.Input"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.Input"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>

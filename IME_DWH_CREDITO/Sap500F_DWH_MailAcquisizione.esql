@@ -1,0 +1,15 @@
+
+
+CREATE COMPUTE MODULE Sap500F_DWH_MailAcquisizione
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'SAP500_DWH';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'Acquisizione Flusso Fattura';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'I valori della fattura sono stati aquisiti';
+
+
+		RETURN TRUE;
+	END;
+
+END MODULE;

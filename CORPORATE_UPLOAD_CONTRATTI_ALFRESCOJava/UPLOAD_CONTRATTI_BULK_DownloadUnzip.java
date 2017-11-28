@@ -77,7 +77,7 @@ public class UPLOAD_CONTRATTI_BULK_DownloadUnzip extends MbJavaComputeNode {
 					}
 				}
 				outAssembly.getMessage().getRootElement().getFirstElementByPath("HTTPRequestHeader").createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Content-Type", "application/x-www-form-urlencoded");
-				outAssembly.getMessage().getRootElement().createElementAsLastChild(MbBLOB.PARSER_NAME).createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "BLOB", ("sourceDirectory="+URLEncoder.encode("/alfresco/bulkimport/IREN Mercato/Retail/Contratti"+path, "UTF-8")+"&"+"targetPath="+URLEncoder.encode("/Company Home/Sites/IrenEnergia/documentLibrary/DOCUMENTAZIONE COMMERCIALE/Retail/Contratti", "UTF-8")).replace("+", "%20").getBytes());
+				outAssembly.getMessage().getRootElement().createElementAsLastChild(MbBLOB.PARSER_NAME).createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "BLOB", ("sourceDirectory="+URLEncoder.encode("/home/alfresco/alfresco-520/bulkimport/IREN Mercato/Retail/Contratti/", "UTF-8")+"&"+"targetPath="+URLEncoder.encode("/Company Home/Sites/IrenMercato/documentLibrary/DOCUMENTAZIONE COMMERCIALE/Retail/Contratti", "UTF-8")).replace("+", "%20").getBytes());
 				outAssembly.getLocalEnvironment().getRootElement().createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Destination", null).createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "HTTP", null).createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "RequestURL", url );
 			}
 			

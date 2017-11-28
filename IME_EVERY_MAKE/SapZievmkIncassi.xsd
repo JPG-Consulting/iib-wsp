@@ -21,12 +21,7 @@
 <sapasi:SplitIDocPacket>true</sapasi:SplitIDocPacket>
 <sapasi:Type>IDOC</sapasi:Type>
 <sapasi:Operation>
-<sapasi:Name>Create</sapasi:Name>
-<sapasi:sapALEOperationMetadata>
-<sapasi:MsgType/>
-<sapasi:MsgCode/>
-<sapasi:MsgFunction/>
-</sapasi:sapALEOperationMetadata>
+<sapasi:Name>Execute</sapasi:Name>
 </sapasi:Operation>
 </sapasi:sapALEBusinessObjectTypeMetadata>
 </xsd:appinfo>

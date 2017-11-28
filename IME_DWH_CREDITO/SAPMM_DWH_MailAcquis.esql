@@ -1,0 +1,11 @@
+
+
+CREATE COMPUTE MODULE SAPMM_DWH_MailAcquis
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'SAPMM_DWH';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'SAPMM_DWH: Acquisizione Flusso Fornitori';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'I valori relativi ai fornitori sono stati aquisiti';
+		RETURN TRUE;
+	END;
+END MODULE;

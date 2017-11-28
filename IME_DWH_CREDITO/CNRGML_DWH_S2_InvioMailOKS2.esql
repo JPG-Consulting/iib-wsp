@@ -1,0 +1,16 @@
+
+
+CREATE COMPUTE MODULE CNRGML_DWH_S2_InvioMailOKS2
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		
+	SET OutputRoot.XMLNSC.ns1:Params.flusso = 'CNRG_DWH';
+	SET OutputRoot.XMLNSC.ns1:Params.obj1 = 'CNRG_DWH: Acquisizione Flusso CNRG ML';
+	SET OutputRoot.XMLNSC.ns1:Params.body1 = 'I valori delle Fatture/Incassi/Piano rate di CNRG ML sono stati aquisiti';
+
+		RETURN TRUE;
+	END;
+
+
+END MODULE;
