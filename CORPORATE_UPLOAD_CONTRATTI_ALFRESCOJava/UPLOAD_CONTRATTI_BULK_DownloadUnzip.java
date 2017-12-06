@@ -1,7 +1,7 @@
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URLEncoder;
-
+import it.iren.utils.UnzipUtility;
 import com.ibm.broker.javacompute.MbJavaComputeNode;
 import com.ibm.broker.plugin.MbBLOB;
 import com.ibm.broker.plugin.MbElement;
@@ -11,6 +11,7 @@ import com.ibm.broker.plugin.MbMessage;
 import com.ibm.broker.plugin.MbMessageAssembly;
 import com.ibm.broker.plugin.MbOutputTerminal;
 import com.ibm.broker.plugin.MbUserException;
+import com.ibm.dtfj.utils.file.UnzipFailedException;
 
 
 public class UPLOAD_CONTRATTI_BULK_DownloadUnzip extends MbJavaComputeNode {
@@ -27,7 +28,7 @@ public class UPLOAD_CONTRATTI_BULK_DownloadUnzip extends MbJavaComputeNode {
 			outAssembly = new MbMessageAssembly(inAssembly, outMessage);
 			// ----------------------------------------------------------
 			// Add user code below
-
+			UnzipUtility util = new UnzipUtility();
 			String host = inAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/Variables/Host").getValueAsString();
 			String user = inAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/Variables/User").getValueAsString();
 			String password = inAssembly.getLocalEnvironment().getRootElement().getFirstElementByPath("/Variables/Password").getValueAsString();
@@ -59,23 +60,12 @@ public class UPLOAD_CONTRATTI_BULK_DownloadUnzip extends MbJavaComputeNode {
 						return name.toLowerCase().endsWith(".zip");
 					}
 				});
-				if (zipFiles.length != 0) {
-					Process unzip = new ProcessBuilder("unzip", "-o", "/ibmdata/WINSHARE/ALFRESCO/BULKIMPORT/IREN Mercato/Retail/Contratti"+path+"/*.zip", "-d", "/ibmdata/WINSHARE/ALFRESCO/BULKIMPORT/IREN Mercato/Retail/Contratti"+path+"/").start();
-					
-					if (unzip.waitFor() != 0) {
-						MbElement result = outMessage.getRootElement().createElementAsLastChild("JSON").createElementAsLastChild(MbJSON.OBJECT,MbJSON.DATA_ELEMENT_NAME, null).createElementAsLastChild(MbJSON.OBJECT, "result", null);
-						MbElement info = result.createElementAfter(MbJSON.OBJECT, "info", null);
-				        info.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "status", false);
-				        info.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "description", "Unzip failed, exit code: "+unzip.exitValue());
-				        
-				        alt.propagate(outAssembly);
-				        return;
-					} else {
-						for (File f : zipFiles){
-							f.delete();
-						}
-					}
+				
+				for (File f: zipFiles) {
+					util.unzip(f.getAbsolutePath(), f.getParent());
+					f.delete();
 				}
+
 				outAssembly.getMessage().getRootElement().getFirstElementByPath("HTTPRequestHeader").createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Content-Type", "application/x-www-form-urlencoded");
 				outAssembly.getMessage().getRootElement().createElementAsLastChild(MbBLOB.PARSER_NAME).createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "BLOB", ("sourceDirectory="+URLEncoder.encode("/home/alfresco/alfresco-520/bulkimport/IREN Mercato/Retail/Contratti/", "UTF-8")+"&"+"targetPath="+URLEncoder.encode("/Company Home/Sites/IrenMercato/documentLibrary/DOCUMENTAZIONE COMMERCIALE/Retail/Contratti", "UTF-8")).replace("+", "%20").getBytes());
 				outAssembly.getLocalEnvironment().getRootElement().createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "Destination", null).createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "HTTP", null).createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "RequestURL", url );

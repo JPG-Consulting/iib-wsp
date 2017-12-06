@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessaloutzessalitemout000" xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata" xmlns:sapzessaloutzessalitemout000="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessaloutzessalitemout000">
-<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata"/>
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessaloutzessalitemout000" xmlns:sapzessaloutzessalitemout000="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzessaloutzessalitemout000" xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
+<xsd:import namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata" schemaLocation="SapBusinessObjectMetadata.xsd"/>
 
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/j2ca/versionCompatability">
@@ -15,21 +16,21 @@
 <xsd:complexType name="SapZessalOutZessalItemOut000">
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
-<sapasi:sapALEBusinessObjectTypeMetadata>
+<sapasi:sapALEBusinessObjectTypeMetadata xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
 </sapasi:sapALEBusinessObjectTypeMetadata>
 </xsd:appinfo>
 </xsd:annotation>
-<xsd:sequence maxOccurs="1" minOccurs="1">
-<xsd:element maxOccurs="1" minOccurs="0" name="ZNUM_SAL" nillable="true">
+<xsd:sequence minOccurs="1" maxOccurs="1">
+<xsd:element name="ZNUM_SAL" nillable="true" minOccurs="0" maxOccurs="1">
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
-<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:sapALEPropertyTypeMetadata xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
 <sapasi:FieldName>ZNUM_SAL</sapasi:FieldName>
 <sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
 <sapasi:OffSet>0</sapasi:OffSet>
 <sapasi:PrimaryKey>false</sapasi:PrimaryKey>
 <sapasi:MaxLength>40</sapasi:MaxLength>
-<sapasi:ForeignBOKeyRef/>
+<sapasi:ForeignBOKeyRef></sapasi:ForeignBOKeyRef>
 </sapasi:sapALEPropertyTypeMetadata>
 </xsd:appinfo>
 </xsd:annotation>
@@ -40,16 +41,16 @@
 </xsd:restriction>
 </xsd:simpleType>
 </xsd:element>
-<xsd:element maxOccurs="1" minOccurs="0" name="EBELN" nillable="true">
+<xsd:element name="EBELN" nillable="true" minOccurs="0" maxOccurs="1">
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
-<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:sapALEPropertyTypeMetadata xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
 <sapasi:FieldName>EBELN</sapasi:FieldName>
 <sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
 <sapasi:OffSet>40</sapasi:OffSet>
 <sapasi:PrimaryKey>false</sapasi:PrimaryKey>
 <sapasi:MaxLength>10</sapasi:MaxLength>
-<sapasi:ForeignBOKeyRef/>
+<sapasi:ForeignBOKeyRef></sapasi:ForeignBOKeyRef>
 </sapasi:sapALEPropertyTypeMetadata>
 </xsd:appinfo>
 </xsd:annotation>
@@ -60,16 +61,16 @@
 </xsd:restriction>
 </xsd:simpleType>
 </xsd:element>
-<xsd:element maxOccurs="1" minOccurs="0" name="EBELP" nillable="true">
+<xsd:element name="EBELP" nillable="true" minOccurs="0" maxOccurs="1">
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
-<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:sapALEPropertyTypeMetadata xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
 <sapasi:FieldName>EBELP</sapasi:FieldName>
 <sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
 <sapasi:OffSet>50</sapasi:OffSet>
 <sapasi:PrimaryKey>false</sapasi:PrimaryKey>
 <sapasi:MaxLength>5</sapasi:MaxLength>
-<sapasi:ForeignBOKeyRef/>
+<sapasi:ForeignBOKeyRef></sapasi:ForeignBOKeyRef>
 </sapasi:sapALEPropertyTypeMetadata>
 </xsd:appinfo>
 </xsd:annotation>
@@ -80,36 +81,36 @@
 </xsd:restriction>
 </xsd:simpleType>
 </xsd:element>
-<xsd:element maxOccurs="1" minOccurs="0" name="LBLNI" nillable="true">
+<xsd:element name="LBLNI" nillable="true" minOccurs="0" maxOccurs="1">
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
-<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:sapALEPropertyTypeMetadata xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
 <sapasi:FieldName>LBLNI</sapasi:FieldName>
 <sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
 <sapasi:OffSet>55</sapasi:OffSet>
 <sapasi:PrimaryKey>false</sapasi:PrimaryKey>
-<sapasi:MaxLength>10</sapasi:MaxLength>
-<sapasi:ForeignBOKeyRef/>
+<sapasi:MaxLength>16</sapasi:MaxLength>
+<sapasi:ForeignBOKeyRef></sapasi:ForeignBOKeyRef>
 </sapasi:sapALEPropertyTypeMetadata>
 </xsd:appinfo>
 </xsd:annotation>
 
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
-<xsd:maxLength value="10"/>
+<xsd:maxLength value="16"/>
 </xsd:restriction>
 </xsd:simpleType>
 </xsd:element>
-<xsd:element maxOccurs="1" minOccurs="0" name="KONNR" nillable="true">
+<xsd:element name="KONNR" nillable="true" minOccurs="0" maxOccurs="1">
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
-<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:sapALEPropertyTypeMetadata xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
 <sapasi:FieldName>KONNR</sapasi:FieldName>
 <sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
-<sapasi:OffSet>65</sapasi:OffSet>
+<sapasi:OffSet>71</sapasi:OffSet>
 <sapasi:PrimaryKey>false</sapasi:PrimaryKey>
 <sapasi:MaxLength>10</sapasi:MaxLength>
-<sapasi:ForeignBOKeyRef/>
+<sapasi:ForeignBOKeyRef></sapasi:ForeignBOKeyRef>
 </sapasi:sapALEPropertyTypeMetadata>
 </xsd:appinfo>
 </xsd:annotation>
@@ -120,16 +121,16 @@
 </xsd:restriction>
 </xsd:simpleType>
 </xsd:element>
-<xsd:element maxOccurs="1" minOccurs="0" name="STATUS" nillable="true">
+<xsd:element name="STATUS" nillable="true" minOccurs="0" maxOccurs="1">
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
-<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:sapALEPropertyTypeMetadata xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
 <sapasi:FieldName>STATUS</sapasi:FieldName>
 <sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
-<sapasi:OffSet>75</sapasi:OffSet>
+<sapasi:OffSet>81</sapasi:OffSet>
 <sapasi:PrimaryKey>false</sapasi:PrimaryKey>
 <sapasi:MaxLength>2</sapasi:MaxLength>
-<sapasi:ForeignBOKeyRef/>
+<sapasi:ForeignBOKeyRef></sapasi:ForeignBOKeyRef>
 </sapasi:sapALEPropertyTypeMetadata>
 </xsd:appinfo>
 </xsd:annotation>
@@ -140,23 +141,23 @@
 </xsd:restriction>
 </xsd:simpleType>
 </xsd:element>
-<xsd:element maxOccurs="1" minOccurs="0" name="STATXT" nillable="true">
+<xsd:element name="STATXT" nillable="true" minOccurs="0" maxOccurs="1">
 <xsd:annotation xml:space="preserve">
 <xsd:appinfo source="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
-<sapasi:sapALEPropertyTypeMetadata>
+<sapasi:sapALEPropertyTypeMetadata xmlns:sapasi="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/metadata">
 <sapasi:FieldName>STATXT</sapasi:FieldName>
 <sapasi:SegmentHierarchy>0</sapasi:SegmentHierarchy>
-<sapasi:OffSet>77</sapasi:OffSet>
+<sapasi:OffSet>83</sapasi:OffSet>
 <sapasi:PrimaryKey>false</sapasi:PrimaryKey>
-<sapasi:MaxLength>70</sapasi:MaxLength>
-<sapasi:ForeignBOKeyRef/>
+<sapasi:MaxLength>220</sapasi:MaxLength>
+<sapasi:ForeignBOKeyRef></sapasi:ForeignBOKeyRef>
 </sapasi:sapALEPropertyTypeMetadata>
 </xsd:appinfo>
 </xsd:annotation>
 
 <xsd:simpleType>
 <xsd:restriction base="xsd:string">
-<xsd:maxLength value="70"/>
+<xsd:maxLength value="220"/>
 </xsd:restriction>
 </xsd:simpleType>
 </xsd:element>

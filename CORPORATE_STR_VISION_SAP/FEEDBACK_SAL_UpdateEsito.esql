@@ -6,7 +6,7 @@ CREATE COMPUTE MODULE FEEDBACK_SAL_UpdateEsito
 	BEGIN
 		DECLARE FLAG INTEGER 1;
 		DECLARE ESITO CHARACTER 'OK';
-		DECLARE DESC CHARACTER;
+		DECLARE DESC CHARACTER '---';
 		
 		DECLARE inputStatus REFERENCE TO InputRoot.DataObject.ns123:SapZessalOut.SapZessalOutIDocBO.SapZessalOutDataRecord.SapZessalOutZessalTxtOut000.SapZessalOutZessalItemOut000;
 		
@@ -14,8 +14,10 @@ CREATE COMPUTE MODULE FEEDBACK_SAL_UpdateEsito
 			IF inputStatus.STATUS <> '53' THEN
 				SET FLAG = 3;
 				SET ESITO = 'KO';
-				SET DESC = inputStatus.STATXT;	
+				SET DESC = DESC ||'
+'|| inputStatus.STATXT;
 			END IF;
+			
 			MOVE inputStatus NEXTSIBLING REPEAT TYPE NAME;
 		END WHILE;
 		
@@ -35,7 +37,12 @@ CREATE COMPUTE MODULE FEEDBACK_SAL_UpdateEsito
 			MOVE inputEsito NEXTSIBLING REPEAT TYPE NAME;
 		END WHILE;
 		
-		RETURN FALSE;
+		SET OutputRoot.XMLNSC.ns5:Params.flusso = 'STR_VISION';
+		SET OutputRoot.XMLNSC.ns5:Params.obj1 = 'Ricevuto feedback SAL - IDoc ZESSAL_OUT';
+		SET OutputRoot.XMLNSC.ns5:Params.body1 = 'Status:     '|| ESITO;
+		SET OutputRoot.XMLNSC.ns5:Params.body2 = 'Dettaglio:  '|| DESC;
+		
+		RETURN TRUE;
 	END;
 
 END MODULE;

@@ -13,7 +13,7 @@
       <nodes xmi:type="ComIbmWSReply.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_7" location="394,95">
         <translation xmi:type="utility:ConstantString" string="HTTP Reply"/>
       </nodes>
-      <nodes xmi:type="ComIbmWSRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="242,25" URLSpecifier="http://localhost:7800/alfresco/service/bulkfsimport/initiate" httpVersion="1.1" protocol="TLS">
+      <nodes xmi:type="ComIbmWSRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_9" location="242,25" URLSpecifier="http://localhost:7800/alfresco/service/bulkfsimport/initiate" followRedirection="true" httpVersion="1.1" protocol="TLS">
         <translation xmi:type="utility:ConstantString" string="BulkImport"/>
         <monitorEvents eventSourceDescription="Out terminal" eventSourceName="BulkImport.terminal.out" eventIdentity="Chiamata a bulkimport eseguita - importazione in corso">
           <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
@@ -55,29 +55,17 @@
       <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="80,83" dataSource="INT_ENGINE" computeExpression="esql://routine/#UPLOAD_CONTRATTI_BULK_CheckInput.Main" computeMode="all">
         <translation xmi:type="utility:ConstantString" string="CheckInput"/>
       </nodes>
-      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="340,29" computeExpression="esql://routine/#UPLOAD_CONTRATTI_BULK_Compute.Main">
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="328,28" computeExpression="esql://routine/#UPLOAD_CONTRATTI_BULK_Compute.Main">
         <translation xmi:type="utility:ConstantString" string="Compute"/>
-        <monitorEvents eventSourceDescription="Out terminal" eventSourceName="Compute.terminal.out" eventIdentity="Risposta a client">
-          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
-            <applicationData dataLocation="$LocalEnvironment/HTTP/Input/RequestLine/RequestURI" isXPath="true" complexData="true"/>
-            <globalTransactionCorrelator/>
-            <parentTransactionCorrelator/>
-            <localTransactionCorrelator/>
-            <bitStreamData encoding="CDATA"/>
-            <eventName literal="Risposta a client"/>
-            <eventFilter dataLocation="true()" isXPath="true"/>
-          </eventXMLDoc>
-        </monitorEvents>
       </nodes>
       <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
       <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
       <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_5" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_3" sourceTerminalName="OutTerminal.out1" targetTerminalName="InTerminal.in"/>
       <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.alternate" targetTerminalName="InTerminal.in"/>
       <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_16" targetNode="FCMComposite_1_9" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_17" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_18" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_8" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_19" targetNode="FCMComposite_1_8" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.error" targetTerminalName="InTerminal.in"/>
-      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_8" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_7" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_9" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_9" sourceTerminalName="OutTerminal.error" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_10" targetNode="FCMComposite_1_7" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
     </composition>
     <propertyOrganizer/>
     <stickyBoard/>

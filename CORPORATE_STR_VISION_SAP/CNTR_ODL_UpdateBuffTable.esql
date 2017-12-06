@@ -1,8 +1,11 @@
+DECLARE ns5 NAMESPACE 'www.gruppoiren.it/schemas';
 DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzoda';
 
 CREATE COMPUTE MODULE CNTR_ODL_UpdateBuffTable
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
+		DECLARE inserted INTEGER 0;
+		DECLARE updated INTEGER 0;
 		DECLARE idoc REFERENCE TO InputRoot.DataObject.ns:SapZoda.SapZodaIDocBO.SapZodaDataRecord.SapZodaE2pordgd1001[>];
 		WHILE LASTMOVE(idoc)=TRUE DO
 			DECLARE REBELN CHARACTER;
@@ -29,6 +32,7 @@ CREATE COMPUTE MODULE CNTR_ODL_UpdateBuffTable
 						,REBELN			= REBELN
 						,FL_ACQ			= 'X'
 					WHERE  T.EBELN = idoc.SapZodaE2bpmepoheader003.PO_NUMBER AND T.EBELP = '0';
+					SET updated = updated + 1;
 				ELSE
 					INSERT INTO Database.STRVISION.BUFF_SAP_CONTRATTI_ODL
 					(MANDT
@@ -64,6 +68,7 @@ CREATE COMPUTE MODULE CNTR_ODL_UpdateBuffTable
 					,REBELN
 					,'X'
 					);
+					SET inserted = inserted + 1;
 				END IF;
 				
 				IF idoc.SapZodaZacqzoda000.TIPO_ORDINE <> 'K' THEN
@@ -97,6 +102,7 @@ CREATE COMPUTE MODULE CNTR_ODL_UpdateBuffTable
 								,AREA_FUNZ		= idocAcc.elem.FUNC_AREA_LONG
 								,FL_ACQ			= 'X'
 							WHERE  T.EBELN = idoc.SapZodaE2bpmepoheader003.PO_NUMBER AND T.EBELP = idocItem.PO_ITEM;
+							SET updated = updated + 1;
 						ELSE
 							INSERT INTO Database.STRVISION.BUFF_SAP_CONTRATTI_ODL
 							(MANDT
@@ -144,6 +150,7 @@ CREATE COMPUTE MODULE CNTR_ODL_UpdateBuffTable
 							,idocAcc.elem.FUNC_AREA_LONG
 							,'X'
 							);
+							SET inserted = inserted + 1;
 						END IF;
 						MOVE idocItem NEXTSIBLING REPEAT TYPE NAME;
 					END WHILE;
@@ -152,7 +159,12 @@ CREATE COMPUTE MODULE CNTR_ODL_UpdateBuffTable
 			MOVE idoc NEXTSIBLING REPEAT TYPE NAME;
 		END WHILE;
 		
-		RETURN FALSE;
+		SET OutputRoot.XMLNSC.ns5:Params.flusso = 'STR_VISION';
+		SET OutputRoot.XMLNSC.ns5:Params.obj1 = 'Terminata importazione ODL - IDoc ZODA';
+		SET OutputRoot.XMLNSC.ns5:Params.body1 = 'Record inseriti:   '||CAST(inserted AS CHARACTER);
+		SET OutputRoot.XMLNSC.ns5:Params.body2 = 'Record aggiornati: '||CAST(updated AS CHARACTER);
+		
+		RETURN TRUE;
 	END;
 
 END MODULE;

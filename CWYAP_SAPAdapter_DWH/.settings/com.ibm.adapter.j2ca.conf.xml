@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><configuration xmlns="http://j2ca.adapter.ibm.com">
-<systemEntry uri="Y:\IIB\IIB_MQ_INSTALLAZIONE\SAPJCOWINDOWS\sapjco3.dll"/>
-<systemEntry uri="Y:\IIB\IIB_MQ_INSTALLAZIONE\SAPJCOWINDOWS\sapjco3.jar"/>
-<systemEntry uri="Y:\IIB\IIB_MQ_INSTALLAZIONE\SAPJCOWINDOWS\sapidoc3.jar"/>
-<systemEntry uri="Y:\IIB\IIB_MQ_INSTALLAZIONE\SAPJCOWINDOWS\msvcr71.dll"/>
-</configuration>

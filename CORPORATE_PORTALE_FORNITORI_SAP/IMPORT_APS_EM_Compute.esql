@@ -1,0 +1,230 @@
+DECLARE ns1 NAMESPACE 'www.gruppoiren.it/schemas';
+DECLARE ns NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps';
+
+
+CREATE COMPUTE MODULE IMPORT_APS_EM_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		SET OutputLocalEnvironment.Variables.idocNum = InputRoot.DataObject.ns:SapZbommaps.SapZbommapsIDocBO.SapIDocControlRecord.DOCNUM;
+
+		DECLARE idata_zodapos REFERENCE TO InputRoot.DataObject.ns:SapZbommaps.SapZbommapsIDocBO.SapZbommapsDataRecord.SapZbommapsZodapos000[1];
+		
+		DECLARE esiste_ordini INTEGER;
+		DECLARE esiste_oggetti INTEGER;
+		DECLARE desc_testata CHARACTER '';
+        DECLARE desc_contr_rif CHARACTER '';
+		
+		DECLARE imp_oggetto CHARACTER;
+		
+		DECLARE n_ordini_ins INTEGER 0;
+		DECLARE n_ordini_upd INTEGER 0;
+		
+		DECLARE n_oggetti_ins INTEGER 0;
+		DECLARE n_oggetti_upd INTEGER 0;
+		
+		---Per conversione dato da CHARACTER a TIMESTAMP
+		DECLARE dt_documento DATE;
+		DECLARE dt_registrazione DATE;
+		DECLARE dt_rilascio_APS DATE;
+				
+			
+		WHILE LASTMOVE(idata_zodapos)=TRUE DO
+			
+			
+			DECLARE idata_zodades REFERENCE TO idata_zodapos.SapZbommapsZodades000[1];
+			DECLARE idata_zcondes REFERENCE TO idata_zodapos.SapZbommapsZcondes000[1];		
+			DECLARE idata_zodaogg REFERENCE TO idata_zodapos.SapZbommapsZodaogg000[1];
+			
+			-- Controllo esistenza record in PF_ORDINI
+			SET esiste_ordini = SELECT COUNT(*)
+			FROM Database.PF_ORDINI
+			WHERE
+			PF_ORDINI.ID_ORDINE = idata_zodapos.ID_ORDINE AND -- ZODAPOS.ID_ORDINE    
+			PF_ORDINI.POS_ORDINE = idata_zodapos.POS_ORDINE AND -- ZODAPOS.POS_ORDINE
+			PF_ORDINI.TIPO_ORDINE = idata_zodapos.TIPO_ORDINE ; -- ZODADES.TIPO_ORDINE		
+
+
+			-- Inizializzazione Variabili prima del ciclo While
+			set desc_testata ='';
+			
+			-- Creazione stringa per la DESCRIZIONE_TESTATA, concatenando i vari ZODADES.RIGA_TESTO
+			
+			WHILE LASTMOVE(idata_zodades)=TRUE DO
+			
+				IF (idata_zodapos.ID_ORDINE = idata_zodades.ID_ORDINE) THEN
+					SET desc_testata = desc_testata || ' ' || idata_zodades.RIGA_TESTO ;   	-- concatenazione RIGA_TESTO per stesso ID_ORDINE
+				END IF;
+				
+				MOVE idata_zodades NEXTSIBLING NAME 'SapZbommapsZodades000';		
+
+			END WHILE;	
+		
+		    -- Inizializzazione Variabili prima del ciclo While
+			set desc_contr_rif ='';
+			
+			
+			--- Concatenazione dei tutti i ZCONDDES.RIGA_TESTO
+            WHILE LASTMOVE(idata_zcondes)=TRUE DO
+                    
+	            IF (idata_zodapos.ID_ORDINE = idata_zcondes.ID_ORDINE) THEN                           
+					SET desc_contr_rif = desc_contr_rif || ' ' || idata_zcondes.RIGA_TESTO ;   -- concatenazione RIGA_TESTO per stesso ID_ORDINE
+				END IF;
+	
+				MOVE idata_zcondes  NEXTSIBLING NAME 'SapZbommapsZcondes000';       
+	
+				END WHILE;   
+				
+				
+	
+				IF esiste_ordini = 0 THEN -- Record non presente in tabella PF_ORDINI,inserire
+	
+					INSERT INTO Database.PF_ORDINI -- #da fare : controllo struttura tabella per campi default/not nullable
+					(ID_ORDINE,
+					POS_ORDINE,
+					SOCIETA,
+					DIVISIONE,
+					DESCRIZIONE_TESTATA,
+					DESCRIZIONE_POSIZIONE,
+					P_IVA_FORNITORE,
+					TIPO_ORDINE,
+					IMPORTO_ORDINE,
+					ID_CONTRATTO_RIF,
+					POS_CONTRATTO_RIF,
+					DESC_CONTRATTO_RIF,
+					CIG,
+					CUP)
+					VALUES
+					(idata_zodapos.ID_ORDINE,
+					idata_zodapos.POS_ORDINE ,
+					idata_zodapos.SOCIETA,
+					idata_zodapos.DIVISIONE,
+					SUBSTRING(desc_testata FROM 1 FOR 4000),	 				-- DESCRIZIONE_TESTATA (concatenazione di tutti i ZODADES.RIGA_TESTO) | substring alla massima lunghezza del campo SAP/ORACLE
+					idata_zodapos.DESCRIZIONE_POSIZIONE,
+					idata_zodapos.P_IVA_FORNITORE,
+					idata_zodapos.TIPO_ORDINE,
+					idata_zodapos.IMPORTO_ORDINE,
+					idata_zodapos.ID_CONTRATTO_RIF,
+					idata_zodapos.POS_CONTRATTO_RIF,
+					SUBSTRING(desc_contr_rif FROM 1 FOR 4000),
+					idata_zodapos.CIG,
+					idata_zodapos.CUP );				-- concatenazione di tutti i ZCONDDES.RIGA_TESTO  | substring alla massima lunghezza del campo SAP/ORACLE
+					SET n_ordini_ins = n_ordini_ins +1;
+				ELSE -- Record presente in tabella PF_ORDINI, aggiornare
+	
+					UPDATE Database.PF_ORDINI
+					SET
+					ID_ORDINE=idata_zodapos.ID_ORDINE,
+					POS_ORDINE=idata_zodapos.POS_ORDINE ,
+					SOCIETA=idata_zodapos.SOCIETA,
+					DIVISIONE=idata_zodapos.DIVISIONE,
+					DESCRIZIONE_TESTATA=SUBSTRING(desc_testata FROM 1 FOR 4000),				 -- DESCRIZIONE_TESTATA (concatenazione di tutti i ZODADES.RIGA_TESTO)
+					DESCRIZIONE_POSIZIONE=idata_zodapos.DESCRIZIONE_POSIZIONE,
+					P_IVA_FORNITORE=idata_zodapos.P_IVA_FORNITORE,
+					TIPO_ORDINE=idata_zodapos.TIPO_ORDINE,
+					IMPORTO_ORDINE=idata_zodapos.IMPORTO_ORDINE,
+					ID_CONTRATTO_RIF=idata_zodapos.ID_CONTRATTO_RIF,
+					POS_CONTRATTO_RIF=idata_zodapos.POS_CONTRATTO_RIF,
+					DESC_CONTRATTO_RIF=SUBSTRING(desc_contr_rif FROM 1 FOR 4000),  -- concatenazione di tutti i ZCONDDES.RIGA_TESTO
+					CIG = idata_zodapos.CIG,
+					CUP = idata_zodapos.CUP
+					WHERE PF_ORDINI.ID_ORDINE = idata_zodapos.ID_ORDINE AND -- ZODAPOS.ID_ORDINE
+					PF_ORDINI.POS_ORDINE = idata_zodapos.POS_ORDINE AND -- ZODAPOS.POS_ORDINE
+					PF_ORDINI.TIPO_ORDINE = idata_zodapos.TIPO_ORDINE; -- Non presente in ZODADES.TIPO_ORDINE ( ma su ZODAPOS)
+					SET n_ordini_upd = n_ordini_upd +1;
+				END IF;
+	
+	  			WHILE LASTMOVE(idata_zodaogg)=TRUE DO
+				-- Controllo esistenza record in PF_OGGETTI
+	
+					SET esiste_oggetti = SELECT COUNT(*)
+					FROM Database.PF_OGGETTI
+					WHERE
+					PF_OGGETTI.ID_ORDINE = idata_zodaogg.ID_ORDINE AND				
+					PF_OGGETTI.POS_ORDINE = idata_zodaogg.POS_ORDINE AND
+					PF_OGGETTI.NUMERO_OGGETTO = idata_zodaogg.NUMERO_OGGETTO AND
+					PF_OGGETTI.POSIZIONE_OGGETTO = idata_zodaogg.POSIZIONE_OGGETTO AND
+					PF_OGGETTI.TIPO_OGGETTO = idata_zodaogg.TIPO_OGGETTO;
+		
+		
+					SET imp_oggetto = REPLACE (idata_zodaogg.IMPORTO_OGGETTO, ',','.') ;		--- replace 
+		  			SET dt_documento = CAST (idata_zodaogg.DATA_DOCUMENTO AS DATE FORMAT 'yyyyMMdd'); --Trasformare il Char in Data
+		 			SET dt_registrazione = CAST (idata_zodaogg.DATA_REGISTRAZIONE AS DATE FORMAT 'yyyyMMdd');
+		 			if idata_zodaogg.DATA_RIL_APS <> '00000000' then
+		 				SET dt_rilascio_APS = CAST (idata_zodaogg.DATA_RIL_APS AS DATE FORMAT 'yyyyMMdd');
+		 			ELSE
+		 				SET dt_rilascio_APS  =NULL;	
+		 			end if;	
+		 			
+		  			
+		
+					IF esiste_oggetti = 0 THEN 			-- Record non presente in tabella PF_OGGETTI, inserire
+								
+						INSERT INTO Database.PF_OGGETTI 			
+						(ID_ORDINE,
+						POS_ORDINE,
+						NUMERO_OGGETTO,
+						POSIZIONE_OGGETTO,
+						TIPO_OGGETTO,
+						IMPORTO_OGGETTO,
+						RIFERIMENTO_OGGETTO,
+						DATA_DOCUMENTO,				-- verificare formato data
+						DATA_REGISTRAZIONE,
+						DESCRIZIONE_OGGETTO,
+						IMPORTO_FATT_RATA,
+						DATA_RILASCIO_APS)
+						VALUES
+						(idata_zodaogg.ID_ORDINE,
+						idata_zodaogg.POS_ORDINE,
+						idata_zodaogg.NUMERO_OGGETTO,
+						idata_zodaogg.POSIZIONE_OGGETTO,
+						idata_zodaogg.TIPO_OGGETTO,
+						imp_oggetto,					
+						idata_zodaogg.RIFERIMENTO_OGGETTO,
+						dt_documento,
+						dt_registrazione,
+						idata_zodaogg.DESCRIZIONE_OGGETTO,
+						idata_zodaogg.IMPONIBILE_FATTURATO,
+						dt_rilascio_APS);
+						SET n_oggetti_ins = n_oggetti_ins +1;				
+					ELSE -- Record presente in tabella PF_OGGETTI, aggiornare
+		
+						UPDATE Database.PF_OGGETTI
+						SET
+						ID_ORDINE= idata_zodaogg.ID_ORDINE,
+						POS_ORDINE= idata_zodaogg.POS_ORDINE,
+						NUMERO_OGGETTO= idata_zodaogg.NUMERO_OGGETTO,
+						POSIZIONE_OGGETTO= idata_zodaogg.POSIZIONE_OGGETTO,
+						TIPO_OGGETTO= idata_zodaogg.TIPO_OGGETTO,
+						IMPORTO_OGGETTO= imp_oggetto,
+						RIFERIMENTO_OGGETTO= idata_zodaogg.RIFERIMENTO_OGGETTO,
+						DATA_DOCUMENTO= dt_documento,
+						DATA_REGISTRAZIONE= dt_registrazione,
+						DESCRIZIONE_OGGETTO= idata_zodaogg.DESCRIZIONE_OGGETTO,
+						IMPORTO_FATT_RATA = idata_zodaogg.IMPONIBILE_FATTURATO,
+						DATA_RILASCIO_APS = dt_rilascio_APS
+						WHERE PF_OGGETTI.ID_ORDINE = idata_zodaogg.ID_ORDINE 			AND
+						PF_OGGETTI.POS_ORDINE = idata_zodaogg.POS_ORDINE 				AND
+						PF_OGGETTI.NUMERO_OGGETTO = idata_zodaogg.NUMERO_OGGETTO 		AND
+						PF_OGGETTI.POSIZIONE_OGGETTO= idata_zodaogg.POSIZIONE_OGGETTO 	AND
+						PF_OGGETTI.TIPO_OGGETTO= idata_zodaogg.TIPO_OGGETTO ;		
+				   		
+						SET n_oggetti_upd = n_oggetti_upd +1;
+					END IF;		 
+					
+				MOVE idata_zodaogg NEXTSIBLING NAME 'SapZbommapsZodaogg000';		
+	
+			END WHILE;		-- idata_zodaogg
+	
+			MOVE idata_zodapos NEXTSIBLING NAME 'SapZbommapsZodapos000';		
+
+		END WHILE;		-- idata_zodapos
+
+		SET OutputRoot.XMLNSC.ns1:Params.flusso = 'ZBOMMAPS';
+		SET OutputRoot.XMLNSC.ns1:Params.body1  = n_ordini_ins;
+		SET OutputRoot.XMLNSC.ns1:Params.body2  = n_ordini_upd;
+		SET OutputRoot.XMLNSC.ns1:Params.body3  = n_oggetti_ins;
+		SET OutputRoot.XMLNSC.ns1:Params.body4  = n_oggetti_upd;
+		RETURN TRUE;
+	END;
+
+END MODULE;

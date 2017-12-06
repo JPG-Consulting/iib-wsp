@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ComIbmCompute.msgnode="ComIbmCompute.msgnode" xmlns:ComIbmHTTPAsyncResponse.msgnode="ComIbmHTTPAsyncResponse.msgnode" xmlns:ComIbmMQInput.msgnode="ComIbmMQInput.msgnode" xmlns:ComIbmTrace.msgnode="ComIbmTrace.msgnode" xmlns:ComIbmWSRequest.msgnode="ComIbmWSRequest.msgnode" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:eflow="http://www.ibm.com/wbi/2005/eflow" xmlns:mbmonitor="http://www.ibm.com/wbi/2008/eflow_mbmonitor"
+    xmlns:utility="http://www.ibm.com/wbi/2005/eflow_utility" nsURI="IMPORT_FATTURE.msgflow" nsPrefix="IMPORT_FATTURE.msgflow">
+  <eClassifiers xmi:type="eflow:FCMComposite" name="FCMComposite_1">
+    <eSuperTypes href="http://www.ibm.com/wbi/2005/eflow#//FCMBlock"/>
+    <translation xmi:type="utility:TranslatableString" key="IMPORT_FATTURE" bundleName="IMPORT_FATTURE" pluginId="CORPORATE_PORTALE_FORNITORI_SAP"/>
+    <colorGraphic16 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_PORTALE_FORNITORI_SAP/icons/full/obj16/IMPORT_FATTURE.gif"/>
+    <colorGraphic32 xmi:type="utility:GIFFileGraphic" resourceName="platform:/plugin/CORPORATE_PORTALE_FORNITORI_SAP/icons/full/obj30/IMPORT_FATTURE.gif"/>
+    <composition>
+      <nodes xmi:type="ComIbmMQInput.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_1" location="67,146" queueName="ZSCARICO_FATTURE">
+        <translation xmi:type="utility:ConstantString" string="MQ Input"/>
+        <monitorEvents eventSourceDescription="Transaction rollback" eventSourceName="MQ Input.transaction.Rollback" eventIdentity="Fallimento scarico fattura SAP">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="independent">
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true"/>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Fallimento scarico fattura SAP"/>
+            <eventFilter dataLocation="true()" isXPath="true"/>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmCompute.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="227,155" dataSource="CICLO_PAS" computeExpression="esql://routine/#IMPORT_FATTURE_Compute.Main" throwExceptionOnDatabaseError="false">
+        <translation xmi:type="utility:ConstantString" string="Compute"/>
+        <nsMappingTable nsPrefix="sap" namespace="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps"/>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Failure terminal" eventSourceName="Compute.terminal.failure" eventIdentity="Compute.FailureTerminal">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/DataObject/sap:SapZbommaps/SapZbommapsIDocBO[1]/SapIDocControlRecord/DOCNUM" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps"/>
+            </applicationData>
+            <applicationData dataLocation="$ExceptionList" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Compute.FailureTerminal"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventEnabled="false" eventSourceDescription="Out terminal" eventSourceName="Compute.terminal.out" eventIdentity="Compute.OutTerminal">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent">
+            <applicationData dataLocation="$Root/DataObject/sap:SapZbommaps/SapZbommapsIDocBO[1]/SapIDocControlRecord/DOCNUM" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Compute.OutTerminal"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+        <monitorEvents eventSourceDescription="In terminal" eventSourceName="Compute.terminal.in" eventIdentity="Compute.InTerminal">
+          <eventXMLDoc xmi:type="mbmonitor:MonitorEvent" eventUOW="none">
+            <applicationData dataLocation="$Root/DataObject/sap:SapZbommaps/SapZbommapsIDocBO[1]/SapIDocControlRecord/DOCNUM" isXPath="true" complexData="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps"/>
+            </applicationData>
+            <globalTransactionCorrelator/>
+            <parentTransactionCorrelator/>
+            <localTransactionCorrelator/>
+            <bitStreamData encoding="CDATA"/>
+            <eventName literal="Compute.InTerminal"/>
+            <eventFilter dataLocation="true()" isXPath="true">
+              <nsPrefixMap prefix="sap" nsURI="http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzbommaps"/>
+            </eventFilter>
+          </eventXMLDoc>
+        </monitorEvents>
+      </nodes>
+      <nodes xmi:type="ComIbmTrace.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_3" location="551,257" destination="none">
+        <translation xmi:type="utility:ConstantString" string="Trace"/>
+      </nodes>
+      <nodes xmi:type="ComIbmHTTPAsyncResponse.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="114,259" asyncRequestCorrelator="sendMailZBOMMAPS">
+        <translation xmi:type="utility:ConstantString" string="HTTP Asynchronous Response"/>
+      </nodes>
+      <nodes xmi:type="ComIbmWSRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_5" location="336,154" URLSpecifier="http://localhost:7800/sys/email_sender" httpVersion="1.1" protocol="TLS">
+        <translation xmi:type="utility:ConstantString" string="sendMailZBOMMAPS"/>
+      </nodes>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_1" targetNode="FCMComposite_1_5" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_2" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_2" sourceTerminalName="OutTerminal.failure" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_3" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_4" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_4" targetNode="FCMComposite_1_2" sourceNode="FCMComposite_1_1" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+      <connections xmi:type="eflow:FCMConnection" xmi:id="FCMConnection_6" targetNode="FCMComposite_1_3" sourceNode="FCMComposite_1_5" sourceTerminalName="OutTerminal.out" targetTerminalName="InTerminal.in"/>
+    </composition>
+    <propertyOrganizer/>
+    <stickyBoard/>
+  </eClassifiers>
+</ecore:EPackage>
