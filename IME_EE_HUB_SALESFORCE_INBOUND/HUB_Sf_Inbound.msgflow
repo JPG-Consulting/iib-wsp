@@ -61,7 +61,7 @@
           </eventXMLDoc>
         </monitorEvents>
       </nodes>
-      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="434,182" wsdlFileName="Enterprise.wsdl" selectedPortType="Soap" selectedBinding="SoapBinding" selectedOperation="login" selectedPort="Soap" targetNamespace="urn:enterprise.soap.sforce.com" useHTTPTransport="true" webServiceURL="https://test.salesforce.com/services/Soap/c/36.0/0DF3E0000008OLd" sslProtocol="TLSv1.1">
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_2" location="434,182" wsdlFileName="Enterprise.wsdl" selectedPortType="Soap" selectedBinding="SoapBinding" selectedOperation="login" selectedPort="Soap" targetNamespace="urn:enterprise.soap.sforce.com" useHTTPTransport="true" webServiceURL="https://login.salesforce.com/services/Soap/c/36.0" sslProtocol="TLSv1.1">
         <translation xmi:type="utility:ConstantString" string="Login"/>
         <nsMappingTable nsPrefix="tns" namespace="urn:enterprise.soap.sforce.com"/>
         <nsMappingTable nsPrefix="tns1" namespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>
@@ -125,7 +125,7 @@
       <nodes xmi:type="ComIbmMSLMapping.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_8" location="347,69" mappingExpression="msl://{default}#BuildEsito">
         <translation xmi:type="utility:ConstantString" string="BuildEsito"/>
       </nodes>
-      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="218,87" wsdlFileName="Salesforce_Iren_HUB_Inbound_v7.wsdl" selectedPortType="Iren_HUB_InboundPortType" selectedBinding="Iren_HUB_InboundBinding" selectedOperation="WSHubCrmInbound" selectedPort="Iren_HUB_Inbound" targetNamespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound" useHTTPTransport="true" webServiceURL="https://cs82.salesforce.com/services/Soap/class/Iren_HUB_Inbound" sslProtocol="TLSv1.1"
+      <nodes xmi:type="ComIbmSOAPRequest.msgnode:FCMComposite_1" xmi:id="FCMComposite_1_4" location="218,87" wsdlFileName="Salesforce_Iren_HUB_Inbound_v7.wsdl" selectedPortType="Iren_HUB_InboundPortType" selectedBinding="Iren_HUB_InboundBinding" selectedOperation="WSHubCrmInbound" selectedPort="Iren_HUB_Inbound" targetNamespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound" useHTTPTransport="true" webServiceURL="https://eu6.salesforce.com/services/Soap/class/Iren_HUB_Inbound" sslProtocol="TLSv1.1"
           usingWsAddressing="true" populateLocalEnvWithWSAInfo="true">
         <translation xmi:type="utility:ConstantString" string="SfInbound"/>
         <mustUnderstandResponseHeadersWSDLDefined header="Header" namespace="http://soap.sforce.com/schemas/class/Iren_HUB_Inbound"/>

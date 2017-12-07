@@ -3,6 +3,7 @@
 	<name>CORPORATE_PORTALE_FORNITORI_SAP</name>
 	<comment></comment>
 	<projects>
+		<project>CWYAP_SAPAdapter_Tx4</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

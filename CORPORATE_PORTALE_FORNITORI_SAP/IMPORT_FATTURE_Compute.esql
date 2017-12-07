@@ -1,10 +1,135 @@
+DECLARE ns12 NAMESPACE 'http://www.ibm.com/xmlns/prod/websphere/j2ca/sap/sapzscaricofattura';
 
 
 CREATE COMPUTE MODULE IMPORT_FATTURE_Compute
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
-		-- CALL CopyMessageHeaders();
-		-- CALL CopyEntireMessage();
+		SET OutputLocalEnvironment.Variables.idocNum = InputRoot.DataObject.ns12:SapZscaricoFattura.SapZscaricoFatturaIDocBO.SapIDocControlRecord.DOCNUM;
+
+		DECLARE testata REFERENCE TO InputRoot.DataObject.ns12:SapZscaricoFattura.SapZscaricoFatturaIDocBO.SapZscaricoFatturaDataRecord.SapZscaricoFatturaZfatturaTestata000[1];
+		
+		DECLARE esiste_fattura INTEGER;
+		DECLARE esiste_dettaglio INTEGER;
+		DECLARE n_ins INTEGER 0;
+        DECLARE n_upd INTEGER 0;
+        DECLARE n_ins_det INTEGER 0;
+        DECLARE n_upd_det INTEGER 0;			
+/*
+1)      Per ogni segmento di testata della fattura occorre recuperare i dati 
+		BELNR (id fattura) GJHAR (anno fattura) 
+		BLDAT (data registrazione) BUDAT (data documento) 
+		XBLNR(riferimento) RMWWR (importo) 
+		ed inserirli (in inserimento o modifica con la chiave BELNR e GJHAR) CICLOPAS.PF_FATTURE_SAP
+2)      Per ogni segmento posizione recuperare i dati di EBELN (id ordine) EBELP (posizione ordine) MBLNS (em) ZEILE (pos EM)  LBNLNI (APS), WRBTR (IMPORTO) ed inseririli in CICLOPAS.PF_FATTURE_SAP_DETTAGLIO (andare sempre in insert per EBELN e EBELP
+*/	
+		WHILE LASTMOVE(testata)=TRUE DO
+
+			-- Controllo esistenza record in PF_FATTURE_SAP
+			SET esiste_fattura = SELECT COUNT(*)
+			FROM Database.PF_FATTURE_SAP AS T
+			WHERE T.NUMERO_FATTURA = testata.BELNR AND    
+				  T.ANNO_FATTURA = testata.GJAHR;
+
+			IF esiste_fattura = 0 THEN -- Record non presente in tabella, inserire
+	
+					INSERT INTO Database.PF_FATTURE_SAP
+					(NUMERO_FATTURA,
+					ANNO_FATTURA,
+					DATA_REGISTRAZIONE,
+					DATA_DOCUMENTO,
+					RIFERIMENTO,
+					IMPORTO,
+					PROTOCOLLO_IVA)
+					VALUES
+					(testata.BELNR,
+					testata.GJAHR,
+					CAST(testata.BLDAT AS DATE FORMAT 'yyyyMMdd'),
+					CAST(testata.BUDAT AS DATE FORMAT 'yyyyMMdd'),
+					testata.XBLNR,
+					testata.RMWWR,
+					testata.DOC_CONT);	
+					SET n_ins = n_ins +1;
+				ELSE -- Record presente in tabella 
+	
+					UPDATE Database.PF_FATTURE_SAP
+					SET
+					DATA_REGISTRAZIONE=CAST(testata.BLDAT AS DATE FORMAT 'yyyyMMdd'),
+					DATA_DOCUMENTO=CAST(testata.BUDAT AS DATE FORMAT 'yyyyMMdd'),
+					RIFERIMENTO=testata.XBLNR,
+					IMPORTO=testata.RMWWR,
+					PROTOCOLLO_IVA=testata.DOC_CONT
+					WHERE PF_FATTURE_SAP.NUMERO_FATTURA = testata.BELNR AND
+					PF_FATTURE_SAP.ANNO_FATTURA = testata.GJAHR;
+					SET n_upd = n_upd +1;
+				END IF;
+				
+				DECLARE dett REFERENCE TO testata.SapZscaricoFatturaZfatturaPosizione000[1];
+				
+				FOR dett AS testata.SapZscaricoFatturaZfatturaPosizione000[] DO
+					SET esiste_dettaglio = SELECT COUNT(*)
+					FROM Database.PF_FATTURE_SAP_DETTAGLIO AS T
+					WHERE
+					T.NUMERO_FATTURA = dett.BELNR AND
+					T.ANNO_FATTURA = dett.GJAHR AND
+					T.ID_ORDINE = dett.EBELN AND    
+					T.POS_ORDINE = dett.EBELP;
+		
+					IF esiste_dettaglio = 0 THEN -- Record non presente in tabella, inserire
+			
+							INSERT INTO Database.PF_FATTURE_SAP_DETTAGLIO
+							(NUMERO_FATTURA
+							,ANNO_FATTURA
+							,RIFERIMENTO
+							,IMPORTO
+							,ID_ORDINE
+							,POS_ORDINE
+							,ENTRATA_MERCI
+							,POS_ENTRATA_MERCI
+							,APS
+							,POS_APS
+							,DATA_MODIFICA)
+							VALUES
+							(dett.BELNR,
+							dett.GJAHR,
+							testata.XBLNR,
+							dett.WRBTR,
+							dett.EBELN,
+							dett.EBELP,
+							dett.MBLNR,
+							dett.ZEILE,
+							dett.LBLNI,
+							'0',
+							CURRENT_DATE);	
+							SET n_ins_det = n_ins_det +1;
+						ELSE -- Record presente in tabella 
+			
+							UPDATE Database.PF_FATTURE_SAP_DETTAGLIO
+							SET
+							 RIFERIMENTO = testata.XBLNR
+							,IMPORTO = dett.WRBTR
+							,ENTRATA_MERCI = dett.MBLNR
+							,POS_ENTRATA_MERCI = dett.ZEILE
+							,APS = dett.LBLNI
+							,POS_APS = '0'
+							,DATA_MODIFICA = CURRENT_DATE
+							WHERE PF_FATTURE_SAP_DETTAGLIO.NUMERO_FATTURA = dett.BELNR AND
+							PF_FATTURE_SAP_DETTAGLIO.ANNO_FATTURA = dett.GJAHR AND
+							PF_FATTURE_SAP_DETTAGLIO.ID_ORDINE = dett.EBELN AND
+							PF_FATTURE_SAP_DETTAGLIO.POS_ORDINE = dett.EBELP;
+							
+							SET n_upd_det = n_upd_det +1;
+						END IF;
+				END FOR;
+		
+			MOVE testata NEXTSIBLING NAME 'SapZscaricoFatturaZfatturaTestata000';		
+
+		END WHILE;
+
+		SET OutputRoot.XMLNSC.ns1:Params.flusso = 'ZSCARICO_FATTURA';
+		SET OutputRoot.XMLNSC.ns1:Params.body1  = n_ins;
+		SET OutputRoot.XMLNSC.ns1:Params.body2  = n_upd;
+		SET OutputRoot.XMLNSC.ns1:Params.body3  = n_ins_det;
+		SET OutputRoot.XMLNSC.ns1:Params.body4  = n_upd_det;
 		RETURN TRUE;
 	END;
 
